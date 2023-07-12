@@ -7,3 +7,5 @@ make devel
 l
 git status
 git add --all
+git commit -am "restructured codebase"
+git push 

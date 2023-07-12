@@ -32,3 +32,10 @@ __R/
 ehthumbs.db
 Thumbs.db
 .DS_Store
+
+*.html
+*.nb.html
+*_files/
+*_cache/
+
+.Rproj.user/
