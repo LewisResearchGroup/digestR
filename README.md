@@ -1,7 +1,14 @@
 # DigestR
 
 **Author**: Dimitri Desmonts de Lamache
-  
+
+## Prerequisites
+
+	install.package('biomaRt')
+	library(biomarRt)
+
+
+
 ## Run the following lines in the R console
 
 	library(Rcpp)
