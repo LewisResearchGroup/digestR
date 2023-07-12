@@ -1,0 +1,34 @@
+.localhost
+
+# ignore files with these extensions
+*.o
+*.so
+*.dll
+*.tar.gz
+*.Rd
+*.RData
+*.Rhistory
+*.Rproj.user
+*.Rproj
+*.pdf
+*.lo
+*.la
+*.Rcheck/
+*.Rbuildignore
+
+# ignore directories
+.Rproj.user
+.Rhistory
+.RData
+__R/
+.Ruserdata
+.Rbuild/
+
+# include this file even if it is ignored
+!DESCRIPTION
+!NAMESPACE
+
+# Ignore OS generated files
+ehthumbs.db
+Thumbs.db
+.DS_Store
