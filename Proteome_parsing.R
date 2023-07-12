@@ -69,11 +69,9 @@ for (i in 2:length(file_list)){
 
 fclean <- f[!(f$peptide=="Sequence unavailable"),]
 write.csv(fclean,file.choose(),row.names = FALSE)
-################################################################################
+
 ## Add quotation marks back in
-
 # Read the original CSV file
-
 data <- read.csv(file.choose(),header=T)
 
 # Specify the delimiter used in the CSV file
@@ -91,14 +89,9 @@ write.csv(quoted_data, file.choose(), row.names = FALSE, quote = FALSE)
 output_file <- readline("Enter the path for the modified CSV file: ")
 write.csv(quoted_data, output_file, row.names = FALSE, quote = FALSE)
 
-
 # Alternatively, if you want to overwrite the original file, use the following:
 # write.csv(quoted_data, original_file, row.names = FALSE, quote = FALSE)
 
-
-#Change the headers name to:
-#
-################################################################################
 
 # To upload the proteome on DigestR you need to:
 
