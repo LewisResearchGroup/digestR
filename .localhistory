@@ -9,3 +9,9 @@ git status
 git add --all
 git commit -am "restructured codebase"
 git push 
+git commit -am ".gitignore file updated"
+git push 
+..
+l
+git status
+git add --all
