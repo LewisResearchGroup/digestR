@@ -2,7 +2,7 @@
 ################################################################################
 ##                                                                            ##
 ##                                                                            ##
-##  rNMR version 1.0.0, Tools for viewing and anlyzing protein catabolism.    ##
+##  DigestR version 1.0.0, Tools for viewing and anlyzing protein catabolism  ##
 ##    Copyright (C) 2023, Dimitri Desmonts de Lamache, Raied Aburashed,       ##
 ##          Travis A. Bingemann, Ian A. Lewis under GPL-3                     ##
 ##                                                                            ##
