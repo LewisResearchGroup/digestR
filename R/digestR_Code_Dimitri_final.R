@@ -1,4 +1,48 @@
 ################################################################################
+################################################################################
+##                                                                            ##
+##                                                                            ##
+##  rNMR version 1.0.0, Tools for viewing and anlyzing protein catabolism.    ##
+##    Copyright (C) 2023, Dimitri Desmonts de Lamache, Raied Aburashed,       ##
+##          Travis A. Bingemann, Ian A. Lewis under GPL-3                     ##
+##                                                                            ##
+##    This program is free software: you can redistribute it and/or modify    ##
+##    it under the terms of the GNU General Public License as published by    ##
+##    the Free Software Foundation, either version 3 of the License, or       ##
+##    any later version.                                                      ##
+##                                                                            ##
+##    This program is distributed in the hope that it will be useful,         ##
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of          ##
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           ## 
+##    GNU General Public License for more details.                            ##
+##                                                                            ##
+##    A copy of the GNU General Public License can be found at:               ##
+##    www.r-project.org/Licenses/GPL-3                                        ##
+##                                                                            ##
+##                                                                            ##
+################################################################################
+################################################################################
+
+#To deploy the application locally, the user must have R and the following packages installed.
+install.packages('tcltk')
+install.packages('Rcpp')
+install.packages('ggplot2')
+install.packages('ggridges')
+install.packages('dplyr')
+
+################################################################################
+#
+# Library
+#
+################################################################################
+library(tcltk)
+library(Rcpp)
+library(ggplot2)
+library(ggridges)
+library(dplyr)
+
+
+################################################################################
 #
 # Library
 #
