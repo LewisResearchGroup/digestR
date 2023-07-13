@@ -15,3 +15,7 @@ git push
 l
 git status
 git add --all
+git commit -am 'BioMartData.R added'
+git push 
+git pull
+git push 
