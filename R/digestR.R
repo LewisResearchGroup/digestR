@@ -23,41 +23,19 @@
 ################################################################################
 ################################################################################
 
-#To deploy the application locally, the user must have R and the following packages installed.
-install.packages('tcltk')
-install.packages('Rcpp')
-install.packages('ggplot2')
-install.packages('ggridges')
-install.packages('dplyr')
-
-################################################################################
-#
-# Library
-#
-################################################################################
 library(tcltk)
 library(Rcpp)
 library(ggplot2)
 library(ggridges)
 library(dplyr)
 
-
-################################################################################
-#
-# Library
-#
-################################################################################
-library(tcltk)
-library(Rcpp)
-library(ggplot2)
-library(ggridges)
-library(dplyr)
 
 ################################################################################
 #
 #Digestomics MK4
 #
 ################################################################################
+
 extractPathAndName <- function(sPath)
 {
   

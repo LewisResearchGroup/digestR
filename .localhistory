@@ -19,3 +19,14 @@ git commit -am 'BioMartData.R added'
 git push 
 git pull
 git push 
+git commit -am 'dependencies added'
+git push 
+l
+ls DigestR-test/data/
+l
+ls R
+l
+..
+l
+git status
+git add --all

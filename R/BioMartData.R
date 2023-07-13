@@ -87,8 +87,6 @@ BioMartData <- R6::R6Class(
   )
 )
 
-
-
 # Create an instance of BioMartData
 # data <- BioMartData$new(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
 
