@@ -56,6 +56,9 @@ For each function, to test the GUI, call the function without any arguments. For
 
 ## Notes
 
+
+
+```
 ### Call the GUI handler function to start the application
 
     cs()
@@ -735,3 +738,5 @@ For each function, to test the GUI, call the function without any arguments. For
 # 
 # # Call the GUI handler function to start the application
 # #cs()
+
+```
