@@ -975,48 +975,26 @@ gui <- function(top=NULL){
     winMenuAddItem("Manipulate dcf", 'Open/Close files        fs()', "fs()")
     winMenuAddItem("Manipulate dcf", 'Save as               sa()', "sa()")
     winMenuAddItem('Manipulate dcf', 'Manipulate Files          mf()', "mf()")
-    
-    ##		winMenuAddItem("File", '-', "none")
-    ##		winMenuAddItem("File", 'Import              import()', "import()")
-    ##		winMenuAddItem("File", 'Export                export()', "export()")
-    ##		winMenuAddItem("File", '--', "none")
-    ##		winMenuAddItem("File", 'Load workspace      wl()', "wl()")
-    ##		winMenuAddItem("File", 'Save workspace      ws()', "ws()") 
-    ##		winMenuAddItem("File", 'Restore backup        rb()', "rb()")
-    
+        
     winMenuAdd("Edit")
     winMenuAddItem("Edit", 'Undo                 ud()', "ud()")
     winMenuAddItem("Edit", 'Redo                  rd()', "rd()") 
     winMenuAddItem("Edit", 'Genotype              gt()', "gt()")
     winMenuAddItem("Edit", 'Title                 ti()', "ti()")		
     winMenuAddItem("Edit", '--', "none")
-    ##		winMenuAddItem("Edit", 'Peak list             pe()', "pe()")
-    ##		winMenuAddItem("Edit", 'ROI table            re()', "re()")
-    ##		winMenuAddItem("Edit", 'ROI summary    se()', "se()")
     winMenuAddItem("Edit", 'Preferences       ep()', "ep()")
     
     
     winMenuAdd("Graphics")
     winMenuAddItem("Graphics", 'Plot colors        co()', "co()")
     winMenuAddItem("Graphics", 'Plot settings      ct()', "ct()")
-    ##		winMenuAddItem("Graphics", 'Perspective     per()', "per()")
     
     winMenuAdd("View")
     winMenuAddItem("View", 'Zoom                       zm()', "zm()")
     winMenuAddItem("View", 'Overlays                    ol()', "ol()")
     winMenuAddItem("View", 'Display protease cut site      cs()', "cs()")
     winMenuAddItem("View", 'Gene labeling              gl()', "gl()")		
-    ##		winMenuAddItem("View", '1D Projections          pj()', "pj()")
     winMenuAddItem("View", 'Redraw spectrum    dd()', "dd()")
-    
-    ##		winMenuAdd("Tools")
-    ##		winMenuAdd("Tools/Assignments")
-    ##		winMenuAddItem("Tools/Assignments", 'Auto assign              aa()', "aa()")
-    ##		winMenuAddItem("Tools/Assignments", 'Custom libraries       cl()', "cl()")
-    ##		winMenuAddItem("Tools", 'ROIs                        roi()', "roi()")
-    ##		winMenuAddItem("Tools", 'Peak picking          pp()', "pp()")
-    ##		winMenuAddItem("Tools", 'Shift referencing     sr()', "sr()")
-    ##		winMenuAddItem("Tools", 'Extract data             ed()', "ed()")
     
     winMenuAdd("Help")
     winMenuAddItem("Help", 'Help topics', "?digestR")
@@ -1030,7 +1008,7 @@ gui <- function(top=NULL){
     winMenuAddItem("Help", 'Update digestR', "digestR:::updater()")
     winMenuAddItem("Help", 'About digestR', "digestR:::about()")
     
-  }else{
+  } else {
     tclCheck()
     if (is.null(top)){
       if (.Platform$OS.type == 'windows')
@@ -1048,21 +1026,7 @@ gui <- function(top=NULL){
     fileMenu <- tkmenu(topMenu, tearoff=FALSE)
     tkadd(fileMenu, 'command', label='Open/Clofo()se files', accelerator='fs()', 
           command=function() fs())
-    
-    ##		tkadd(fileMenu, 'command', label='Convert to digestR', accelerator='cf()',
-    ##				command=function() cf())
     tkadd(fileMenu, 'separator') 
-    ##		tkadd(fileMenu, 'command', label='Import', accelerator='import()',	
-    ##				command=function() import()) 
-    ##		tkadd(fileMenu, 'command', label='Export', accelerator='export()',	
-    ##				command=function() export())
-    ##		tkadd(fileMenu, 'separator') 
-    ##		tkadd(fileMenu, 'command', label='Load workspace', accelerator='wl()',	
-    ##				command=function() wl()) 
-    ##		tkadd(fileMenu, 'command', label='Save workspace', accelerator='ws()',	
-    ##				command=function() ws()) 
-    ##		tkadd(fileMenu, 'command', label='Restore backup', accelerator='rb()',	
-    ##				command=function() rb()) 
     tkadd(topMenu, 'cascade', label='File', menu=fileMenu)
     
     editMenu <- tkmenu(topMenu, tearoff=FALSE)
@@ -1078,12 +1042,6 @@ gui <- function(top=NULL){
     tkadd(editMenu, 'command', label='Edit Title', accelerator='ti()', 
           command=function() ti())												
     tkadd(editMenu, 'separator')
-    ##		tkadd(editMenu, 'command', label='Peak list', accelerator='pe()', 
-    ##				command=function() pe())
-    ##		tkadd(editMenu, 'command', label='ROI table', accelerator='re()', 
-    ##				command=function() re())
-    ##		tkadd(editMenu, 'command', label='ROI summary', accelerator='se()', 
-    ##				command=function() se())
     tkadd(editMenu, 'command', label='Preferences', accelerator='ep()', 
           command=function() ep())
     tkadd(topMenu, 'cascade', label='Edit', menu=editMenu)
@@ -1106,29 +1064,9 @@ gui <- function(top=NULL){
     tkadd(viewMenu, 'command', label='Gene labeling', accelerator='gl()', 
           command=function() gl())				
     
-    ##		tkadd(viewMenu, 'command', label='1D Projection', 
-    ##				accelerator='pj()', command=function() pj())	
     tkadd(viewMenu, 'command', label='Redraw main spectrum', 
           accelerator='dd()', command=function() dd())
-    ##		tkadd(topMenu, 'cascade', label='View', menu=viewMenu)
-    
-    ##		toolMenu <- tkmenu(topMenu, tearoff=FALSE)
-    ##		assignMenu <- tkmenu(toolMenu, tearoff=FALSE)
-    ##		tkadd(toolMenu, 'cascade', label='Assignments', menu=assignMenu)
-    ##		tkadd(assignMenu, 'command', label='Auto assign', accelerator='aa()', 
-    ##				command=function() aa())
-    ##		tkadd(assignMenu, 'command', label='Custom libraries', accelerator='cl()', 
-    ##				command=function() cl())
-    ##		tkadd(toolMenu, 'command', label='ROIs', accelerator='roi()', 
-    ##				command=function() roi())
-    ##		tkadd(toolMenu, 'command', label='Peak picking', accelerator='pp()', 
-    ##				command=function() pp())
-    ##		tkadd(toolMenu, 'command', label='Shift referencing', accelerator='sr()', 
-    ##				command=function() sr())
-    ##		tkadd(toolMenu, 'command', label='Extract data', accelerator='ed()', 
-    ##				command=function() ed())
-    ##		tkadd(topMenu, 'cascade', label='Tools', menu=toolMenu)
-    
+
     helpMenu <- tkmenu(topMenu, tearoff=FALSE)
     tkadd(helpMenu, 'command', label='Help topics',	
           command=function(...) digestR:::myHelp('digestR-package'))
@@ -21339,12 +21277,6 @@ checkImage <- function(){
 .onLoad <- function(lib, pkg){
 
   print('Loading digestR backend functions')
-  print(DIGESTR_GIF_PATH)
-  print('exists:')
-  print(file.exists(DIGESTR_GIF_PATH))
-  print('access:')
-  print(file.access(DIGESTR_GIF_PATH))
-
 
   ## Create or update necessary digestR objects
   digestR:::patch()

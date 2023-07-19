@@ -8021,3 +8021,10 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
 # 
 # # Call the GUI handler function to start the application
 # #cs()
+
+
+.onLoad <- function(lib, pkg){
+
+  print('Loading digestR functions')
+
+}

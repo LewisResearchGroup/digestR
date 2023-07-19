@@ -48,3 +48,5 @@ l
 ..
 ..
 l
+git commit -am 'changed order of column names'
+git push 
