@@ -963,10 +963,10 @@ gui <- function(top=NULL){
     winMenuAdd("Manipulate csv")
     winMenuAddItem("Manipulate csv", 'Remove Duplicates    rd()', "rd()")
     winMenuAddItem("Manipulate csv", 'Unique peptides    up()', "up()")
-    winMenuAddItem("Manipulate dcf", 'Process Mascot Files    pm()', "pm()")
+    winMenuAddItem("Manipulate csv", 'Process Mascot Files    pm()', "pm()")
     winMenuAddItem("Manipulate csv", 'Plot cut site preference   csp()', "csp()")
     winMenuAddItem("Manipulate csv", 'Plot peptide distribution    pd()', "pd()")
-    winMenuAddItem('Manipulate dcf', 'Import Maven Files        im()', "im()")
+    winMenuAddItem("Manipulate csv", 'Import Maven Files        im()', "im()")
     
     winMenuAdd("Manipulate dcf")
     winMenuAddItem("Manipulate dcf", 'Open/Close files        fs()', "fs()")
@@ -1172,9 +1172,9 @@ devGui <- function(dev){
                  'Process Mascot Files     pm()', "pm()")
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Plot cut site preference   csp()', "csp()")
-  winMenuAddItem(paste(devName, 'Manipulate dcf', sep='/'),
+  winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'),
                  'Plot peptide distribution    pd()', "pd()")
-  winMenuAddItem(paste(devName, 'Manipulate dcf', sep='/'),
+  winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'),
                  'Import Maven Files      im()', "im()")	
   
   
@@ -1183,7 +1183,6 @@ devGui <- function(dev){
                  'Open/Close files      fs()', "fs()")
   winMenuAddItem(paste(devName, 'Manipulate dcf', sep='/'), 
                  'Save as               sa()', "sa()")
-  
   winMenuAddItem(paste(devName, 'Manipulate dcf', sep='/'),
                  'Manipulate Files      mf()', "mf()")
   
