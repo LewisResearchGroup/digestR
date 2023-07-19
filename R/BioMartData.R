@@ -89,6 +89,7 @@ BioMartData <- R6::R6Class(
       
       self$combined_data <- do.call(rbind, data_list)
       self$combined_data <- self$combined_data[!(self$combined_data$peptide == "Sequence unavailable"), ]
+      self$combined_data <- self$combined_data[, c("external_gene_name", "uniprot_gn_id", "chromosome_name", "start_position", "end_position", "peptide")]
       combined_filename <- file.path(filepath, paste0(self$dataset, "_combined.csv"))
       file_list <- c(file_list, combined_filename)
       write.csv(self$combined_data, combined_filename, row.names = FALSE)

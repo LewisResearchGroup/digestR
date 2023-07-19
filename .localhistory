@@ -36,3 +36,15 @@ ssh mint
 ssh mint
 git status
 git add --all
+git commit -am 'Added digestR.gif placeholder, removed rNMR function calls with digestR calls'
+git push 
+git pull
+git push 
+tree  .
+...
+l
+..
+..
+..
+..
+l
