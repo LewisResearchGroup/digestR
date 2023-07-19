@@ -2,7 +2,7 @@
 ################################################################################
 ##                                                                            ##
 ##                                                                            ##
-##  rNMR version 1.0.0, Tools for viewing and anlyzing protein catabolism.    ##
+##  digestR version 1.0.0, Tools for viewing and anlyzing protein catabolism.    ##
 ##    Copyright (C) 2023, Dimitri Desmonts de Lamache, Raied Aburashed,       ##
 ##          Travis A. Bingemann, Ian A. Lewis under GPL-3                     ##
 ##                                                                            ##
@@ -414,7 +414,7 @@ initDIANA <- function(sPath = '')
   assign("lSpecies", NULL, envir = .GlobalEnv)
   assign("currImg", NULL, env = .GlobalEnv)
   
-  #	source(paste(sPath, '/2016_08_11_rNMR_2.0.0_plus_BRMB.r', collapse='', sep=''))
+  #	source(paste(sPath, '/2016_08_11_digestR_2.0.0_plus_BRMB.r', collapse='', sep=''))
   #	source(paste(sPath, '/2016_03_16_mzPlot.r', collapse='', sep=''))
 }
 
@@ -6745,6 +6745,11 @@ up <- function() {
 #   if (is.null(dlg))
 #     return(invisible())
 
+#' A Function from digest.R
+#'
+#' This function does something even more interesting.
+#'
+#' @export
 pd <- function() {
   # Define variables
   csv_dir <- ""
@@ -7204,6 +7209,11 @@ csp <- function () {
 ################################################################################
 # Plotting cut sites GUI.
 
+#' A Function from gui.R
+#'
+#' This function does something even more interesting.
+#'
+#' @export
 cs <- function() {
   tclCheck()
   dlg <- myToplevel('cs')

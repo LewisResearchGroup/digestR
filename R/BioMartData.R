@@ -1,5 +1,31 @@
 library(magrittr)
 
+
+#' BioMartData R6 class
+#'
+#' An R6 class to fetch, manipulate, and save gene data from the Ensembl BioMart 
+#' database. It allows to fetch data for specific chromosomes and datasets, 
+#' and stores all the fetched data internally for further processing.
+#'
+#' @field ensembl The Ensembl BioMart object used for fetching data.
+#' @field dataset The dataset from which data is being fetched.
+#' @field chromosomes The list of chromosomes for which data will be fetched.
+#' @field combined_data A combined data frame of all the fetched data.
+#'
+#' @description 
+#' The `initialize` method takes two arguments: the `biomart` to use, and the `dataset`. 
+#' It initializes the `ensembl` field with the specified biomart and dataset.
+#' The `chromosomes` field is also initialized with the list of chromosomes available in 
+#' the dataset.
+#'
+#' The `get_data` method fetches gene data for each chromosome. The fetched data includes 
+#' attributes like 'external_gene_name', 'uniprot_gn_id', 'chromosome_name', 'start_position',
+#' 'end_position', and 'peptide'. It fetches data for all chromosomes if no specific 
+#' chromosomes are provided. It also takes care of creating necessary directories and handling 
+#' errors during data fetching. The fetched data is combined and stored in `combined_data`. 
+#' The method also handles the creation and removal of temporary files.
+#'
+#' @export
 BioMartData <- R6::R6Class(
   "BioMartData",
   public = list(
@@ -88,10 +114,10 @@ BioMartData <- R6::R6Class(
 )
 
 # Create an instance of BioMartData
-# data <- BioMartData$new(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
+# biomart <- BioMartData$new(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
 
 # Retrieve and process the data
-# data$get_data()
+# biomart$get_data()
 
 # To download specific chromosomes, use the following:
-# data$get_data(chromosomes = c("1", "2"))
+# biomart$get_data(chromosomes = c("1", "2"))

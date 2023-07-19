@@ -30,3 +30,9 @@ l
 l
 git status
 git add --all
+git commit -am 'restructured code'
+git push 
+ssh mint
+ssh mint
+git status
+git add --all

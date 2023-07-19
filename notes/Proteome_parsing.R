@@ -14,7 +14,7 @@
   listEnsembl()
   ensembl <- useEnsembl(biomart = "genes")
   datasets <- listDatasets(ensembl)
-  head(datasets)a
+  head(datasets)
   searchDatasets(mart = ensembl, pattern = "btaurus")
   #21 btaurus_gene_ensembl Cow genes (ARS-UCD1.2) ARS-UCD1.2
   ensembl <- useDataset(dataset = "btaurus_gene_ensembl", mart = ensembl)

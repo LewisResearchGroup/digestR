@@ -3,7 +3,7 @@
 ################################################################################
 ##                                                                            ##
 ##                                                                            ##
-##    rNMR version 2.0.0, Tools for viewing and analyzing NMR spectra.        ##
+##    digestR version 2.0.0, Tools for viewing and analyzing NMR spectra.        ##
 ##    Copyright (C) 2009 Ian A. Lewis and Seth C. Schommer under GPL-3        ##
 ##                                                                            ##
 ##    This program is free software: you can redistribute it and/or modify    ##
@@ -26,13 +26,12 @@
 
 ################################################################################
 ##                                                                            ##
-##     Internal functions for creating, saving and updating rNMR objects      ##
+##     Internal functions for creating, saving and updating digestR objects      ##
 ##                                                                            ##
 ################################################################################
 
 ## Assigns objects to the global environment and creates an undo point
-myAssign <- function(in.name = NULL, in.object, save.backup = TRUE)
-{
+myAssign <- function(in.name = NULL, in.object, save.backup = TRUE){
   
   ## Make sure the file name is the correct format
   if(!is.character(in.name)) 
@@ -131,7 +130,7 @@ myAssign <- function(in.name = NULL, in.object, save.backup = TRUE)
     {
       cat('\nPerforming automatic backup . . . ')
       tryCatch(invisible(save(list=ls(envir=.GlobalEnv, all.names=TRUE), 
-                              file=file.path('~', '.rNMRbackup'), version=NULL, ascii=FALSE, 
+                              file=file.path('~', '.digestRbackup'), version=NULL, ascii=FALSE, 
                               compress=FALSE, envir=.GlobalEnv, eval.promises=FALSE, 
                               precheck=FALSE)), error=function(){})
       cat('complete\n')
@@ -178,10 +177,10 @@ checkDef <- function(newDef){
         length(newDef[[i]]) != length(defSet[[i]]))
       newDef[[i]] <- defSet[[i]]
     
-    ##check for NA values in rNMR specific settings
-    rNMRnames <- defNames[66:length(defSet)]
-    rNMRnames <- rNMRnames[-match(c('xtck', 'ytck'), rNMRnames)]
-    if (i %in% rNMRnames && suppressWarnings(is.na(newDef[[i]])))
+    ##check for NA values in digestR specific settings
+    digestRnames <- defNames[66:length(defSet)]
+    digestRnames <- digestRnames[-match(c('xtck', 'ytck'), digestRnames)]
+    if (i %in% digestRnames && suppressWarnings(is.na(newDef[[i]])))
       newDef[[i]] <- defSet[[i]]
     
     ##check for valid colors
@@ -202,7 +201,7 @@ checkDef <- function(newDef){
       newDef[i] <<- defSet[i])
   dev.off()
   
-  ##check for invalid rNMR-specific parameters
+  ##check for invalid digestR-specific parameters
   if (!newDef$type %in% c('auto', 'image', 'contour', 'filled', 'l', 'p', 'b'))
     newDef$type <- defSet$type
   if (newDef$position.1D < 0 || newDef$position.1D > 99)
@@ -242,10 +241,10 @@ checkDef <- function(newDef){
 
 ## Internal function for writing defaultSettings out to file
 ## configFile - character string; file path to save the default settings to
-## defSet - list; the object containing a list of default settings for rNMR
+## defSet - list; the object containing a list of default settings for digestR
 writeDef <- function(configFile, defSet){
   if (missing(configFile))
-    configFile <- file.path(path.expand('~'), '.rNMR')
+    configFile <- file.path(path.expand('~'), '.digestR')
   if (missing(defSet))
     defSet <- defaultSettings
   dput(defSet, file=configFile)
@@ -264,7 +263,7 @@ oldReadDef <- function(configFile, check=TRUE){
   
   ##read from file
   if (missing(configFile))
-    configFile <- file.path(path.expand('~'), '.rNMR')
+    configFile <- file.path(path.expand('~'), '.digestR')
   if (!file.exists(configFile))
     return(NULL)
   defText <- readLines(configFile, warn=FALSE)
@@ -319,7 +318,7 @@ readDef <- function(configFile, check=TRUE){
   
   ##check configFile path and format
   if (missing(configFile))
-    configFile <- file.path(path.expand('~'), '.rNMR')
+    configFile <- file.path(path.expand('~'), '.digestR')
   if (!file.exists(configFile)){
     newDef <- NULL
   }else if (!length(readLines(configFile, warn=FALSE))){
@@ -336,7 +335,7 @@ readDef <- function(configFile, check=TRUE){
   return(newDef)
 }
 
-## Internal utility function for creating rNMR objects
+## Internal utility function for creating digestR objects
 ## objList - character vector, a list of objects to create
 ## overwrite - logical, overwrites old data if TRUE
 ## returnObj - logical, returns a created object if TRUE
@@ -345,7 +344,7 @@ createObj <- function(objList, overwrite=FALSE, returnObj=FALSE){
   ## Turn off locator bell
   options(locatorBell=FALSE)
   
-  ## Make a list of all rNMR objects if objList is not provided
+  ## Make a list of all digestR objects if objList is not provided
   if (missing(objList))
     objList <- c('currentSpectrum', 'defaultSettings', 'fileFolder',
                  'globalSettings', 'oldFolder', 'overlayList', 'pkgVar', 
@@ -385,9 +384,9 @@ createObj <- function(objList, overwrite=FALSE, returnObj=FALSE){
                  cex.roi.sub=1, overlay.text=TRUE, overlay.textSuppress = FALSE, autoBackup=TRUE, sdi=TRUE, update=TRUE, 
                  wd=path.expand('~'),
                  libLocs=gsub('\\', '/', system.file('Libraries/1H_13C_HSQC_pH7.4', 
-                                                     package='rNMR'), fixed=TRUE),
+                                                     package='digestR'), fixed=TRUE),
                  searchLibs=gsub('\\', '/', system.file('Libraries/1H_13C_HSQC_pH7.4', 
-                                                        package='rNMR'), fixed=TRUE), libUpdate=TRUE,
+                                                        package='digestR'), fixed=TRUE), libUpdate=TRUE,
                  plotAA = FALSE, scaleSNR = FALSE, processSpeciesID = '', processSingleFile = TRUE,
                  speciesList = c('Homo sapiens','Homo sapiens sickle', 'Plasmodium falciparum (3D7)', 'Pseudomonas aeruginosa 01', 
                                  'Pseudomonas aeruginosa 14', 'BosTaurus'), speciesFiles = c('chrHs.csv','sickle.csv', 'chr3D7.csv', 'pa01.csv', 'pa14.csv','chrBtaurus1.csv'),
@@ -416,7 +415,7 @@ createObj <- function(objList, overwrite=FALSE, returnObj=FALSE){
       #			}
       
       ## Read defaultSettings from file	
-      #			configFile <- file.path(path.expand('~'), '.rNMR')
+      #			configFile <- file.path(path.expand('~'), '.digestR')
       #			if (length(configFile) && file.exists(configFile))
       #			{
       #				defSet <- readDef(configFile)
@@ -463,8 +462,8 @@ createObj <- function(objList, overwrite=FALSE, returnObj=FALSE){
   ## Create pkgVar
   defPkg <- list()
   defPkg$prevDir <- defSet$wd
-  defPkg$version <- suppressWarnings(paste(packageDescription('rNMR', 
-                                                              fields='Version'), ' (',	packageDescription('rNMR', 
+  defPkg$version <- suppressWarnings(paste(packageDescription('digestR', 
+                                                              fields='Version'), ' (',	packageDescription('digestR', 
                                                                                                           fields='Date'), ')', sep=''))
   
   ## Create assignments
@@ -602,11 +601,11 @@ createObj <- function(objList, overwrite=FALSE, returnObj=FALSE){
   invisible()
 }
 
-## Patch for code compatibilty with older rNMR workspaces
+## Patch for code compatibilty with older digestR workspaces
 ## delete - logical, deletes old objects if TRUE
 patch <- function(delete=TRUE){
   
-  ## Do not apply the patch if rNMR version is up to date
+  ## Do not apply the patch if digestR version is up to date
   if (exists('pkgVar') && identical(pkgVar, createObj('pkgVar', 
                                                       returnObj=TRUE)$version))
     return(invisible())
@@ -676,7 +675,7 @@ patch <- function(delete=TRUE){
     myAssign("fileFolder", fileFolder, save.backup = FALSE )
   }
   
-  ## Rename rNMR objects
+  ## Rename digestR objects
   if(exists('roi.table') && (!exists('roiTable') || (exists('roiTable') && 
                                                      is.null(roiTable))))
     myAssign("roiTable", roi.table, save.backup=FALSE)
@@ -697,7 +696,7 @@ patch <- function(delete=TRUE){
     myAssign('pkgVar', pkgVar)
   }
   
-  ## Create any missing rNMR objects
+  ## Create any missing digestR objects
   createObj()
   
   ## Update roiTable format
@@ -793,7 +792,7 @@ patch <- function(delete=TRUE){
 
 ################################################################################
 ##                                                                            ##
-##     Internal functions for showing, hiding and working with rNMR GUIs      ##
+##     Internal functions for showing, hiding and working with digestR GUIs      ##
 ##                                                                            ##
 ################################################################################
 
@@ -802,25 +801,25 @@ tclCheck <- function(){
   
   ##load tcltk package
   tryCatch(suppressMessages(library(tcltk)), error=function(er)
-    stop("rNMR requires Tcl/Tk version 8.5 or greater", call.=FALSE))
+    stop("digestR requires Tcl/Tk version 8.5 or greater", call.=FALSE))
   
   ##make sure tcl 8.5 or later is installed
   tclVers <- as.numeric(tcl("info", "tclversion"))
   if (tclVers < 8.5)
-    stop("rNMR requires Tcl/Tk version 8.5 or greater", call.=FALSE)
+    stop("digestR requires Tcl/Tk version 8.5 or greater", call.=FALSE)
 }
 
-## Internal function for creating tcl images from files included with rNMR
+## Internal function for creating tcl images from files included with digestR
 ## imageName - character string; the name for the tcl image to create
 ## path - character sting; path to the image file (GIF only) to use, must be 
-##	relative to the rNMR package directory
+##	relative to the digestR package directory
 createTclImage <- function(imageName, path=NULL){
   tclImages <- as.character(tcl('image', 'names'))
   if (imageName %in% tclImages)
     return(invisible())
   if (is.null(path))
     path <- paste(imageName, 'gif', sep='.')
-  imagePath <- system.file(path, package='rNMR')
+  imagePath <- system.file(path, package='digestR')
   if (!file.exists(imagePath))
     err(paste('Image file:', imagePath, 'does not exist.'))
   tcl('image', 'create', 'photo', imageName, '-file', imagePath)
@@ -1023,7 +1022,7 @@ gui <- function(top=NULL){
                    "DigestR:::myHelp('developers_guide/developers_guide', TRUE)")
     winMenuAddItem("Help", '--', "none")
     winMenuAddItem("Help", 'Homepage', 
-                   "browseURL('http://rnmr.nmrfam.wisc.edu')")
+                   "browseURL('http://digestR.nmrfam.wisc.edu')")
     winMenuAddItem("Help", 'Update DigestR', "DigestR:::updater()")
     winMenuAddItem("Help", 'About DigestR', "DigestR:::about()")
     
@@ -1046,7 +1045,7 @@ gui <- function(top=NULL){
     tkadd(fileMenu, 'command', label='Open/Clofo()se files', accelerator='fs()', 
           command=function() fs())
     
-    ##		tkadd(fileMenu, 'command', label='Convert to rNMR', accelerator='cf()',
+    ##		tkadd(fileMenu, 'command', label='Convert to digestR', accelerator='cf()',
     ##				command=function() cf())
     tkadd(fileMenu, 'separator') 
     ##		tkadd(fileMenu, 'command', label='Import', accelerator='import()',	
@@ -1140,7 +1139,7 @@ gui <- function(top=NULL){
     tkadd(helpMenu, 'command', label='Homepage', 
           command=function(...) browseURL('http://DigestR.nmrfam.wisc.edu'))
     tkadd(helpMenu, 'command', label='About DigestR',
-          command=function() rNMR:::about())
+          command=function() digestR:::about())
     tkadd(topMenu, 'cascade', label='Help', menu=helpMenu)
     
     tkfocus(top)
@@ -1261,7 +1260,7 @@ devGui <- function(dev){
                  "DigestR:::myHelp('developers_guide/developers_guide', TRUE)")
   winMenuAddItem(paste(devName, 'Help', sep='/'), '-', "none")
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'Homepage', 
-                 "browseURL('http://rnmr.nmrfam.wisc.edu')")
+                 "browseURL('http://digestR.nmrfam.wisc.edu')")
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'Update DigestR', 
                  "DigestR:::updater()")
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'About DigestR', 
@@ -1271,8 +1270,7 @@ devGui <- function(dev){
 ## TSB function 
 ## Toggle state of plotAA logical flag
 #########
-pAA <- function()
-{	
+pAA <- function(){	
   current <- wc()
   in.folder <- fileFolder
   
@@ -1391,7 +1389,7 @@ splashScreen <- function(){
 }
 #text(-.45, .2, 'r', col='#0065ca', cex=6.5, pos=3, offset=.5)
 #text(-.44, .2, 'r', col='red', cex=6, pos=3, offset=.6)
-## Displays rNMR package info
+## Displays digestR package info
 about <- function(){
   
   ##creates toplevel
@@ -1401,7 +1399,7 @@ about <- function(){
   tkwm.deiconify(dlg)
   tcl('wm', 'attributes', dlg, topmost=TRUE)
   
-  ##display rNMR package info
+  ##display digestR package info
   msg <- paste(' DigestR version', pkgVar$version, '\n',
                'Copyright (C) 2019 Travis Bingeman, Dimitri Desmonts de Lamache, Raied Aburashed, Ian A. Lewis and Seth C. Schommer\n')
   msgLabel <- ttklabel(dlg, text=msg)
@@ -1434,8 +1432,8 @@ about <- function(){
 
 ## Internal function for displaying HTML help pages
 ## page - character string; name of the help page to open
-## docDir - logical; searches the rNMR 'doc' directory for the HTML help file
-## 					 if TRUE, otherwise the default HTML directory for rNMR is used.
+## docDir - logical; searches the digestR 'doc' directory for the HTML help file
+## 					 if TRUE, otherwise the default HTML directory for digestR is used.
 myHelp <- function(page, docDir=FALSE){
   
   if (page == 'user_manual')
@@ -1446,7 +1444,7 @@ myHelp <- function(page, docDir=FALSE){
     fileDir <- system.file('doc', package='DigestR')
     msg <- 'Could not find specified help page.'
   }else{
-    fileDir <- system.file('html', package='rNMR')
+    fileDir <- system.file('html', package='digestR')
     msg <- paste('Could not find specified help page.\n', 
                  'Try entering "?function_name" in the R console.', sep='')
   }
@@ -1485,7 +1483,7 @@ ucsfHead <- function (file.name = NULL, print.info = TRUE){
   }
   if(fileType != "UCSF NMR"){
     close(con)
-    stop(paste('rNMR only accepts UCSF (sparky) format data.',
+    stop(paste('digestR only accepts UCSF (sparky) format data.',
                'Use cf() to convert spectra to the correct format.',
                'If you want to load an R workspace, use wl().', sep='\n'), 
          call.=FALSE)
@@ -1496,16 +1494,16 @@ ucsfHead <- function (file.name = NULL, print.info = TRUE){
   nDim <- readBin(con, size=1, what='integer') 
   if(nDim != 1 && nDim != 2 && nDim != 3){
     close(con)
-    stop('rNMR only supports 1D, 2D, and 3D sparky format data', call.=FALSE)
+    stop('digestR only supports 1D, 2D, and 3D sparky format data', call.=FALSE)
   }
   if(readBin(con, size = 1, what = 'integer') != 1){
     close(con)
-    stop('rNMR does not support complex data', call.=FALSE)
+    stop('digestR does not support complex data', call.=FALSE)
   }
   seek(con, where = 13, origin = "start")
   if(readBin(con, size=1, what='integer') != 2 ){ 
     close(con)
-    stop('rNMR only supports the current version of sparky formatting', 
+    stop('digestR only supports the current version of sparky formatting', 
          call.=FALSE)
   }
   
@@ -1722,7 +1720,7 @@ ucsfHead <- function (file.name = NULL, print.info = TRUE){
   if(print.info)
     print(data.frame(head[5:12]))
   
-  ## Modify upfield PPM for rNMR format 
+  ## Modify upfield PPM for digestR format 
   ## NOTE: Fourier transform shifts the observed center
   ##       frequency to the right in the frequency domain.
   ##       This small defect can cause problems when the number of points 
@@ -2400,7 +2398,7 @@ rsd2D <- function(file.name=NULL, w1Range=NULL, w2Range=NULL,
 
 ## Internal function ucsfTile
 ## Reads a single sparky tile from a binary connection and returns a data folder
-## file.par - rNMR file header for file to be read (output from ucsfHead)
+## file.par - digestR file header for file to be read (output from ucsfHead)
 ## con      - A seekable connection, if missing, a connection will be opened
 ##            to the path provided by file.par$file.name 
 ## tile     - The sparky tile to be read as a zero indexed integer
@@ -2662,7 +2660,7 @@ shiftToROI <- function(shiftList = NULL, w1Delta = 1, w2Delta = .05 ){
     else
       outTable$Name <- shiftList$Code	
     
-    ## Replace NA or "NA" with ROI names ("NA" is returned from rNMR peak lists)
+    ## Replace NA or "NA" with ROI names ("NA" is returned from digestR peak lists)
     outTable$Name[ which(outTable$Name == 'NA') ] <- NA
     if( any(is.na(outTable$Name)) )
       outTable$Name[ which( is.na(outTable$Name)) ] <- 
@@ -2694,7 +2692,7 @@ shiftToROI <- function(shiftList = NULL, w1Delta = 1, w2Delta = .05 ){
 ## Note: The w2Range option allows some flexibility over which portion of the 
 ##       spectrum is searched. However, if the referencing is really off, then
 ##       setting the w2Range argument may lead to some undesirable behavior.
-## Note: The chemical shift referencing in rNMR does not alter the original data.
+## Note: The chemical shift referencing in digestR does not alter the original data.
 ## Returns a referenced spectrum/spectra and refreshes the active plots
 autoRef <- function(fileNames = currentSpectrum, w2Range=NULL, 
                     w2Shift = 0, all1D = FALSE ){   
@@ -2702,7 +2700,7 @@ autoRef <- function(fileNames = currentSpectrum, w2Range=NULL,
   oneDs <- which(sapply(fileFolder[fileNames], function(x) 
     x$file.par$number_dimensions) == 1)
   if (length(oneDs) == 0)
-    err('No 1D files are open, rNMR can only auto reference 1D files')
+    err('No 1D files are open, digestR can only auto reference 1D files')
   specList <- fileNames[oneDs]
   if (length(oneDs) != length(specList))
     cat('\n', 'The following spectra could not be referenced because they ', 
@@ -4163,7 +4161,7 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
                     'elements'),	quote = FALSE)
     } 
     
-    ## Change rNMR graphics parameters
+    ## Change digestR graphics parameters
     if(!is.null(pos.color))
       current.gpar$pos.color <- pos.color
     if(!is.null(neg.color))
@@ -4319,7 +4317,7 @@ refresh <- function(main.plot = TRUE, overlay = TRUE, sub.plot = TRUE,
 
 ## Internal graphics function findTiles
 ## Finds 2D NMR sparky tiles above user defined noise threshold
-## in.folder  - rNMR spectral header file to be searched
+## in.folder  - digestR spectral header file to be searched
 ## internal - if TRUE, changes are made to in.folder and returned, rather than
 ##						fileFolder
 ## returns (invisible) an updated file folder list of tiles with viewable 
@@ -5950,7 +5948,7 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #' @export
 fo <- function(fileName, ...){
   
-  ## Create any/all of the rNMR objects that are missing
+  ## Create any/all of the digestR objects that are missing
   createObj()
   
   ## Have user select all files they wish to open
@@ -7718,7 +7716,7 @@ rpAll <- function( append = TRUE, ...){
 ##              will be taken from the closest data point in the spectrum;
 ##              when FALSE the intensity is taken from the closest data point
 ##              but chemical shifts will not be corrected to match the spectrum
-## Note: rNMR does not interpolate between data points. The default behavior
+## Note: digestR does not interpolate between data points. The default behavior
 ##       of this function is to allows users to specify any chemical shift, but 
 ##       the intensities of these locations are derived from the closest 
 ##       neighboring point. The most reliable method for finding the maximum
@@ -10665,7 +10663,7 @@ rv <- function(){
 ############################################################
 
 ## Import data from file
-## object - character string; name of rNMR object to import
+## object - character string; name of digestR object to import
 import <- function(object, parent=NULL){
   
   ## Have user select type of file to import
@@ -10882,7 +10880,7 @@ import <- function(object, parent=NULL){
 }
 
 ## Export a data table to tab delimited file
-## object - character string; name of rNMR object to export
+## object - character string; name of digestR object to export
 export <- function(object, parent=NULL){
   
   ## Have user select type of file to export
@@ -10920,7 +10918,7 @@ export <- function(object, parent=NULL){
   print(paste('The data were saved to: ', fileName), quote=FALSE)
 }
 
-## Extract data from rNMR objects
+## Extract data from digestR objects
 ## Returns selected object and prints a summary to the console
 ed <- function(){
   
@@ -10970,7 +10968,7 @@ ed <- function(){
 ## Load an R workspace
 ## fileName - character string, the file path for the workspace to load
 ## plot - logical, replots the currentSpectrum if TRUE
-## clearAll - logical, clears all previous objects if TRUE, otherwise only rNMR
+## clearAll - logical, clears all previous objects if TRUE, otherwise only digestR
 ##	          objects are cleared
 load <- wl <- function(fileName, plot=TRUE, clearAll=TRUE){
   
@@ -10984,12 +10982,12 @@ load <- wl <- function(fileName, plot=TRUE, clearAll=TRUE){
   tryCatch({if (clearAll)
     suppressWarnings(rm(list=ls(envir=.GlobalEnv), envir=.GlobalEnv))
     else{
-      rNMRob <- c('fileFolder', 'currentSpectrum', 'oldFolder', 'roiTable', 
+      digestRob <- c('fileFolder', 'currentSpectrum', 'oldFolder', 'roiTable', 
                   'roiSummary', 'pkgVar', 'globalSettings', 'overlayList')
-      suppressWarnings(rm(rNMRob, envir=.GlobalEnv))
+      suppressWarnings(rm(digestRob, envir=.GlobalEnv))
     }
     suppressWarnings(base::load(file=fileName, envir=.GlobalEnv))
-    rNMR:::patch()
+    digestR:::patch()
     gui()
     if (exists('fileFolder') && !is.null(fileFolder) && plot)
       dd()
@@ -11022,7 +11020,7 @@ ws <- function(fileName){
 
 ## Restore an R workspace
 rb <- function(){
-  backupFile <- file.path(path.expand('~'), '.rNMRbackup')
+  backupFile <- file.path(path.expand('~'), '.digestRbackup')
   if (!file.exists(backupFile))
     return('No backup to restore, load cancelled.')
   tryCatch(wl(backupFile), error=function(er) 
@@ -11031,7 +11029,7 @@ rb <- function(){
 
 ############################################################
 #                                                          #
-#      General rNMR fileFolder object utility functions    #
+#      General digestR fileFolder object utility functions    #
 #                                                          #
 ############################################################
 
@@ -11424,7 +11422,7 @@ mySelect <- function(list, preselect=NULL, multiple=FALSE, title=NULL,
 ## title - character string; title for the window
 ## entryWidth - positive integer; horizontal length of the entry widget
 ## parent - specifies a tktoplevel to be the parent window for the dialog 
-myDialog <- function(message='', default='', title='rNMR', entryWidth=20, 
+myDialog <- function(message='', default='', title='digestR', entryWidth=20, 
                      parent=NULL){
   
   ##creates main window
@@ -11682,16 +11680,16 @@ mySave <- function(defaultextension='', filetypes='', initialfile='',
 ## title - character string, the title for the dialog box
 ## parent - specifies a tktoplevel to be the parent window for the dialog 
 ## tk version of winDialog, tcl/tk manual for additional documentation
-myMsg <- function(message='', type='ok', icon='question', title='rNMR', 
+myMsg <- function(message='', type='ok', icon='question', title='digestR', 
                   parent=NULL){
   
   tclCheck()
   if (!is.null(parent))
     return(tclvalue(tkmessageBox(message=message, type=type, icon=icon, 
-                                 title='rNMR', parent=parent)))
+                                 title='digestR', parent=parent)))
   else
     return(tclvalue(tkmessageBox(message=message, type=type, icon=icon, 
-                                 title='rNMR')))
+                                 title='digestR')))
 }
 
 ## Internal utility function for returning errors, invokes stop and 
@@ -11730,7 +11728,7 @@ myFile <- function(fileName, open){
 ## title - character string, the title for the dialog box
 ## parent - specifies a tktoplevel to be the parent window for the dialog 
 buttonDlg <- function(message, buttons, checkBox=FALSE, default=buttons[1], 
-                      title='rNMR', parent=NULL){	
+                      title='digestR', parent=NULL){	
   
   ##creates dialog window
   if (is.null(parent))
@@ -11920,7 +11918,7 @@ sdiCheck <- function(dispMsg=TRUE){
   
   ## Warns user about running R in MDI mode
   if (mdiMode){
-    usr <- buttonDlg(paste('R is currently running in MDI mode.  For rNMR, we',
+    usr <- buttonDlg(paste('R is currently running in MDI mode.  For digestR, we',
                            ' suggest\nconfiguring R to display windows separately (SDI mode).',
                            '\n\nWould you like to switch to SDI mode?', sep=''), 
                      buttons=c('Yes', 'No', 'Don\'t display this message again'), TRUE, 
@@ -16365,7 +16363,7 @@ fs <- function(){
 ## errMsgs - character vector; error messages to display if a function in colVer
 ##	returns FALSE, should be the same length as as the number of columns.  If 
 ##	NULL, no error messages are displayed
-tableEdit <- function(data, editable=rep(TRUE, ncol(data)),	title='rNMR', 
+tableEdit <- function(data, editable=rep(TRUE, ncol(data)),	title='digestR', 
                       colVer=NULL, errMsgs=rep(paste('Data type for new entry must',  
                                                      'match the data type for a given column.'), ncol(data))){
   
@@ -16801,7 +16799,7 @@ ep <- function(dispPane=0){
   #####create widgets for genFrame
   ##create a label with instructions
   genLabel <- ttklabel(genFrame, wraplength=350, text=paste('The following', 
-                                                            'settings will be applied when the rNMR package is loaded.  Press', 
+                                                            'settings will be applied when the digestR package is loaded.  Press', 
                                                             'the "?" button for more information on each setting.'))
   
   ##create window dimension settings frame
@@ -16843,12 +16841,12 @@ ep <- function(dispPane=0){
   checkFrame <- ttkframe(genFrame)
   sdiVar <- tclVar(as.character(newDef$sdi))
   sdiButton <- ttkcheckbutton(checkFrame, onvalue='TRUE', offvalue='FALSE', 
-                              variable=sdiVar, text=paste(' Run rNMR using\n separate windows'))
+                              variable=sdiVar, text=paste(' Run digestR using\n separate windows'))
   
   ##create update checkbox
   updateVar <- tclVar(as.character(newDef$update))
   updateButton <- ttkcheckbutton(checkFrame, onvalue='TRUE', offvalue='FALSE', 
-                                 variable=updateVar, text=' Check for updates\n when rNMR loads')
+                                 variable=updateVar, text=' Check for updates\n when digestR loads')
   
   ##create auto backup checkbox
   backupVar <- tclVar(as.character(newDef$autoBackup))
@@ -18009,7 +18007,7 @@ ep <- function(dispPane=0){
 ##	are included in the header for the output file.
 ## cor - logical; if TRUE, the correction factor applied to the upfield
 ##	chemical shift, center chemical shift, and sweep width when the UCSF file 
-##	was orignally read by rNMR will be negated when the new UCSF file is output.
+##	was orignally read by digestR will be negated when the new UCSF file is output.
 ##	In this case, the up and downfield chemical shifts must be provided.  This 
 ##	adjustment will not be applied to the upfield and downfield shifts 
 ##	themselves, but will be used in calculating the sweep width and center.
@@ -18067,7 +18065,7 @@ writeUcsf <- function(outPath, np, nuc, sf, sw, center, upShift, downShift,
     }
   }
   
-  ## Negate correction factor originally applied by rNMR
+  ## Negate correction factor originally applied by digestR
   if (cor){
     cor <- ((downShift - upShift) / (np - 1))	* -(np %% 2 - 1)
     uf <- upShift - cor
@@ -18672,7 +18670,7 @@ bruker2D <- function(inFile, outFile, nuc1, sfo1, bytordp, nc_proc, offset, sf,
 ## inFile - full directory path to the NMRPipe processed data file
 ## outFile - full directory path for the newly created sparky format file
 ## drift - logical; 1D data is corrected for drift if TRUE
-pipe2rnmr <- function(inFile, outFile, drift=FALSE){
+pipe2digestR <- function(inFile, outFile, drift=FALSE){
   
   if (missing(inFile))
     stop('The inFile file path is required')	
@@ -18710,7 +18708,7 @@ pipe2rnmr <- function(inFile, outFile, drift=FALSE){
   ## Check for real data
   if (header[107] != 1){
     close(readCon)
-    stop(paste('Can not convert "', inFile, '",\n  rNMR can only convert real',
+    stop(paste('Can not convert "', inFile, '",\n  digestR can only convert real',
                ' Fourier transformed data.', sep=''))
   }
   
@@ -18722,7 +18720,7 @@ pipe2rnmr <- function(inFile, outFile, drift=FALSE){
     np <- c(header[100], header[220])
   else{
     close(readCon)
-    stop(paste('Can not convert "', inFile, '",\n  rNMR can only convert one', 
+    stop(paste('Can not convert "', inFile, '",\n  digestR can only convert one', 
                ' or two-dimensional data.'), sep='')
   }
   sw <- c(header[101], header[230])
@@ -18923,7 +18921,7 @@ parseProcpar <- function(procpar, params, idn='dn'){
     arrayDim <- sapply(varPar[matches + 1], function(x) x[2])
   }
   
-  ## Get rNMR pramaters if none are directly specified
+  ## Get digestR pramaters if none are directly specified
   nucLabel <- NULL
   rename <- FALSE
   if (missing(params)){
@@ -18938,7 +18936,7 @@ parseProcpar <- function(procpar, params, idn='dn'){
       ## Do not read files with more than 1 arrayed parameter
       if (sum(niVals > 1) != 1)
         stop(paste('Can not convert spectrum corresponding to:\n', procpar, 
-                   ',\n  rNMR can only read 1D and 2D data'), sep='')
+                   ',\n  digestR can only read 1D and 2D data'), sep='')
       
       ## Search procpar for indirect nucleus
       if (idn == 'dn'){
@@ -19092,7 +19090,7 @@ varian1D <- function(phasefile, outFile, tn, rfl, rfp, sfrq, sw, drift=FALSE){
   ## Check for real data
   if (status[13] != 00){
     close(readCon)
-    stop(paste('Can not convert "', phasefile, '",\n  rNMR can only convert', 
+    stop(paste('Can not convert "', phasefile, '",\n  digestR can only convert', 
                ' real Fourier transformed data.'), sep='')
   }
   
@@ -19126,13 +19124,13 @@ varian1D <- function(phasefile, outFile, tn, rfl, rfp, sfrq, sw, drift=FALSE){
     if (length(data) < np){
       close(readCon)
       stop(paste('Can not convert "', phasefile, '",\n phasefile size does not',
-                 ' match data size.\n', 'See the rNMR manual for details on ', 
+                 ' match data size.\n', 'See the digestR manual for details on ', 
                  'exporting data from Vnmr.\n', sep=''))
     }
     if (is.na(max(data))){
       close(readCon)
       stop(paste('Can not convert "', phasefile, '",\n Unable to read ',
-                 'processed data.\n', 'See the rNMR manual for details on ', 
+                 'processed data.\n', 'See the digestR manual for details on ', 
                  'exporting data from Vnmr.\n', sep=''))
     }
     data <- data * 1000000
@@ -19294,7 +19292,7 @@ varian2D <- function(phasefile, outFile, tn, rfl, rfp, sfrq, sw, idn,	idrfl,
   ## Check for real data
   if (status[13] != 00){
     close(readCon)
-    stop(paste('Can not convert "', phasefile, '",\n  rNMR can only convert', 
+    stop(paste('Can not convert "', phasefile, '",\n  digestR can only convert', 
                ' real Fourier transformed data.', sep=''))
   }	
   close(readCon)
@@ -19483,7 +19481,7 @@ varian2D <- function(phasefile, outFile, tn, rfl, rfp, sfrq, sw, idn,	idrfl,
 ## freq - magnetic field strength (MHz) in which the data was collected
 ## drift - logical; 1D data is corrected for drift if TRUE
 ## transpose - logical; data is transposed before conversion if TRUE (2Ds only)
-ascii2rnmr <- function(inFile, outFile, nuc, freq=NA, drift=FALSE, 
+ascii2digestR <- function(inFile, outFile, nuc, freq=NA, drift=FALSE, 
                        transpose=FALSE){
   
   ## Check arguments
@@ -19849,7 +19847,7 @@ ca <- function(){
         nuc <- dirNucs[i]
       else
         nuc <- c(dirNucs[i], indirNucs[i])
-      outMsg <- tryCatch({ascii2rnmr(inFiles[i], outNames[i], nuc, 
+      outMsg <- tryCatch({ascii2digestR(inFiles[i], outNames[i], nuc, 
                                      fieldStrengths[i], as.integer(tclvalue(drift)))
         convertedList <- c(convertedList, outNames[i])}, 
         error=function(er){
@@ -20198,7 +20196,7 @@ conFiles <- function(type, pathNames, pDataPaths, parent){
       ##check for correct data type
       if (procPar$FT_mod == 'no' || 
           nchar(unlist(strsplit(procPar$FT_mod, 'r'))) == 3){
-        cat('Can not convert "', pDataPaths[i], '",\n  rNMR can only ',
+        cat('Can not convert "', pDataPaths[i], '",\n  digestR can only ',
             'convert real Fourier transformed data.\n', sep='')
         errors <- TRUE
         next
@@ -20279,7 +20277,7 @@ conFiles <- function(type, pathNames, pDataPaths, parent){
       }
       
       ##convert the file
-      outMsg <- tryCatch({pipe2rnmr(pDataPaths[i], outNames[i],
+      outMsg <- tryCatch({pipe2digestR(pDataPaths[i], outNames[i],
                                     as.integer(tclvalue(drift)))
         convertedList <- c(convertedList, outNames[i])}, 
         error=function(er){
@@ -21008,42 +21006,42 @@ cf <- function(){
 
 ################################################################################
 ##                                                                            ##
-##     Internal functions that run when the rNMR package is loaded            ##
+##     Internal functions that run when the digestR package is loaded            ##
 ##                                                                            ##
 ################################################################################
 
-## Updates rNMR
+## Updates digestR
 updater <- function(auto=FALSE){
   
   ##display message
   if (auto){
     if (!defaultSettings$update)
       return(invisible())
-    cat('\nChecking rNMR for updates . . . ')
+    cat('\nChecking digestR for updates . . . ')
   }
   
   ##check for installed packages
   pkgs <- as.data.frame(installed.packages(), stringsAsFactors=FALSE)
-  rNMRpkgs <- pkgs[grep('rNMR', rownames(pkgs)), ]
-  rNMRpaths <- rNMRpkgs[, 'LibPath']
-  rNMRvers <- rNMRpkgs[, 'Version']
+  digestRpkgs <- pkgs[grep('digestR', rownames(pkgs)), ]
+  digestRpaths <- digestRpkgs[, 'LibPath']
+  digestRvers <- digestRpkgs[, 'Version']
   
   ##check for write permission
-  writeDirs <- which(file.access(rNMRpaths, mode=2) == 0)
+  writeDirs <- which(file.access(digestRpaths, mode=2) == 0)
   if (!length(writeDirs)){
     if (auto){
       cat('cancelled.\n  User does not have write permission.\n')
       return(invisible())
     }else
-      err(paste('Could not update rNMR.  You do not have write permission for ', 
-                'the rNMR package directory.\nTo update rNMR you must run R as ', 
+      err(paste('Could not update digestR.  You do not have write permission for ', 
+                'the digestR package directory.\nTo update digestR you must run R as ', 
                 'an administrator or change the write permissions for the ', 
-                'directory below.\n\n', 'rNMR library location:  ', 
-                rNMRpaths[writeDirs[1]], sep=''))
+                'directory below.\n\n', 'digestR library location:  ', 
+                digestRpaths[writeDirs[1]], sep=''))
   }
-  writeVers <- rNMRvers[writeDirs]
+  writeVers <- digestRvers[writeDirs]
   
-  ##check for the newest version of rNMR currently installed
+  ##check for the newest version of digestR currently installed
   currVers <- writeVers[1]
   if (length(writeDirs) > 1){
     for (i in 2:length(writeVers)){
@@ -21052,78 +21050,78 @@ updater <- function(auto=FALSE){
         currVers <- writeVers[i]
     }
   }
-  rNMRpath <- rNMRpaths[match(currVers, rNMRvers)]	
+  digestRpath <- digestRpaths[match(currVers, digestRvers)]	
   
   ##check if the package is up to date
   newVers <- suppressWarnings(available.packages(contriburl=contrib.url(repos=
-                                                                          'http://rnmr.nmrfam.wisc.edu/R/', type='source')))
+                                                                          'http://digestR.nmrfam.wisc.edu/R/', type='source')))
   if (is.null(newVers) || !length(newVers) || !nzchar(newVers)){
     if (auto){
-      cat('cancelled.\n  Could not access rNMR repository.\n')
+      cat('cancelled.\n  Could not access digestR repository.\n')
       return(invisible())
     }else
-      err(paste('Could not access rNMR repository.\n', 
+      err(paste('Could not access digestR repository.\n', 
                 'Check your network settings and try again.', sep=''))
   }
-  newVers <- newVers['rNMR', 'Version']
+  newVers <- newVers['digestR', 'Version']
   
-  ##download and install the latest rNMR package if update was selected manually
+  ##download and install the latest digestR package if update was selected manually
   if (!auto){
-    detach(package:rNMR)
-    tryCatch(install.packages('rNMR', lib=rNMRpath, 
-                              repos='http://rnmr.nmrfam.wisc.edu/R/', type='source'),
+    detach(package:digestR)
+    tryCatch(install.packages('digestR', lib=digestRpath, 
+                              repos='http://digestR.nmrfam.wisc.edu/R/', type='source'),
              error=function(er)
-               stop(paste('Could not update rNMR.\nGo to the rNMR homepage to ',
+               stop(paste('Could not update digestR.\nGo to the digestR homepage to ',
                           'download and manually install the latest version.', 
                           sep='')), call.=FALSE)
     
     ##check installation
-    tryCatch(require(rNMR, quietly=TRUE, warn.conflicts=FALSE), 	
+    tryCatch(require(digestR, quietly=TRUE, warn.conflicts=FALSE), 	
              error=function(er)
-               stop(paste('Could not update rNMR.\nGo to the rNMR homepage to ',
+               stop(paste('Could not update digestR.\nGo to the digestR homepage to ',
                           'download and manually install the latest version.', 
                           sep='')), call.=FALSE)
-    currVers <- suppressWarnings(packageDescription('rNMR', fields='Version', 
-                                                    lib.loc=rNMRpath))
+    currVers <- suppressWarnings(packageDescription('digestR', fields='Version', 
+                                                    lib.loc=digestRpath))
     if (currVers == newVers){
-      try(Sys.chmod(system.file('linux/rNMR.sh', package='rNMR'), mode = '555'), 
+      try(Sys.chmod(system.file('linux/digestR.sh', package='digestR'), mode = '555'), 
           silent=TRUE)
-      myMsg('rNMR update successful.  Restart R to apply the changes.   ', 
+      myMsg('digestR update successful.  Restart R to apply the changes.   ', 
             icon='info')
     }
     return(invisible())
   }
   
-  ##download and install rNMR if the current package is not up-to-date
+  ##download and install digestR if the current package is not up-to-date
   if (compareVersion(newVers, currVers) < 1){
     if (auto)
       cat('done.\n')
     return(invisible())
   }
-  usrSel <- myMsg(paste('rNMR version ', newVers, ' is now available.\n', 
+  usrSel <- myMsg(paste('digestR version ', newVers, ' is now available.\n', 
                         'Version ', pkgVar$version, ' is currently installed.\n', 
-                        'Would you like to update rNMR?', sep=''), type='yesno')
+                        'Would you like to update digestR?', sep=''), type='yesno')
   if (usrSel == 'no'){
     if (auto)
       cat('cancelled.\n')
     return(invisible())
   }
-  tryCatch(update.packages(repos='http://rnmr.nmrfam.wisc.edu/R/', ask=FALSE,
-                           type='source', lib.loc=rNMRpath),
+  tryCatch(update.packages(repos='http://digestR.nmrfam.wisc.edu/R/', ask=FALSE,
+                           type='source', lib.loc=digestRpath),
            error=function(er){ 
-             require(rNMR, quietly=TRUE, warn.conflicts=FALSE)
-             myMsg(paste('Could not update rNMR.\nGo to the ',
-                         'rNMR homepage to download and manually install the latest ', 
+             require(digestR, quietly=TRUE, warn.conflicts=FALSE)
+             myMsg(paste('Could not update digestR.\nGo to the ',
+                         'digestR homepage to download and manually install the latest ', 
                          'version.', sep=''), icon='error')
            })
   
   ##check installation
-  currVers <- suppressWarnings(packageDescription('rNMR', fields='Version', 
-                                                  lib.loc=rNMRpath))
+  currVers <- suppressWarnings(packageDescription('digestR', fields='Version', 
+                                                  lib.loc=digestRpath))
   if (currVers == newVers){
-    try(Sys.chmod(system.file('linux/rNMR.sh', package='rNMR'), mode = '555'), 
+    try(Sys.chmod(system.file('linux/digestR.sh', package='digestR'), mode = '555'), 
         silent=TRUE)
-    myMsg('rNMR update successful.  Please restart R to apply changes.', 
+    myMsg('digestR update successful.  Please restart R to apply changes.', 
           icon='info')
     q('no')
   }
@@ -21152,21 +21150,21 @@ updateLib <- function(auto=FALSE){
       return(invisible())
     }else
       err(paste('Could not update library.  You do not have write permission ', 
-                'for the rNMR package directory.\nTo update the standards ',
+                'for the digestR package directory.\nTo update the standards ',
                 'library you must run R as an administrator or change the write ',
                 'permissions for the directory below:', libDir, sep=''))
   }
   
   ##read remote library index file
-  libUrl <- 'http://rnmr.nmrfam.wisc.edu/pages/data/files/RSD_libraries'
+  libUrl <- 'http://digestR.nmrfam.wisc.edu/pages/data/files/RSD_libraries'
   remoteIndex <- try(read.table(file.path(libUrl, 'index.txt'), head=TRUE, 
                                 sep='\t', stringsAsFactors=FALSE), silent=TRUE)
   if (is.null(remoteIndex$Name)){
     if (auto){
-      cat('cancelled.\n  Could not access rNMR server.\n')
+      cat('cancelled.\n  Could not access digestR server.\n')
       return(invisible())
     }else
-      err(paste('Could not access rNMR server.\n', 
+      err(paste('Could not access digestR server.\n', 
                 'Check your network settings and try again.', sep=''))
   }
   remoteRsds <- file.path(remoteIndex$Library, remoteIndex$Name)
@@ -21198,7 +21196,7 @@ updateLib <- function(auto=FALSE){
   
   ##ask user if they would like to update library
   if (auto){
-    updateMsg <- paste('Updates are available for the rNMR standards library.', 
+    updateMsg <- paste('Updates are available for the digestR standards library.', 
                        'Would you like to download the updates now?\n', sep='\n')
     usrSel <- buttonDlg(updateMsg, c('Yes', 'No', 
                                      'Don\'t display this message again'), TRUE, default='No')
@@ -21257,7 +21255,7 @@ checkImage <- function(){
     dlg <- tktoplevel()
     tcl('wm', 'attributes', dlg, topmost=TRUE)
     tkwm.resizable(dlg, FALSE, FALSE)
-    tkwm.title(dlg, 'rNMR - WARNING')
+    tkwm.title(dlg, 'digestR - WARNING')
     tkfocus(dlg)
     tkwm.deiconify(dlg)
     
@@ -21333,30 +21331,30 @@ checkImage <- function(){
   return(invisible())
 }
 
-## Executes a set of tasks whenever the rNMR package loads
+## Executes a set of tasks whenever the digestR package loads
 .onLoad <- function(lib, pkg){
   
-  ## Create or update necessary rNMR objects
-  rNMR:::patch()
+  ## Create or update necessary digestR objects
+  digestR:::patch()
   
-  ## Exit if rNMR has not been installed
+  ## Exit if digestR has not been installed
   if (length(grep('apple', Sys.getenv('R_PLATFORM')))){
-    installDir <- tryCatch(find.package('rNMR', lib.loc='~'), 
+    installDir <- tryCatch(find.package('digestR', lib.loc='~'), 
                            error=function(er) return(NULL))
     if (is.null(installDir))
-      installDir <- tryCatch(dirname(find.package('rNMR')), 
+      installDir <- tryCatch(dirname(find.package('digestR')), 
                              error=function(er) return(NULL))
     if (is.null(installDir))
       return(invisible())
     defPath <- paste(installDir, '/defaultSettings', sep='')
     if (file.access(defPath) == -1){
-      rNMR:::writeDef(defPath)
+      digestR:::writeDef(defPath)
       return(invisible())
     }
   }
   
-  ## Autoload functions in rNMR namespace
-  rNMRfun <- c('aa', 'appendPeak', 'bringFocus', 'buttonDlg', 'ca', 'cl', 'cf', 
+  ## Autoload functions in digestR namespace
+  digestRfun <- c('aa', 'appendPeak', 'bringFocus', 'buttonDlg', 'ca', 'cl', 'cf', 
                'closeGui', 'co', 'ct', 'ctd', 'ctu', 'cw', 'da', 'dd', 'di', 'dp', 'dr', 
                'draw2D', 'drawPeptides', 'drf', 'ed', 'ep', 'err', 'export', 'fc', 'ff', 'fo', 
                'fs', 'getTitles', 'gui', 'hideGui', 'import', 'isNoise', 'loc', 
@@ -21372,10 +21370,10 @@ checkImage <- function(){
                'setWindow', 'shiftToROI', 'showGui', 'spin', 'sr', 'ss', 'tableEdit', 
                'tclCheck', 'ucsf1D', 'ucsf2D', 'ud', 'vp', 'vpd', 'vpu', 'vs', 'wc', 
                'wl', 'writeUcsf', 'ws', 'zc', 'zf', 'zi', 'zm', 'zo', 'zp', 'zz', 'rd', 'up', 'csp', 'pd', 'cs')
-  for (i in rNMRfun)
-    suppressPackageStartupMessages(autoload(i, 'rNMR', warn.conflicts=FALSE))
+  for (i in digestRfun)
+    suppressPackageStartupMessages(autoload(i, 'digestR', warn.conflicts=FALSE))
   
-  ## Set X11 options and display rNMR splash screen
+  ## Set X11 options and display digestR splash screen
   if (.Platform$OS == 'windows')
     dev.new(title='Main Plot Window', width=defaultSettings$size.main[1], 
             height=defaultSettings$size.main[2])
@@ -21385,7 +21383,7 @@ checkImage <- function(){
           height=defaultSettings$size.main[2])},
       error=function(er) cat('\nError:', er$message, '\n'))
   }
-  tryCatch(rNMR:::splashScreen(), error=function(er){
+  tryCatch(digestR:::splashScreen(), error=function(er){
     if (.Platform$OS != 'windows'){
       invisible(myMsg(paste('Your computer does not have the required ', 
                             'fonts to support fast X11 graphics in R.\n',
@@ -21405,7 +21403,7 @@ checkImage <- function(){
         X11(title='Main Plot Window', 
             width=defaultSettings$size.main[1], 
             height=defaultSettings$size.main[2])
-        rNMR:::splashScreen()},
+        digestR:::splashScreen()},
         error=function(er) cat('\nError:', er$message, '\n'))
     }
   })
@@ -21415,12 +21413,12 @@ checkImage <- function(){
   tclVer <- unlist(strsplit(tclVer, '.', fixed=TRUE))
   if (tclVer[1] < 8 || (tclVer[1] == 8 && tclVer[2] < 5) ||
       (tclVer[1] == 8 && tclVer[2] == 5 && tclVer[3] < 5)){
-    filePath <- system.file('tcltk/tkfbox.tcl', package='rNMR')
+    filePath <- system.file('tcltk/tkfbox.tcl', package='digestR')
     tcl('source', filePath)
   }
   
   ## Add the tablelist package to the Tcl search path and load the package
-  invisible(addTclPath(system.file('tcltk/tablelist', package='rNMR')))
+  invisible(addTclPath(system.file('tcltk/tablelist', package='digestR')))
   invisible(tclRequire('tablelist_tile'))
   if (.Platform$OS == 'windows')
     tcl('option', 'add', '*Tablelist*selectBackground', 'SystemHighlight')
@@ -21442,27 +21440,27 @@ checkImage <- function(){
         '-foreground', c('selected', 'SystemHighlightText'))
   }
   
-  ## Load rNMR and bring up the plot window when saved workspaces load
+  ## Load digestR and bring up the plot window when saved workspaces load
   .First <- function(){
     .First.sys()
-    require(rNMR, quietly=TRUE, warn.conflicts=FALSE)
+    require(digestR, quietly=TRUE, warn.conflicts=FALSE)
     setwd(path.expand('~'))
-    autoload('dd', 'rNMR')
+    autoload('dd', 'digestR')
     if (exists('fileFolder') && !is.null(fileFolder))
       dd()
-    rNMR:::createObj()
-    rNMR:::createTclImage('rNMRIcon', 'rNMR.gif')
+    digestR:::createObj()
+    digestR:::createTclImage('digestRIcon', system.file("extdata", "digestR.gif", package = "your-package"))
     tt <- tktoplevel()
-    tcl('wm', 'iconphoto', tt, '-default', 'rNMRIcon')
+    tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
     tkdestroy(tt)
     gui()
   }
   assign(".First", .First, inherits=FALSE, envir=.GlobalEnv)
   
-  ## Assign the rNMR icon to GUIs
-  createTclImage('rNMRIcon', 'rNMR.gif')
+  ## Assign the digestR icon to GUIs
+  createTclImage('digestRIcon', system.file("extdata", "digestR.gif", package = "your-package"))
   tt <- tktoplevel()
-  tcl('wm', 'iconphoto', tt, '-default', 'rNMRIcon')
+  tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
   
   ## Make sure Ttk widgets display the same color background as toplevels
   defBgColor <- as.character(tkcget(tt, '-background'))
@@ -21493,10 +21491,10 @@ checkImage <- function(){
   options(htmlhelp=TRUE, help_type='html', chmhelp=FALSE)
   
   ## Print message on package load
-  packageStartupMessage("rNMR version ", pkgVar$version, "\n", 
+  packageStartupMessage("digestR version ", pkgVar$version, "\n", 
                         "Copyright (C) 2015 Ian A. Lewis and Seth C. Schommer\n",
-                        "rNMR is free software and comes with ABSOLUTELY NO WARRANTY.\n",
-                        "rNMR may be modified and redistributed under certain conditions.\n",
+                        "digestR is free software and comes with ABSOLUTELY NO WARRANTY.\n",
+                        "digestR may be modified and redistributed under certain conditions.\n",
                         "Go to http://www.r-project.org/Licenses/GPL-3 for more details.\n\n", 
                         "Citation:\n",
                         "Lewis, I. A., Schommer, S. C., Markley, J. L.\n",
@@ -21506,17 +21504,17 @@ checkImage <- function(){
   if (.Platform$GUI == 'Rgui')
     sdiCheck()
   
-  ## Add rNMR to list of repositories and update package if applicable
-  if (is.na(match('rNMR', names(getOption('repos')))))
-    options(repos=c(getOption('repos'), rNMR='http://rnmr.nmrfam.wisc.edu/R'))
-  errMsg <- tryCatch(rNMR:::updater(TRUE), error=function(er) 
+  ## Add digestR to list of repositories and update package if applicable
+  if (is.na(match('digestR', names(getOption('repos')))))
+    options(repos=c(getOption('repos'), digestR='http://digestR.nmrfam.wisc.edu/R'))
+  errMsg <- tryCatch(digestR:::updater(TRUE), error=function(er) 
     return(er$message))
   if (!is.null(errMsg))
     packageStartupMessage('Non-fatal error occurred while checking for', 
                           ' updates:\n  "', errMsg, '"\n')
   
   ## Check for standards library updates
-  errMsg <- tryCatch(rNMR:::updateLib(TRUE), error=function(er) 
+  errMsg <- tryCatch(digestR:::updateLib(TRUE), error=function(er) 
     return(er$message))
   if (!is.null(errMsg))
     packageStartupMessage('Non-fatal error occurred while checking for ', 
@@ -21526,10 +21524,10 @@ checkImage <- function(){
   checkImage()
 }
 
-## Perform necessary actions from .onLoad when running rNMR from source code
-if (!'package:rNMR' %in% search() && !exists('fileFolder')){
+## Perform necessary actions from .onLoad when running digestR from source code
+if (!'package:digestR' %in% search() && !exists('fileFolder')){
   
-  ##assign rNMR objects
+  ##assign digestR objects
   tclCheck()
   patch(FALSE)
   
@@ -21570,12 +21568,12 @@ if (!'package:rNMR' %in% search() && !exists('fileFolder')){
   tclVer <- unlist(strsplit(tclVer, '.', fixed=TRUE))
   if (tclVer[1] < 8 || (tclVer[1] == 8 && tclVer[2] < 5) ||
       (tclVer[1] == 8 && tclVer[2] == 5 && tclVer[3] < 5)){
-    filePath <- system.file('tcltk/tkfbox.tcl', package='rNMR')
+    filePath <- system.file('tcltk/tkfbox.tcl', package='digestR')
     tcl('source', filePath)
   }
   
   ## Add the tablelist package to the Tcl search path and load the package
-  invisible(addTclPath(system.file('tcltk/tablelist', package='rNMR')))
+  invisible(addTclPath(system.file('tcltk/tablelist', package='digestR')))
   invisible(tclRequire('tablelist_tile'))
   if (.Platform$OS == 'windows')
     tcl('option', 'add', '*Tablelist*selectBackground', 'SystemHighlight')
@@ -21597,10 +21595,10 @@ if (!'package:rNMR' %in% search() && !exists('fileFolder')){
         '-foreground', c('selected', 'SystemHighlightText'))
   }
   
-  ## Assign the rNMR icon to GUIs
-  createTclImage('rNMRIcon', 'rNMR.gif')
+  ## Assign the digestR icon to GUIs
+  createTclImage('digestRIcon', system.file("extdata", "digestR.gif", package = "your-package"))
   tt <- tktoplevel()
-  tcl('wm', 'iconphoto', tt, '-default', 'rNMRIcon')
+  tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
   
   ## Make sure Ttk widgets display the same color background as toplevels
   defBgColor <- as.character(tkcget(tt, '-background'))
@@ -21631,10 +21629,10 @@ if (!'package:rNMR' %in% search() && !exists('fileFolder')){
   options(htmlhelp=TRUE, help_type='html', chmhelp=FALSE)
   
   ## Print message on package load
-  cat("\n", "rNMR version", pkgVar$version, "\n", 
+  cat("\n", "digestR version", pkgVar$version, "\n", 
       "Copyright (C) 2009 Ian A. Lewis and Seth C. Schommer\n",
-      "rNMR is free software and comes with ABSOLUTELY NO WARRANTY.\n",
-      "rNMR may be modified and redistributed under certain conditions.\n",
+      "digestR is free software and comes with ABSOLUTELY NO WARRANTY.\n",
+      "digestR may be modified and redistributed under certain conditions.\n",
       "Go to http://www.r-project.org/Licenses/GPL-3 for more details.\n\n", 
       "Citation:\n",
       "Lewis, I. A., Schommer, S. C., Markley, J. L.\n",
@@ -23695,7 +23693,7 @@ createRsd <- function(fileName=currentSpectrum, outPath, rois=roiTable){
 ## compID - character string; a unique identifier for the standard being added
 ##	to the library, defaults to the current date and time.
 ## strPath - character string; URL or file path for STAR file.  This argument
-##	should only (and must) be provided when adding a standard to one of rNMR's 
+##	should only (and must) be provided when adding a standard to one of digestR's 
 ##	default	libraries.
 addToLib <- function(libPath, inFolder, rois=roiTable, standName, compID, 
                      strPath=NULL){
@@ -24638,7 +24636,7 @@ parseStr <- function(inFile, frames='ALL'){
   return(strList)
 }
 
-## Read and return a peak list from an NMR-STAR file in rNMR format
+## Read and return a peak list from an NMR-STAR file in digestR format
 ## strFile - character string; full file path for NMR-STAR file
 ## exp - character string; the name of the desired experiment, must match one
 ##	of the experiment names in the NMR-STAR file
@@ -26097,7 +26095,7 @@ conBruk <- function(inDir, nDim, outFile){
   ##check for correct data type
   if (procPar$FT_mod == 'no' || 
       nchar(unlist(strsplit(procPar$FT_mod, 'r'))) == 3)
-    return(paste('Can not convert "', pDataPath, '",\n  rNMR can only ',
+    return(paste('Can not convert "', pDataPath, '",\n  digestR can only ',
                  'convert real Fourier transformed data.\n', sep=''))
   
   ##convert 1D spectra
@@ -26132,7 +26130,7 @@ conPipe <- function(inDir, outFile){
                                                                                       recursive=TRUE, full.names=TRUE, pattern=".ft2$"))))[1]
   
   ##convert the file
-  outMsg <- pipe2rnmr(pDataPath, outFile)
+  outMsg <- pipe2digestR(pDataPath, outFile)
   outMsg <- paste('Successfull conversion:\n', outMsg)
   
   return(outMsg)
