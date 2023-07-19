@@ -48,15 +48,19 @@ For each function, to test the GUI, call the function without any arguments. For
 
 
 
+---
+---
+---
+---
 
 
+## Notes
+
+### Call the GUI handler function to start the application
+
+    cs()
 
 
-
-# Call the GUI handler function to start the application
-#cs()
-
-################################################################################
 # rd <- function() {
 #   ## creates main window
 #   tclCheck()

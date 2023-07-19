@@ -50,3 +50,5 @@ l
 l
 git commit -am 'changed order of column names'
 git push 
+git commit -am 'readme updated'
+git push 
