@@ -16,6 +16,7 @@ Imports:
     ggridges,
     Rcpp,
     tcltk,
+    tcltk2,
     magrittr,
 Depends: 
     R (>= 3.5.0)
