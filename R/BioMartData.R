@@ -1,5 +1,5 @@
 library(magrittr)
-
+library(biomaRt)
 
 #' BioMartData R6 class
 #'

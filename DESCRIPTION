@@ -17,6 +17,5 @@ Imports:
     Rcpp,
     tcltk,
     magrittr,
-    tablelist_tile
 Depends: 
     R (>= 3.5.0)

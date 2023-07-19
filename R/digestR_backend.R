@@ -30,6 +30,10 @@
 ##                                                                            ##
 ################################################################################
 
+DIGESTR_GIF_PATH  <- normalizePath( system.file("extdata", package = "digestR") )
+#DIGESTR_GIF_PATH  <- system.file("extdata", package = "digestR")
+
+
 ## Assigns objects to the global environment and creates an undo point
 myAssign <- function(in.name = NULL, in.object, save.backup = TRUE){
   
@@ -955,9 +959,9 @@ gui <- function(top=NULL){
   
   if (.Platform$OS.type == 'windows' && .Platform$GUI == 'Rgui' && 
       is.null(top)){
-    if ("  DigestR -->  " %in% winMenuNames())
+    if ("  digestR -->  " %in% winMenuNames())
       return(invisible())
-    winMenuAdd("  DigestR -->  ")
+    winMenuAdd("  digestR -->  ")
     
     winMenuAdd("Manipulate csv")
     winMenuAddItem("Manipulate csv", 'Remove Duplicates    rd()', "rd()")
@@ -1015,16 +1019,16 @@ gui <- function(top=NULL){
     ##		winMenuAddItem("Tools", 'Extract data             ed()', "ed()")
     
     winMenuAdd("Help")
-    winMenuAddItem("Help", 'Help topics', "?DigestR")
+    winMenuAddItem("Help", 'Help topics', "?digestR")
     winMenuAddItem("Help", 'List functions', "?more")
-    winMenuAddItem("Help", 'User manual', "DigestR('user_manual', TRUE)")
+    winMenuAddItem("Help", 'User manual', "digestR('user_manual', TRUE)")
     winMenuAddItem("Help", 'Developer\'s guide', 
-                   "DigestR:::myHelp('developers_guide/developers_guide', TRUE)")
+                   "digestR:::myHelp('developers_guide/developers_guide', TRUE)")
     winMenuAddItem("Help", '--', "none")
     winMenuAddItem("Help", 'Homepage', 
                    "browseURL('http://digestR.nmrfam.wisc.edu')")
-    winMenuAddItem("Help", 'Update DigestR', "DigestR:::updater()")
-    winMenuAddItem("Help", 'About DigestR', "DigestR:::about()")
+    winMenuAddItem("Help", 'Update digestR', "digestR:::updater()")
+    winMenuAddItem("Help", 'About digestR', "digestR:::about()")
     
   }else{
     tclCheck()
@@ -1035,7 +1039,7 @@ gui <- function(top=NULL){
         top <- myToplevel('menu', width=285, height=1)
       if (is.null(top))
         return(invisible())
-      tkwm.title(top, 'DigestR Menu')
+      tkwm.title(top, 'digestR Menu')
       tcl('wm', 'attributes', top, topmost=TRUE)
     }
     topMenu <- tkmenu(top)
@@ -1127,18 +1131,18 @@ gui <- function(top=NULL){
     
     helpMenu <- tkmenu(topMenu, tearoff=FALSE)
     tkadd(helpMenu, 'command', label='Help topics',	
-          command=function(...) DigestR:::myHelp('DigestR-package'))
+          command=function(...) digestR:::myHelp('digestR-package'))
     tkadd(helpMenu, 'command', label='List functions', 
-          command=function(...) DigestR:::myHelp('more'))
-    tkadd(helpMenu, 'command', label='Update DigestR', 
-          command=function() DigestR:::updater())
+          command=function(...) digestR:::myHelp('more'))
+    tkadd(helpMenu, 'command', label='Update digestR', 
+          command=function() digestR:::updater())
     tkadd(helpMenu, 'command', label='User manual', 
-          command=function(...) DigestR:::myHelp('user_manual', TRUE))
+          command=function(...) digestR:::myHelp('user_manual', TRUE))
     tkadd(helpMenu, 'command', label='Developer\'s guide', command=function(...) 
-      DigestR:::myHelp('developers_guide/developers_guide', TRUE))
+      digestR:::myHelp('developers_guide/developers_guide', TRUE))
     tkadd(helpMenu, 'command', label='Homepage', 
-          command=function(...) browseURL('http://DigestR.nmrfam.wisc.edu'))
-    tkadd(helpMenu, 'command', label='About DigestR',
+          command=function(...) browseURL('http://digestR.nmrfam.wisc.edu'))
+    tkadd(helpMenu, 'command', label='About digestR',
           command=function() digestR:::about())
     tkadd(topMenu, 'cascade', label='Help', menu=helpMenu)
     
@@ -1158,10 +1162,10 @@ devGui <- function(dev){
   
   devName <- switch(dev, 'main'='$Graph2Main', 'sub'='$Graph3Main', 
                     'multi'='$Graph4Main', 'stats'='$Graph5Main')
-  if (paste(devName, "DigestR --> ", sep='/') %in% winMenuNames())
+  if (paste(devName, "digestR --> ", sep='/') %in% winMenuNames())
     return(invisible())
   
-  winMenuAdd(paste(devName, 'DigestR --> ', sep='/'))
+  winMenuAdd(paste(devName, 'digestR --> ', sep='/'))
   winMenuAdd(paste(devName, 'Manipulate csv', sep='/'))
   winMenuAddItem(paste(devName, 'Manipulate csv ', sep='/'), 
                  'Remove Duplicates    rd()', "rd()")
@@ -1252,19 +1256,19 @@ devGui <- function(dev){
   ##			'Extract data          ed()', "ed()")
   
   winMenuAdd(paste(devName, 'Help', sep='/'))
-  winMenuAddItem(paste(devName, 'Help', sep='/'), 'Help topics', "?Digestr")
+  winMenuAddItem(paste(devName, 'Help', sep='/'), 'Help topics', "?digestR")
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'List functions', "?more")
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'User manual', 
-                 "DigestR::myHelp('user_manual', TRUE)")
+                 "digestR::myHelp('user_manual', TRUE)")
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'Developer\'s guide', 
-                 "DigestR:::myHelp('developers_guide/developers_guide', TRUE)")
+                 "digestR:::myHelp('developers_guide/developers_guide', TRUE)")
   winMenuAddItem(paste(devName, 'Help', sep='/'), '-', "none")
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'Homepage', 
                  "browseURL('http://digestR.nmrfam.wisc.edu')")
-  winMenuAddItem(paste(devName, 'Help', sep='/'), 'Update DigestR', 
-                 "DigestR:::updater()")
-  winMenuAddItem(paste(devName, 'Help', sep='/'), 'About DigestR', 
-                 'DigestR:::about()')
+  winMenuAddItem(paste(devName, 'Help', sep='/'), 'Update digestR', 
+                 "digestR:::updater()")
+  winMenuAddItem(paste(devName, 'Help', sep='/'), 'About digestR', 
+                 'digestR:::about()')
 }
 #########
 ## TSB function 
@@ -1359,7 +1363,7 @@ popupGui <- function(dev){
   }
 }
 
-## Displays the DigestR splash screen
+## Displays the digestR splash screen
 splashScreen <- function(){
   par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
       cex.main=defaultSettings$cex.main, bg='black')
@@ -1394,13 +1398,13 @@ about <- function(){
   
   ##creates toplevel
   dlg <- tktoplevel()
-  tkwm.title(dlg, 'About DigestR')
+  tkwm.title(dlg, 'About digestR')
   tkwm.resizable(dlg, FALSE, FALSE)
   tkwm.deiconify(dlg)
   tcl('wm', 'attributes', dlg, topmost=TRUE)
   
   ##display digestR package info
-  msg <- paste(' DigestR version', pkgVar$version, '\n',
+  msg <- paste(' digestR version', pkgVar$version, '\n',
                'Copyright (C) 2019 Travis Bingeman, Dimitri Desmonts de Lamache, Raied Aburashed, Ian A. Lewis and Seth C. Schommer\n')
   msgLabel <- ttklabel(dlg, text=msg)
   
@@ -1441,7 +1445,7 @@ myHelp <- function(page, docDir=FALSE){
   else
     page <- paste(page, '.html', sep='', collapse='')
   if (docDir){
-    fileDir <- system.file('doc', package='DigestR')
+    fileDir <- system.file('doc', package='digestR')
     msg <- 'Could not find specified help page.'
   }else{
     fileDir <- system.file('html', package='digestR')
@@ -8062,7 +8066,7 @@ pe <- function(table){
   tkbind(tableList, '<<TablelistColumnSorted>>', onSort)
   
   ##create image for view button
-  createTclImage('view')
+  #createTclImage('view')
   
   ##create a tcl procedure that creates a view button
   tcl('proc', 'createButton', 'tbl row col w', paste('button $w -image', 
@@ -9855,7 +9859,7 @@ re <- function(table){
   tkbind(tableList, '<<TablelistColumnSorted>>', onSort)
   
   ##create image for view button
-  createTclImage('view')
+  #createTclImage('view')
   
   ##create a tcl procedure that creates a view button
   tcl('proc', 'createButton', 'tbl row col w', paste('button $w -image', 
@@ -20883,9 +20887,9 @@ cf <- function(){
                         yscrollcommand=function(...) tkset(yscr, ...))
   
   ##create images for files\directories
-  createTclImage('openFolder', 'tcltk/tablelist/demos/openFolder.gif')
-  createTclImage('clsdFolder', 'tcltk/tablelist/demos/clsdFolder.gif')
-  createTclImage('singleFile', 'tcltk/tablelist/demos/file.gif')
+  #createTclImage('openFolder', 'tcltk/tablelist/demos/openFolder.gif')
+  #createTclImage('clsdFolder', 'tcltk/tablelist/demos/clsdFolder.gif')
+  #createTclImage('singleFile', 'tcltk/tablelist/demos/file.gif')
   
   ##switch images when nodes are collapsed/expanded
   onCollapse <- function(tbl, row){
@@ -21333,7 +21337,15 @@ checkImage <- function(){
 
 ## Executes a set of tasks whenever the digestR package loads
 .onLoad <- function(lib, pkg){
-  
+
+  print('Loading digestR backend functions')
+  print(DIGESTR_GIF_PATH)
+  print('exists:')
+  print(file.exists(DIGESTR_GIF_PATH))
+  print('access:')
+  print(file.access(DIGESTR_GIF_PATH))
+
+
   ## Create or update necessary digestR objects
   digestR:::patch()
   
@@ -21346,11 +21358,13 @@ checkImage <- function(){
                              error=function(er) return(NULL))
     if (is.null(installDir))
       return(invisible())
+      
     defPath <- paste(installDir, '/defaultSettings', sep='')
     if (file.access(defPath) == -1){
       digestR:::writeDef(defPath)
       return(invisible())
     }
+
   }
   
   ## Autoload functions in digestR namespace
@@ -21449,18 +21463,18 @@ checkImage <- function(){
     if (exists('fileFolder') && !is.null(fileFolder))
       dd()
     digestR:::createObj()
-    digestR:::createTclImage('digestRIcon', system.file("extdata", "digestR.gif", package = "your-package"))
+    #digestR:::createTclImage('digestRIcon', DIGESTR_GIF_PATH)
     tt <- tktoplevel()
-    tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
+    #tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
     tkdestroy(tt)
-    gui()
+    #gui()
   }
   assign(".First", .First, inherits=FALSE, envir=.GlobalEnv)
   
-  ## Assign the digestR icon to GUIs
-  createTclImage('digestRIcon', system.file("extdata", "digestR.gif", package = "your-package"))
+  ## Assign the digestR icon to GUIs  
+  #createTclImage('digestRIcon', DIGESTR_GIF_PATH)
   tt <- tktoplevel()
-  tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
+  #tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
   
   ## Make sure Ttk widgets display the same color background as toplevels
   defBgColor <- as.character(tkcget(tt, '-background'))
@@ -21596,9 +21610,9 @@ if (!'package:digestR' %in% search() && !exists('fileFolder')){
   }
   
   ## Assign the digestR icon to GUIs
-  createTclImage('digestRIcon', system.file("extdata", "digestR.gif", package = "your-package"))
+  #createTclImage('digestRIcon', DIGESTR_GIF_PATH)
   tt <- tktoplevel()
-  tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
+  #tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
   
   ## Make sure Ttk widgets display the same color background as toplevels
   defBgColor <- as.character(tkcget(tt, '-background'))
@@ -22760,8 +22774,8 @@ aa <- function(){
     formatStatus(...))
   
   ##create images for the status column
-  createTclImage('checkmark')
-  createTclImage('redx')
+  #createTclImage('checkmark')
+  #createTclImage('redx')
   
   ##display status images in assignment table
   dispStatus <- function(){

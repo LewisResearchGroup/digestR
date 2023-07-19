@@ -6616,7 +6616,7 @@ rd <- function() {
   if (is.null(dlg))
     return(invisible())
   
-  tkwm.title(dlg, 'Prepare Mascot file for DigestR')
+  tkwm.title(dlg, 'Prepare Mascot file for digestR')
   tkfocus(dlg)
   tkwm.deiconify(dlg)
   
@@ -7221,7 +7221,7 @@ cs <- function() {
     return(invisible())
   
   # Read protease data from CSV
-  protCutSites <- read.csv('C:/Users/dimit/OneDrive/Bureau/DigestR/Proteasecutsiteslist.csv')
+  protCutSites <- read.csv('C:/Users/dimit/OneDrive/Bureau/digestR/Proteasecutsiteslist.csv')
   
   # Create the main window
   mainWindow <- tktoplevel()
@@ -7351,7 +7351,7 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
 #   ## creates main window
 #   tclCheck()
 #   dlg <- tktoplevel()
-#   tkwm.title(dlg, 'Prepare Mascot file for DigestR')
+#   tkwm.title(dlg, 'Prepare Mascot file for digestR')
 #   tkfocus(dlg)
 #   tkwm.deiconify(dlg)
 #   
@@ -7897,7 +7897,7 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
 # 
 # cs <- function() {
 #   # Read protease data from CSV
-#   protCutSites <- read.csv('C:/Users/dimit/OneDrive/Bureau/DigestR/Proteasecutsiteslist.csv')
+#   protCutSites <- read.csv('C:/Users/dimit/OneDrive/Bureau/digestR/Proteasecutsiteslist.csv')
 #   
 #   # Create the main window
 #   mainWindow <- tktoplevel()
