@@ -19,23 +19,29 @@
 	source('digestR_Code_Dimitri_final.R')
 	
 	
+
+	rm(list = ls())
+	devtools::load_all("C:\\Users\\soere\\workspace\\digestR")
+
+
+
 ## GUI Functions Documentation
 This document provides details of several Graphical User Interface (GUI) functions implemented in the R programming language using the Tcl/Tk toolkit.
 
 ### 1. Remove Duplicates Function
-The rd function creates a main GUI window, which provides an option to remove duplicate entries from a CSV file. This function first creates a "Remove Duplicates" button. When clicked, the button opens a file dialog for the user to choose a CSV file. After the file is selected, the removeDuplicates function is called to remove duplicate entries based on the 'pep_seq' column. The resulting file is then saved to a location specified by the user.
+The `rd()` function creates a main GUI window, which provides an option to remove duplicate entries from a CSV file. This function first creates a "Remove Duplicates" button. When clicked, the button opens a file dialog for the user to choose a CSV file. After the file is selected, the removeDuplicates function is called to remove duplicate entries based on the 'pep_seq' column. The resulting file is then saved to a location specified by the user.
 
 ### 2. Unique Peptides Function
-The up function creates a main GUI window, which provides options to select two CSV files (Query and Experimental) and find unique peptides in the Experimental file that are not present in the Query file. The function then writes the unique peptides to a CSV file named with the Experimental filename appended with "_Unique".
+The `up()` function creates a main GUI window, which provides options to select two CSV files (Query and Experimental) and find unique peptides in the Experimental file that are not present in the Query file. The function then writes the unique peptides to a CSV file named with the Experimental filename appended with "_Unique".
 
 ### 3. Density Plot Function
-The pd function creates a GUI that allows users to create density plots from grouped CSV files located in a specified directory. Users can choose from three types of plots: Overlay, Ridges, and Colored Ridges.
+The `pd()` function creates a GUI that allows users to create density plots from grouped CSV files located in a specified directory. Users can choose from three types of plots: Overlay, Ridges, and Colored Ridges.
 
 ### 4. Cut Sites Distribution
-The csp function creates a GUI that allows users to create bar plots from grouped CSV files located in a specified directory. Users can choose from three types of plots: Nter, Cter, and Combined.
+The `csp()` function creates a GUI that allows users to create bar plots from grouped CSV files located in a specified directory. Users can choose from three types of plots: Nter, Cter, and Combined.
 
 ### 5. Plotting Cut Sites Function
-The cs function creates a GUI window that allows users to select a protease from a dropdown menu and input a color for the lines in the plot. Upon clicking the "Plot" button, the function calls the plotCutSite function, passing the selected protease and color as arguments, to generate a plot of cut sites.
+The `cs()` function creates a GUI window that allows users to select a protease from a dropdown menu and input a color for the lines in the plot. Upon clicking the "Plot" button, the function calls the plotCutSite function, passing the selected protease and color as arguments, to generate a plot of cut sites.
 
 ### 6. Testing the Functions
 For each function, to test the GUI, call the function without any arguments. For example, to test the up function, simply call up().

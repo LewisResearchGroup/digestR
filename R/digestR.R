@@ -396,8 +396,20 @@ createObj <- function(objList, overwrite=FALSE, returnObj=FALSE){
                  searchLibs=gsub('\\', '/', system.file('Libraries/1H_13C_HSQC_pH7.4', 
                                                         package='digestR'), fixed=TRUE), libUpdate=TRUE,
                  plotAA = FALSE, scaleSNR = FALSE, processSpeciesID = '', processSingleFile = TRUE,
-                 speciesList = c('Homo sapiens','Homo sapiens sickle', 'Plasmodium falciparum (3D7)', 'Pseudomonas aeruginosa 01', 
-                                 'Pseudomonas aeruginosa 14', 'BosTaurus'), speciesFiles = c('chrHs.csv','sickle.csv', 'chr3D7.csv', 'pa01.csv', 'pa14.csv','chrBtaurus1.csv'),
+                 speciesList = c('Homo sapiens',
+                                 'Homo sapiens sickle', 
+                                 'Plasmodium falciparum (3D7)', 
+                                 'Pseudomonas aeruginosa 01', 
+                                 'Pseudomonas aeruginosa 14', 
+                                 'BosTaurus'
+                                 ), 
+                 speciesFiles = c('chrHs.csv', 
+                                  'sickle.csv', 
+                                  'chr3D7.csv', 
+                                  'pa01.csv', 
+                                  'pa14.csv',
+                                  'chrBtaurus1.csv'
+                                  ),
                  sd_noise_multiplier = 6, geneDisp = '', 
                  vectorType = data.frame(EndPoints = 'EndPoints', PepPoints = 'PepPoints', Mean = 'Mean', stringsAsFactors = FALSE),
                  plotStyle = data.frame(EndPoints = FALSE, Peptides = FALSE, Variance = FALSE, Accumulation = TRUE, stringsAsFactors = FALSE))  ##TSB##
@@ -6176,126 +6188,7 @@ ss <- function(...){
   
   ##Set new file as current spectrum and refresh the plots
   myAssign('currentSpectrum', names(fileFolder)[usrList])
-  refresh(multi.plot = FALSE, ...)
-  
-}
-
-## User graphics function ol
-## Overlay open spectra onto the current spectrum
-## askUser - Logical argument, TRUE opens the overlay GUI
-## offset    - Numeric argument expressing the % of total z range with which to 
-##            displace each spectrum. This is used to create stacked 1D spectra
-##            and is not passed to 2D plots
-## note: offset and vertical position (set by vp()) are not equivalent. 
-##      vp() resets the zero point of the plot without affecting the max of the 
-##      zlimit. Offset shifts a given plot up/down from the vp() specified zero.
-## ...  - Additional plotting options can be passed to drawPeptides and par()
-ol <- function(askUsr = TRUE, offset = NULL, ...)
-{
-  ### Define default overlay palletes
-  p4col <- c(rgb(215,48,39,maxColorValue=256), rgb(253,174,97,maxColorValue=256), rgb(171,217,233,maxColorValue=256), rgb(69,117,180,maxColorValue=256))
-  p6col <- c(rgb(215,48,39,maxColorValue=256), rgb(244,109,67,maxColorValue=256), rgb(253,174,97,maxColorValue=256), rgb(171,217,233,maxColorValue=256), rgb(116,173,209,maxColorValue=256), rgb(69,117,180,maxColorValue=256))
-  p8col <- c(rgb(165,0,38,maxColorValue=256), rgb(215,48,39,maxColorValue=256), rgb(244,109,67,maxColorValue=256), rgb(253,174,97,maxColorValue=256), rgb(171,217,233,maxColorValue=256), rgb(116,173,209,maxColorValue=256), rgb(69,117,180,maxColorValue=256), rgb(49,54,149,maxColorValue=256))
-  ###	
-  
-  ## Define current spectrum
-  current <- wc()
-  current.par <- fileFolder[[ current ]]$graphics.par
-  c.nDim <- fileFolder[[current]]$file.par$number_dimensions
-  
-  ## Open GUI for making overlay list
-  if(!exists('overlayList') )	
-    myAssign('overlayList', NULL )
-  
-  if(askUsr==TRUE || is.null(overlayList)){
-    os('ol')
-    return(invisible())
-  } 
-  
-  ## Fetch the offset parameter
-  if( is.null(offset) )
-    offset <- globalSettings$offset
-  
-  ## Remove the current spectrum from the overlay list
-  if(currentSpectrum %in% overlayList)
-    overlayList <- overlayList[-(which( overlayList == currentSpectrum))]
-  if(length(overlayList) == 0)
-    return(invisible())		
-  
-  ## Plot the overlay list
-  o.nDim <- NULL
-  
-  if(globalSettings$overlay.text && globalSettings$overlay.textSuppress && length(gregexpr('/', fileFolder[[current]]$file.par$user_title)[[1]]) > 0)
-  {
-    startIdx <- gregexpr('/', fileFolder[[wc()]]$file.par$user_title)[[1]][length(gregexpr('/', fileFolder[[wc()]]$file.par$user_title)[[1]])] + 1
-    plot.list <- substr(fileFolder[[wc()]]$file.par$user_title, startIdx, nchar(fileFolder[[wc()]]$file.par$user_title))
-    
-  }else
-    plot.list <- fileFolder[[current]]$file.par$user_title
-  
-  if(c.nDim > 1)
-    col.list <- current.par$pos.color
-  else
-    col.list <- current.par$proj.color	
-  newset <- offset
-  for(i in overlayList)
-  {
-    o.nDim <- fileFolder[[i]]$file.par$number_dimensions
-    
-    ## Overlay spectra on main plot 
-    if(o.nDim == c.nDim)
-    {
-      ## DIANA -> PLOT 1D
-      drawPeptides(fileFolder[[i]], type=current.par$type, add = TRUE, w1Range = current.par$usr[3:4], w2Range=current.par$usr[1:2], offset = newset, ...)	
-    }else if (o.nDim == 1 && c.nDim > 1)## shouldn't happen in DIANA
-    {
-      ## Read 1D file
-      in.folder <- fileFolder[[i]]
-      data.folder <- ucsf1D(fileFolder[[i]]$file.par$file.name)
-      
-      ## Setup plot range
-      in.folder$data <- data.folder$data
-      in.folder$w2 <- data.folder$w2	
-      newRange <- c(current.par$usr[1:2], min(data.folder$data), 
-                    max(data.folder$data))
-      in.folder$graphics.par$usr <- newRange
-      op <- par('usr')
-      par(usr=newRange)
-      
-      ## Plot 1D overlay
-      plot1D(in.folder, add=TRUE, offset=newset,
-             col=fileFolder[[i]]$graphics.par$proj.color, 
-             type=fileFolder[[i]]$graphics.par$type)
-      par(usr=op)
-    }
-    
-    ## Keep track of overlaid spectra
-    newset <- newset + offset
-    
-    if(globalSettings$overlay.text && globalSettings$overlay.textSuppress && length(gregexpr('/', fileFolder[[i]]$file.par$user_title)[[1]]) > 0)
-    {
-      startIdx <- gregexpr('/', fileFolder[[i]]$file.par$user_title)[[1]][length(gregexpr('/', fileFolder[[i]]$file.par$user_title)[[1]])] + 1
-      plot.list <- c(plot.list, substr(fileFolder[[i]]$file.par$user_title, startIdx, nchar(fileFolder[[i]]$file.par$user_title)))
-      
-    }else
-    {
-      plot.list <- c(plot.list, fileFolder[[i]]$file.par$user_title)
-    }
-    
-    if(o.nDim == 1)
-    {
-      col.list <- c(col.list, fileFolder[[i]]$graphics.par$proj.color)
-      
-    }else
-      col.list <- c(col.list, 
-                    fileFolder[[i]]$graphics.par$pos.color)		
-  }
-  
-  ## Add a legend if there are files other than the current spectrum
-  if( length(plot.list) > 1 && globalSettings$overlay.text)
-  {
-    legend("topleft", rev(plot.list), pch=NULL, bty='n', text.col = rev(col.list))
-  }
+  refresh(multi.plot = FALSE, ...)  
 }
 
 ## User edit function ud
@@ -6333,36 +6226,6 @@ ud <- function(){
   ## Save oldFolder to global environment 
   myAssign( "oldFolder", oldFolder, save.backup = FALSE) 
   refresh()  
-}
-
-## User edit function rd
-## Redo last action
-rd <- function(){
-  
-  if(!exists('oldFolder') || is.null(oldFolder$undo.index) ||  
-     oldFolder$undo.index >= length(oldFolder$fileFolder) ){
-    cat('Cannot redo \n')
-    return(invisible())
-  }
-  
-  ## Set undo index
-  oldFolder$undo.index <-  oldFolder$undo.index + 1
-  
-  ## Reset each of the global files
-  save.list <- names(oldFolder)
-  for(i in 1:length(save.list)){
-    if(!save.list[i] %in% c('undo.index', 'assign.index', 'zoom.list', 
-                            'zoom.history')){
-      out.file <- oldFolder[[i]][[oldFolder$undo.index]]
-      suppressWarnings( if(is.na( out.file[[1]][1] )) 	out.file <- NULL )   
-      myAssign( save.list[i], out.file, save.backup = FALSE)
-    }
-  }
-  
-  ## Save oldFolder to global environment 
-  myAssign( "oldFolder", oldFolder, save.backup = FALSE)
-  refresh()     
-  
 }
 
 ## Refreshes the main plot without changing settings 
@@ -21324,120 +21187,120 @@ checkImage <- function(){
   for (i in digestRfun)
     suppressPackageStartupMessages(autoload(i, 'digestR', warn.conflicts=FALSE))
   
-  ## Set X11 options and display digestR splash screen
-  if (.Platform$OS == 'windows')
-    dev.new(title='Main Plot Window', width=defaultSettings$size.main[1], 
-            height=defaultSettings$size.main[2])
-  else{
-    tryCatch({X11.options(type='Xlib')
-      X11(title='Main Plot Window', width=defaultSettings$size.main[1],
-          height=defaultSettings$size.main[2])},
-      error=function(er) cat('\nError:', er$message, '\n'))
-  }
-  tryCatch(digestR:::splashScreen(), error=function(er){
-    if (.Platform$OS != 'windows'){
-      invisible(myMsg(paste('Your computer does not have the required ', 
-                            'fonts to support fast X11 graphics in R.\n',
-                            'To correct this issue you may need to download some or', 
-                            ' all of the following X11 fonts:     \n\n', 
-                            '                              xorg-x11-fonts-75dpi\n',
-                            '                              xorg-x11-fonts-100dpi\n', 
-                            '                              xorg-x11-fonts-truetype\n',
-                            '                              xorg-x11-fonts-Type1\n\n', 
-                            'Please refer to the R Installation and Administration',
-                            ' Manual for more information:\n', 
-                            'http://cran.r-project.org/doc/manuals/R-admin.html#X11-',
-                            'issues', 
-                            sep=''), 'ok', 'info'))
-      dev.off()
-      tryCatch({X11.options(type='cairo')
-        X11(title='Main Plot Window', 
-            width=defaultSettings$size.main[1], 
-            height=defaultSettings$size.main[2])
-        digestR:::splashScreen()},
-        error=function(er) cat('\nError:', er$message, '\n'))
-    }
-  })
-  
-  ## Use a functional version of ::tk::dialog::file:: on older Linux systems
-  tclVer <- as.character(tcl('info', 'patchlevel'))
-  tclVer <- unlist(strsplit(tclVer, '.', fixed=TRUE))
-  if (tclVer[1] < 8 || (tclVer[1] == 8 && tclVer[2] < 5) ||
-      (tclVer[1] == 8 && tclVer[2] == 5 && tclVer[3] < 5)){
-    filePath <- system.file('tcltk/tkfbox.tcl', package='digestR')
-    tcl('source', filePath)
-  }
-  
-  ## Add the tablelist package to the Tcl search path and load the package
-  invisible(addTclPath(system.file('tcltk/tablelist', package='digestR')))
-  invisible(tclRequire('tablelist_tile'))
-  if (.Platform$OS == 'windows')
-    tcl('option', 'add', '*Tablelist*selectBackground', 'SystemHighlight')
-  tcl('option', 'add', '*Tablelist*stripeBackground', '#ececff')
-  
-  ## Correct problems with the "xpnative" theme for the treeview widget
-  if (.Platform$OS == 'windows'){
-    tcl('ttk::style', 'configure', 'Treeview', '-background', 'SystemWindow')
-    tcl('ttk::style', 'configure', 'Row', '-background', 'SystemWindow')
-    tcl('ttk::style', 'configure', 'Cell', '-background', 'SystemWindow')
-    tcl('ttk::style', 'map', 'Row', 
-        '-background', c('selected', 'SystemHighlight'), 
-        '-foreground', c('selected', 'SystemHighlightText'))
-    tcl('ttk::style', 'map', 'Cell', 
-        '-background', c('selected', 'SystemHighlight'), 
-        '-foreground', c('selected', 'SystemHighlightText'))
-    tcl('ttk::style', 'map', 'Item', 
-        '-background', c('selected', 'SystemHighlight'), 
-        '-foreground', c('selected', 'SystemHighlightText'))
-  }
-  
-  ## Load digestR and bring up the plot window when saved workspaces load
-  .First <- function(){
-    .First.sys()
-    require(digestR, quietly=TRUE, warn.conflicts=FALSE)
-    setwd(path.expand('~'))
-    autoload('dd', 'digestR')
-    if (exists('fileFolder') && !is.null(fileFolder))
-      dd()
-    digestR:::createObj()
-    #digestR:::createTclImage('digestRIcon', DIGESTR_GIF_PATH)
-    tt <- tktoplevel()
-    #tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
-    tkdestroy(tt)
-    #gui()
-  }
-  assign(".First", .First, inherits=FALSE, envir=.GlobalEnv)
-  
-  ## Assign the digestR icon to GUIs  
-  #createTclImage('digestRIcon', DIGESTR_GIF_PATH)
-  tt <- tktoplevel()
-  #tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
-  
-  ## Make sure Ttk widgets display the same color background as toplevels
-  defBgColor <- as.character(tkcget(tt, '-background'))
-  tkdestroy(tt)
-  tcl('ttk::style', 'configure', 'TRadiobutton', '-background', defBgColor)
-  tcl('ttk::style', 'map', 'TRadiobutton', '-background', c('disabled', 
-                                                            defBgColor))
-  tcl('ttk::style', 'configure', 'TCheckbutton', '-background', defBgColor)
-  tcl('ttk::style', 'map', 'TCheckbutton', '-background', c('disabled', 
-                                                            defBgColor))
-  tcl('ttk::style', 'configure', 'TSizegrip', '-background', defBgColor)
-  tcl('ttk::style', 'map', 'TSizegrip', '-background', c('disabled', 
-                                                         defBgColor))
-  tcl('ttk::style', 'configure', 'TLabel', '-background', defBgColor)
-  tcl('ttk::style', 'map', 'TLabel', '-background', c('disabled', 
-                                                      defBgColor))
-  tcl('ttk::style', 'configure', 'TNotebook', '-background', defBgColor)
-  tcl('ttk::style', 'map', 'TNotebook', '-background', c('disabled', 
-                                                         defBgColor))
-  tcl('ttk::style', 'configure', 'Treeview', '-background', 'white')
-  tcl('ttk::style', 'map', 'Treeview', '-background', c('disabled', 
-                                                        defBgColor))
-  tcl('ttk::style', 'configure', 'TFrame', '-background', defBgColor)
-  tcl('ttk::style', 'configure', 'TLabelframe', '-background', defBgColor)
-  gui()
-  
+  ### Set X11 options and display digestR splash screen
+  #if (.Platform$OS == 'windows')
+  #  dev.new(title='Main Plot Window', width=defaultSettings$size.main[1], 
+  #          height=defaultSettings$size.main[2])
+  #else{
+  #  tryCatch({X11.options(type='Xlib')
+  #    X11(title='Main Plot Window', width=defaultSettings$size.main[1],
+  #        height=defaultSettings$size.main[2])},
+  #    error=function(er) cat('\nError:', er$message, '\n'))
+  #}
+  #tryCatch(digestR:::splashScreen(), error=function(er){
+  #  if (.Platform$OS != 'windows'){
+  #    invisible(myMsg(paste('Your computer does not have the required ', 
+  #                          'fonts to support fast X11 graphics in R.\n',
+  #                          'To correct this issue you may need to download some or', 
+  #                          ' all of the following X11 fonts:     \n\n', 
+  #                          '                              xorg-x11-fonts-75dpi\n',
+  #                          '                              xorg-x11-fonts-100dpi\n', 
+  #                          '                              xorg-x11-fonts-truetype\n',
+  #                          '                              xorg-x11-fonts-Type1\n\n', 
+  #                          'Please refer to the R Installation and Administration',
+  #                          ' Manual for more information:\n', 
+  #                          'http://cran.r-project.org/doc/manuals/R-admin.html#X11-',
+  #                          'issues', 
+  #                          sep=''), 'ok', 'info'))
+  #    dev.off()
+  #    tryCatch({X11.options(type='cairo')
+  #      X11(title='Main Plot Window', 
+  #          width=defaultSettings$size.main[1], 
+  #          height=defaultSettings$size.main[2])
+  #      digestR:::splashScreen()},
+  #      error=function(er) cat('\nError:', er$message, '\n'))
+  #  }
+  #})
+  #
+  ### Use a functional version of ::tk::dialog::file:: on older Linux systems
+  #tclVer <- as.character(tcl('info', 'patchlevel'))
+  #tclVer <- unlist(strsplit(tclVer, '.', fixed=TRUE))
+  #if (tclVer[1] < 8 || (tclVer[1] == 8 && tclVer[2] < 5) ||
+  #    (tclVer[1] == 8 && tclVer[2] == 5 && tclVer[3] < 5)){
+  #  filePath <- system.file('tcltk/tkfbox.tcl', package='digestR')
+  #  tcl('source', filePath)
+  #}
+  #
+  ### Add the tablelist package to the Tcl search path and load the package
+  #invisible(addTclPath(system.file('tcltk/tablelist', package='digestR')))
+  #invisible(tclRequire('tablelist_tile'))
+  #if (.Platform$OS == 'windows')
+  #  tcl('option', 'add', '*Tablelist*selectBackground', 'SystemHighlight')
+  #tcl('option', 'add', '*Tablelist*stripeBackground', '#ececff')
+  #
+  ### Correct problems with the "xpnative" theme for the treeview widget
+  #if (.Platform$OS == 'windows'){
+  #  tcl('ttk::style', 'configure', 'Treeview', '-background', 'SystemWindow')
+  #  tcl('ttk::style', 'configure', 'Row', '-background', 'SystemWindow')
+  #  tcl('ttk::style', 'configure', 'Cell', '-background', 'SystemWindow')
+  #  tcl('ttk::style', 'map', 'Row', 
+  #      '-background', c('selected', 'SystemHighlight'), 
+  #      '-foreground', c('selected', 'SystemHighlightText'))
+  #  tcl('ttk::style', 'map', 'Cell', 
+  #      '-background', c('selected', 'SystemHighlight'), 
+  #      '-foreground', c('selected', 'SystemHighlightText'))
+  #  tcl('ttk::style', 'map', 'Item', 
+  #      '-background', c('selected', 'SystemHighlight'), 
+  #      '-foreground', c('selected', 'SystemHighlightText'))
+  #}
+  #
+  ### Load digestR and bring up the plot window when saved workspaces load
+  #.First <- function(){
+  #  .First.sys()
+  #  require(digestR, quietly=TRUE, warn.conflicts=FALSE)
+  #  setwd(path.expand('~'))
+  #  autoload('dd', 'digestR')
+  #  if (exists('fileFolder') && !is.null(fileFolder))
+  #    dd()
+  #  digestR:::createObj()
+  #  #digestR:::createTclImage('digestRIcon', DIGESTR_GIF_PATH)
+  #  tt <- tktoplevel()
+  #  #tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
+  #  tkdestroy(tt)
+  #  #gui()
+  #}
+  #assign(".First", .First, inherits=FALSE, envir=.GlobalEnv)
+  #
+  ### Assign the digestR icon to GUIs  
+  ##createTclImage('digestRIcon', DIGESTR_GIF_PATH)
+  #tt <- tktoplevel()
+  ##tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
+  #
+  ### Make sure Ttk widgets display the same color background as toplevels
+  #defBgColor <- as.character(tkcget(tt, '-background'))
+  #tkdestroy(tt)
+  #tcl('ttk::style', 'configure', 'TRadiobutton', '-background', defBgColor)
+  #tcl('ttk::style', 'map', 'TRadiobutton', '-background', c('disabled', 
+  #                                                          defBgColor))
+  #tcl('ttk::style', 'configure', 'TCheckbutton', '-background', defBgColor)
+  #tcl('ttk::style', 'map', 'TCheckbutton', '-background', c('disabled', 
+  #                                                          defBgColor))
+  #tcl('ttk::style', 'configure', 'TSizegrip', '-background', defBgColor)
+  #tcl('ttk::style', 'map', 'TSizegrip', '-background', c('disabled', 
+  #                                                       defBgColor))
+  #tcl('ttk::style', 'configure', 'TLabel', '-background', defBgColor)
+  #tcl('ttk::style', 'map', 'TLabel', '-background', c('disabled', 
+  #                                                    defBgColor))
+  #tcl('ttk::style', 'configure', 'TNotebook', '-background', defBgColor)
+  #tcl('ttk::style', 'map', 'TNotebook', '-background', c('disabled', 
+  #                                                       defBgColor))
+  #tcl('ttk::style', 'configure', 'Treeview', '-background', 'white')
+  #tcl('ttk::style', 'map', 'Treeview', '-background', c('disabled', 
+  #                                                      defBgColor))
+  #tcl('ttk::style', 'configure', 'TFrame', '-background', defBgColor)
+  #tcl('ttk::style', 'configure', 'TLabelframe', '-background', defBgColor)
+  #gui()
+  #
   ## Turn on HTML help
   options(htmlhelp=TRUE, help_type='html', chmhelp=FALSE)
   
@@ -26848,8 +26711,9 @@ loadSpecies <- function(fileName)
   )
 
   if( is.null(lSpecies)) {
-    print(paste0('Species file ', fileName, ' could not be loaded, using generic loading function.'))
-    lSpecies < - loadGenericGenes(fileName)
+    print(paste0('Species file ', fileName, ' no special function defined, using generic loading function.'))
+    lSpecies <- loadGenericGenes(fileName)
+    print('done')
   }
 
   return(lSpecies)
@@ -26857,7 +26721,7 @@ loadSpecies <- function(fileName)
 
 batchConvert <- function()
 {
-  print('batchConvert')
+
   ## load a species object based on the user choice made in processGUI
   lSpecies <- loadSpecies(globalSettings$speciesFiles[globalSettings$processSpeciesID])
   
@@ -26900,7 +26764,7 @@ batchConvert <- function()
       {
         for (j in 1:length(lFilesCSV))
         {
-          
+          print(lFilesCSV[j])
           result <- processFile(lFilesCSV[j], lSpecies)
           saveFileName <- strsplit(lFilesCSV[j], '.', fixed = TRUE)
           saveFileName <- paste(unlist(saveFileName[[1]][1:length(saveFileName[[1]])-1]), collapse='')
@@ -26919,8 +26783,6 @@ batchConvert <- function()
           }
         }
       }
-      #			endTime <- Sys.time()
-      #			print(endTime - startTime)
     }
   }
 }
@@ -28149,7 +28011,6 @@ pm <- function(species = globalSettings$speciesFiles)
   tkgrid(speciesBox, column=1, row=1, sticky='nswe')
   tkgrid(yscr, column=2, row=1, sticky='ns')
   tkgrid(xscr, column=1, row=2, sticky='we')
-  
   
   ##make fileFrame stretch when window is resized
   tkgrid.columnconfigure(dlg, 1, weight=1)
@@ -30547,9 +30408,8 @@ mapToAA <- function(lSpecies, lMatches)
 
 processFile <- function(fileName, species)
 {
-  msg <- paste0('Parsing Mascot file: ', fileName)
-  print(msg)
   flush.console()
+  print('Parsing mascot file.')
   resList <- parseMascot(fileName)
   
   if(is.null(resList))
@@ -30558,18 +30418,8 @@ processFile <- function(fileName, species)
     return(NULL)
   }else
   {
-    res <- alignAndScorePeptides(resList, species)
-    
-    if(is.numeric(res) && res == -1)
-    {
-      return(-1)
-    }else if(res$Gene == -1 && res$Matches == -1) ## no matches found
-    {
-      return(-2)
-    }else
-    {
-      return(res)
-    }
+    print("Align and score peptides.")
+    return(alignAndScorePeptides(resList, species))
   }
 }
 
@@ -30673,7 +30523,12 @@ alignAndScorePeptides <- function(resList, lSpecies)
   else
     result$Gene <- geneMap
   
-  
+  if (is.null(lMatches) & is.null(geneMap))
+  {
+    return -2
+  }
+
+
   if(!is.null(vEndPoints))
   {
     appended_vectors <- appended_vectors + 1
@@ -33727,3 +33582,4 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
   }
   return(invisible(prot))
 }
+
