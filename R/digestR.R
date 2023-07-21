@@ -37,6 +37,7 @@ library(ggplot2)
 library(ggridges)
 library(dplyr)
 
+source(system.file('R', "logger.R", package = "digestR"))
 
 ## Assigns objects to the global environment and creates an undo point
 myAssign <- function(in.name = NULL, in.object, save.backup = TRUE){
@@ -1676,7 +1677,7 @@ ucsfHead <- function (file.name = NULL, print.info = TRUE){
   
   ## Print useful file info if print.info = TRUE
   if(print.info)
-    print(data.frame(head[5:12]))
+    log_message(data.frame(head[5:12]))
   
   ## Modify upfield PPM for digestR format 
   ## NOTE: Fourier transform shifts the observed center
@@ -1798,7 +1799,7 @@ rsdHead <- function (file.name, print.info=TRUE){
   
   ## Print useful file info if print.info = TRUE
   if (print.info)
-    print(data.frame(head[5:9]))
+    log_message(data.frame(head[5:9]))
   
   return(list(file.par=head))
 }
@@ -2686,7 +2687,7 @@ autoRef <- function(fileNames = currentSpectrum, w2Range=NULL,
     w2DSS <- in.folder$w2[ w2DSS ][which.max(in.folder$data[ w2DSS ])]
     
     if( length(w2DSS) == 0 ){
-      print( paste( 'Auto referencing failed in:',
+      log_message( paste( 'Auto referencing failed in:',
                     basename(in.folder$file.par$file.name)), quote = FALSE )
       next()
     }
@@ -3891,86 +3892,86 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
     if(is.numeric(offset))
       globalSettings$offset <- offset
     else
-      print('offset must be a numeric value', quote = FALSE)		
+      log_message('offset must be a numeric value', quote = FALSE)		
   }
   if(!is.null(proj.mode)){
     if( is.logical(proj.mode))
       globalSettings$proj.mode <- proj.mode
     else
-      print('proj.mode must be either TRUE or FALSE', quote = FALSE)		
+      log_message('proj.mode must be either TRUE or FALSE', quote = FALSE)		
   }
   if(!is.null(proj.type)){
     if(proj.type %in% c('l', 'p', 'b'))
       globalSettings$proj.type <- proj.type
     else
-      print('proj.type must be either "l", "p", or "b"', quote = FALSE)			
+      log_message('proj.type must be either "l", "p", or "b"', quote = FALSE)			
   }
   if(!is.null(proj.direct)){
     if(proj.direct == 1 || proj.direct == 2 )
       globalSettings$proj.direct <- proj.direct
     else
-      print('proj.direct must be either 1 or 2', quote = FALSE)				
+      log_message('proj.direct must be either 1 or 2', quote = FALSE)				
   }
   if(!is.null(filter)){
     if(is.function(filter))
       globalSettings$filter <- filter
     else
-      print('filter must be a function', quote = FALSE)	
+      log_message('filter must be a function', quote = FALSE)	
   }
   if( !is.null(peak.disp) ){
     if(is.logical(peak.disp))
       globalSettings$peak.disp <- peak.disp
     else
-      print('peak.disp must be either TRUE or FALSE', quote = FALSE)		
+      log_message('peak.disp must be either TRUE or FALSE', quote = FALSE)		
   }
   if( !is.null(peak.noiseFilt) ){
     if( any(peak.noiseFilt == c(0, 1, 2)) )
       globalSettings$peak.noiseFilt <- peak.noiseFilt
     else
-      print('peak.noiseFilt must be 0, 1, or 2', quote = FALSE)			
+      log_message('peak.noiseFilt must be 0, 1, or 2', quote = FALSE)			
   }
   if (!is.null(peak.pch)){
     if (is.numeric(peak.pch) || nchar(peak.pch) == 1)
       globalSettings$peak.pch <- peak.pch
     else
-      print('peak.pch must be numeric or a single ASCII character', quote=FALSE)			
+      log_message('peak.pch must be numeric or a single ASCII character', quote=FALSE)			
   }
   if (!is.null(peak.cex)){
     if (is.numeric(peak.cex))
       globalSettings$peak.cex <- peak.cex
     else
-      print('peak.cex must be a numeric value', quote=FALSE)			
+      log_message('peak.cex must be a numeric value', quote=FALSE)			
   }
   if (!is.null(peak.labelPos)){
     if (peak.labelPos %in% c('top', 'bottom', 'left', 'right', 'center'))
       globalSettings$peak.labelPos <- peak.labelPos
     else
-      print(paste('peak.labelPos must be either "top", "bottom", "left",', 
+      log_message(paste('peak.labelPos must be either "top", "bottom", "left",', 
                   '"right", or "center"'), quote=FALSE)			
   }
   if( !is.null(thresh.1D) ){
     if(is.numeric(thresh.1D))
       globalSettings$thresh.1D <- thresh.1D
     else
-      print('thresh.1D must be a numeric value', quote = FALSE)			
+      log_message('thresh.1D must be a numeric value', quote = FALSE)			
   }
   if( !is.null(position.1D) ){
     if(is.numeric(position.1D))
       globalSettings$position.1D <- position.1D
     else
-      print('position.1D must be a numeric value', quote = FALSE)		
+      log_message('position.1D must be a numeric value', quote = FALSE)		
   }
   if( !is.null(roiMain)){
     if(is.logical(roiMain))
       globalSettings$roiMain <- roiMain
     else
-      print('roiMain must be either TRUE or FALSE', quote = FALSE)		
+      log_message('roiMain must be either TRUE or FALSE', quote = FALSE)		
   }
   if( !is.null(roiMax)){
     if(is.logical(roiMax))
       globalSettings$roiMax <- roiMax
     else
-      print('roiMax must be either TRUE or FALSE', quote = FALSE)			
+      log_message('roiMax must be either TRUE or FALSE', quote = FALSE)			
   }
   if(!is.null(roi.bcolor)){
     colErr <- TRUE
@@ -3985,7 +3986,7 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
     if (!colErr)
       globalSettings$roi.bcolor <- roi.bcolor
     else
-      print('ROI box color must be a vector of colors of length 2', 
+      log_message('ROI box color must be a vector of colors of length 2', 
             quote = FALSE)	
   }
   if(!is.null(roi.tcolor)){
@@ -4001,21 +4002,21 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
     if (!colErr)
       globalSettings$roi.tcolor <- roi.tcolor
     else
-      print('ROI text color must be a vector of colors of length 2', 
+      log_message('ROI text color must be a vector of colors of length 2', 
             quote = FALSE)	
   }
   if (!is.null(roi.lwd)){
     if (is.numeric(roi.lwd) && length(roi.lwd) == 2)
       globalSettings$roi.lwd <- roi.lwd
     else
-      print('roi.lwd must be a numeric vector of length 2', quote=FALSE)			
+      log_message('roi.lwd must be a numeric vector of length 2', quote=FALSE)			
   }
   if (!is.null(roi.lty)){
     if (roi.lty %in% c('solid', 'dashed', 'dotted', 'dotdash', 'longdash', 
                        'twodash', 'blank') && length(roi.lty) == 2)
       globalSettings$roi.lty <- roi.lty
     else
-      print(paste('roi.lty must be a vector of length 2. Valid options include', 
+      log_message(paste('roi.lty must be a vector of length 2. Valid options include', 
                   '"solid", "dashed", "dotted", "dotdash", "longdash", "twodash",',
                   'or "blank"'), quote=FALSE)			
   }
@@ -4023,52 +4024,52 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
     if (is.numeric(roi.cex) && length(roi.cex) == 2)
       globalSettings$roi.cex <- roi.cex
     else
-      print('roi.cex must be a numeric vector of length 2', quote=FALSE)			
+      log_message('roi.cex must be a numeric vector of length 2', quote=FALSE)			
   }
   if (!is.null(roi.labelPos)){
     if (roi.labelPos %in% c('top', 'bottom', 'left', 'right', 'center'))
       globalSettings$roi.labelPos <- roi.labelPos
     else
-      print(paste('roi.labelPos must be either "top", "bottom", "left",', 
+      log_message(paste('roi.labelPos must be either "top", "bottom", "left",', 
                   '"right", or "center"'), quote=FALSE)					
   }
   if (!is.null(roi.noiseFilt)){
     if (roi.noiseFilt %in% c(0, 1, 2))
       globalSettings$roi.noiseFilt <- roi.noiseFilt
     else
-      print('roi.noiseFilt must be 0, 1, or 2', quote = FALSE)			
+      log_message('roi.noiseFilt must be 0, 1, or 2', quote = FALSE)			
   }
   if (!is.null(roi.w1)){
     if (is.numeric(roi.w1))
       globalSettings$roi.w1 <- roi.w1
     else
-      print('roi.w1 must be a numeric value', quote=FALSE)			
+      log_message('roi.w1 must be a numeric value', quote=FALSE)			
   }
   if (!is.null(roi.w2)){
     if (is.numeric(roi.w2))
       globalSettings$roi.w2 <- roi.w2
     else
-      print('roi.w2 must be a numeric value', quote=FALSE)			
+      log_message('roi.w2 must be a numeric value', quote=FALSE)			
   }
   if (!is.null(roi.pad)){
     if (is.numeric(roi.pad))
       globalSettings$roi.pad <- roi.pad
     else
-      print('roi.pad must be a numeric value', quote=FALSE)			
+      log_message('roi.pad must be a numeric value', quote=FALSE)			
   }
   if(!is.null(overlay.text))
   {
     if( is.logical(overlay.text))
       globalSettings$overlay.text <- overlay.text
     else
-      print('overlay.text must be either TRUE or FALSE', quote = FALSE)		
+      log_message('overlay.text must be either TRUE or FALSE', quote = FALSE)		
   }
   if(!is.null(overlay.textSuppress))
   {
     if( is.logical(overlay.textSuppress))
       globalSettings$overlay.textSuppress <- overlay.textSuppress
     else
-      print('overlay.textSuppress must be either TRUE or FALSE', quote = FALSE)		
+      log_message('overlay.textSuppress must be either TRUE or FALSE', quote = FALSE)		
   }
   
   ## Assign global parameters
@@ -4111,11 +4112,11 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
       usr <- suppressWarnings(as.numeric(usr))
       if( !any(is.na(usr)) && length(usr) == 4){
         if( diff(usr[1:2]) == 0 || diff(usr[3:4]) == 0  )
-          print('The plot ranges must be greater than zero', quote = FALSE)
+          log_message('The plot ranges must be greater than zero', quote = FALSE)
         else
           current.gpar$usr <- usr
       }else
-        print(paste('The plot vector "usr" must be a numeric vector with four', 
+        log_message(paste('The plot vector "usr" must be a numeric vector with four', 
                     'elements'),	quote = FALSE)
     } 
     
@@ -4167,20 +4168,20 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
       if(is.numeric(theta))
         current.gpar$theta <- theta
       else
-        print('theta must be a numeric value', quote = FALSE)	
+        log_message('theta must be a numeric value', quote = FALSE)	
       
     }
     if(!is.null(phi)){
       if( is.numeric(phi) )
         current.gpar$phi <- phi 	
       else
-        print('phi must be a numeric value', quote = FALSE)	
+        log_message('phi must be a numeric value', quote = FALSE)	
     }                         
     if(!is.null(asp)){
       if( is.numeric(asp) )
         current.gpar$asp <- asp 	
       else
-        print('asp must be a numeric value', quote = FALSE)			
+        log_message('asp must be a numeric value', quote = FALSE)			
     }
     if(!is.null(peak.color))
       current.gpar$peak.color <- peak.color
@@ -4188,14 +4189,14 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
       if(is.logical(roi.multi) && length(roi.multi) == 1)
         current.gpar$roi.multi <- roi.multi
       else
-        print('roi.multi must be either TRUE or FALSE', quote = FALSE)				
+        log_message('roi.multi must be either TRUE or FALSE', quote = FALSE)				
     }
     
     ## Change file parameters
     if (!is.null(w1Range)){
       w1Range <- suppressWarnings(as.numeric(w1Range))
       if (any(is.na(w1Range)))
-        print('Chemical shift values must be numeric', quote = FALSE)
+        log_message('Chemical shift values must be numeric', quote = FALSE)
       else{
         if (nDim == 1)
           current.gpar$usr[3:4] <- sort(w1Range)
@@ -4206,7 +4207,7 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
     if (!is.null(w2Range)){
       w2Range <- suppressWarnings(as.numeric(w2Range))
       if (any(is.na(w2Range)))
-        print('Chemical shift values must be numeric', quote = FALSE)
+        log_message('Chemical shift values must be numeric', quote = FALSE)
       else
         current.gpar$usr[1:2] <- sort(w2Range)
     }
@@ -5520,7 +5521,7 @@ persp2D <- function (
   
   ## Redirect to contour/image plot if too much data is involved
   if((length(w1Tiles) + length(w2Tiles)) > 6 ){
-    print('Perspective plots need a small spectral window, use zi()', 
+    log_message('Perspective plots need a small spectral window, use zi()', 
           quote= FALSE)
     plot2D(in.folder = in.folder, w1Range = w1Range, w2Range = w2Range, 
            type = 'auto')
@@ -5619,7 +5620,7 @@ perspRsd <- function(in.folder=fileFolder[[wc()]],
   
   ## Redirect to contour/image plot if too much data is involved
   if (length(tiles) > 6){
-    print('Perspective plots need a small spectral window, use zi()', 
+    log_message('Perspective plots need a small spectral window, use zi()', 
           quote=FALSE)
     plotRsd2D(in.folder=in.folder, w1Range=w1Range, w2Range=w2Range, 
               type='auto')
@@ -5952,7 +5953,7 @@ fo <- function(fileName, ...){
     ## Make sure input files are of the correct format
     if( length(new.file$file.par) == 0 )
     {
-      print( paste('ERROR:', basename(usrList)[i], "is unreadable" ), 
+      log_message( paste('ERROR:', basename(usrList)[i], "is unreadable" ), 
              quote=FALSE)
       flush.console()
       next()			
@@ -6041,7 +6042,7 @@ fo <- function(fileName, ...){
       currentSpectrum <- userTitle
     
     ## Tell user which files have been loaded
-    print( basename(usrList)[i], quote = FALSE )
+    log_message( basename(usrList)[i], quote = FALSE )
     flush.console()
   }
   
@@ -6124,7 +6125,7 @@ fc <- function(usrList=NULL){
   if(length(fileFolder) == 0){
     fileFolder <- NULL
     redraw <- FALSE
-    print('The file folder is now empty', quote = FALSE )
+    log_message('The file folder is now empty', quote = FALSE )
     
     if(length(which(dev.list() == 2)) == 1){
       dev.set(which = 2)
@@ -6361,7 +6362,7 @@ vp <- function(position = NULL){
       position <- (position) / 2 * 100
     else
       position <- 100 - (1 / position) * 50 
-    print('Current vertical position:', quote = FALSE)
+    log_message('Current vertical position:', quote = FALSE)
     return(position)
   }
   
@@ -6533,7 +6534,7 @@ zp <- function(){
     myAssign("oldFolder", oldFolder, save.backup = FALSE)
     refresh(sub.plot = FALSE, multi.plot = FALSE)
   }else
-    print('Cannot zoom previous', quote=FALSE)
+    log_message('Cannot zoom previous', quote=FALSE)
 }
 
 ## User zoom function zi
@@ -7000,7 +7001,7 @@ delta <- function(){
     row.names(out) <- c('PPM', 'Hz')
     if( nDim == 1 )
       out[2,2] <- NA
-    print(out)
+    log_message(out)
     flush.console()
     i <- 1
   }
@@ -7086,11 +7087,11 @@ pjv <- function(){
   if (globalSettings$proj.mode){
     setGraphics(proj.mode=FALSE)
     refresh(multi.plot=FALSE, sub.plot=FALSE)
-    print('1D projection display off', quote=FALSE)
+    log_message('1D projection display off', quote=FALSE)
   }else{
     setGraphics(proj.mode=TRUE)
     refresh(multi.plot=FALSE, sub.plot=FALSE)
-    print('1D projection display on', quote=FALSE)
+    log_message('1D projection display on', quote=FALSE)
   }
 }
 
@@ -7311,7 +7312,7 @@ regionMax <- function( fileName=currentSpectrum, redraw=TRUE, noiseCheck=TRUE ){
 ##						names(fileFolder)
 ## append - logical; TRUE apppends new peaks to old list
 pm2 <- function(fileName=currentSpectrum, append = TRUE, ...){
-  print('pm() digestR_backend')
+  log_message('pm() digestR_backend')
   pReg(fileName = fileName, append = append, maxOnly = TRUE, ...)
 }
 
@@ -7552,7 +7553,7 @@ ph <- function( forcePoint = FALSE){
   hideGui()
   
   ## Have user select peaks
-  print('New peaks:', quote = FALSE)
+  log_message('New peaks:', quote = FALSE)
   outList <- NULL
   while( TRUE ){
     
@@ -7596,7 +7597,7 @@ ph <- function( forcePoint = FALSE){
                                                   fileFolder[[current]]$peak.list)
     
     ## Assign new peak list
-    print(nPeak[2:4], quote=FALSE)
+    log_message(nPeak[2:4], quote=FALSE)
     flush.console()
     outList <- unique (rbind( outList, nPeak ))
     myAssign("fileFolder", fileFolder, save.backup = FALSE)	
@@ -7633,7 +7634,7 @@ pv <- function(){
 pDel <- function(){
   current <- wc()
   if ( is.null(fileFolder[[current]]$peak.list) )
-    print('The current peak list is empty', quote=FALSE)
+    log_message('The current peak list is empty', quote=FALSE)
   else
     peakDel()	
 }
@@ -10725,7 +10726,7 @@ export <- function(object, parent=NULL){
                       'Peak list'=fileFolder[[current]]$peak.list)
   write.table(dataTable, file=fileName, quote=FALSE, sep='\t', row.names=FALSE, 
               col.names=TRUE)
-  print(paste('The data were saved to: ', fileName), quote=FALSE)
+  log_message(paste('The data were saved to: ', fileName), quote=FALSE)
 }
 
 ## Extract data from digestR objects
@@ -10834,7 +10835,7 @@ rb <- function(){
   if (!file.exists(backupFile))
     return('No backup to restore, load cancelled.')
   tryCatch(wl(backupFile), error=function(er) 
-    print('Unable to restore workspace.'))
+    log_message('Unable to restore workspace.'))
 }
 
 ############################################################
@@ -15341,7 +15342,7 @@ zm <- function(){
         stop('Shift not defined', call.=FALSE)
       }
       rownames(shift) <- NULL
-      print(shift)
+      log_message(shift)
     }else
       delta()
     tkfocus(dlg)
@@ -15844,7 +15845,7 @@ fs <- function(){
   tkfocus(dlg)
   tkwm.deiconify(dlg)
   
-  #	print('d')
+  #	log_message('d')
   flush.console()
   
   ##create tablelist widget
@@ -15863,14 +15864,14 @@ fs <- function(){
                         activestyle='underline', exportselection=FALSE, editselectedonly=TRUE, xscrollcommand=function(...) tkset(xscr, ...),
                         yscrollcommand=function(...) tkset(yscr, ...))
   
-  #	print('e')
+  #	log_message('e')
   flush.console()
   
   for (i in 0:3)
     tcl(tableList, 'columnconfigure', i, sortmode='dictionary')
   tcl(tableList, 'columnconfigure', 0, editable=TRUE)
   
-  #	print('f')
+  #	log_message('f')
   flush.console()	
   
   ##format the size column
@@ -15887,7 +15888,7 @@ fs <- function(){
   tcl(tableList, 'columnconfigure', 2, formatcommand=function(...) 
     formatSize(...))
   
-  #	print('g')
+  #	log_message('g')
   flush.console()	
   
   ##selects all rows Ctrl+A is pressed
@@ -15918,7 +15919,7 @@ fs <- function(){
     tcl(tableList, 'see', wc() - 1)
   }
   
-  #	print('h')
+  #	log_message('h')
   flush.console()	
   
   ##switches spectra on left-mouse double-click
@@ -21144,7 +21145,7 @@ checkImage <- function(){
 ## Executes a set of tasks whenever the digestR package loads
 .onLoad <- function(lib, pkg){
 
-  print('Loading digestR backend functions')
+  log_message('Loading digestR backend functions')
 
   ## Create or update necessary digestR objects
   digestR:::patch()
@@ -21969,7 +21970,7 @@ smoothDat <- function( inFolder, outPath, w2Rep=NULL, w1Rep=NULL,
       ## Exit function if smoothing is not necessary
       if (all(abs(currInt - defInt) / defInt < .02)) {
         if (!internal)
-          print('Spectrum is already at standard hash resolution')
+          log_message('Spectrum is already at standard hash resolution')
         if (returnType != 'folder')
           return(fp$file.name)
         else
@@ -23888,7 +23889,7 @@ cl <- function(){
     tkconfigure(dlg, cursor='watch')
     tryCatch(addToLib(libPath, standName=standName), error=function(er){
       tkconfigure(dlg, cursor='arrow')
-      print(er)
+      log_message(er)
       return(invisible())
     })
     
@@ -23950,7 +23951,7 @@ cl <- function(){
     tryCatch(addToLib(libPath, standName=standName), 
              error=function(er){
                tkconfigure(dlg, cursor='arrow')
-               print(er)
+               log_message(er)
                return(invisible())
              })
     
@@ -23975,7 +23976,7 @@ cl <- function(){
     tryCatch(rmFromLib(libPath), 
              error=function(er){
                tkconfigure(dlg, cursor='arrow')
-               print(er)
+               log_message(er)
                return(invisible())
              })
     onMouse()
@@ -24696,7 +24697,7 @@ ma <- function(){
       strPeaks <- getStrPeaks(strFile, expName)
       fileFolder[[currentSpectrum]]$peak.list <- strPeaks
       myAssign('fileFolder', fileFolder, save.backup=FALSE)
-    }, error=function(er) print(paste('Could not find STAR file/peak list.', 
+    }, error=function(er) log_message(paste('Could not find STAR file/peak list.', 
                                       'Make sure the URL and experiment name are valid.')))
     
     ##attempt to load existing ROI table
@@ -25007,7 +25008,7 @@ ma <- function(){
     missingPeaks <- which(!peakList$Index %in% assigned)
     if (length(missingPeaks)){
       cat('\nThe following peaks were not assigned:\n  ')
-      print(peakList[missingPeaks, ])
+      log_message(peakList[missingPeaks, ])
     }else
       cat('\nAll NMR-STAR peaks assigned.\n')
     tkconfigure(saveButton, state='normal')
@@ -25243,7 +25244,7 @@ ma <- function(){
         stop('Shift not defined', call.=FALSE)
       }
       rownames(shift) <- NULL
-      print(shift)
+      log_message(shift)
     }else
       delta()
     tkfocus(zmFrame)
@@ -26117,7 +26118,7 @@ createLib <- function(sourceDir, roiRec, outDir){
     
     ##create RSD file
     createRsd(inFile, outFile, currRois)
-    print(outFile)
+    log_message(outFile)
     flush.console()
   }
   
@@ -26212,7 +26213,7 @@ saveMeta <- function(exp='HSQC'){
   for (id in ids){
     rowNum <- match(id, expRec$Entry_ID)
     if (is.na(rowNum)){
-      print(paste(id, 'not present in file'))
+      log_message(paste(id, 'not present in file'))
       next
     }
     metadata <- rbind(metadata, expRec[rowNum, colNames])
@@ -26464,8 +26465,8 @@ drawAndLabelGenes <- function(in.folder, axisRange, span, labels, xlty)
 {
   first <- axisRange[1]
   last <- axisRange[2]
-  print('span')
-  print(span)
+  log_message('span')
+  log_message(span)
   
   xBounds <- c(span$x1[1], span$x2)
   
@@ -26711,9 +26712,9 @@ loadSpecies <- function(fileName)
   )
 
   if( is.null(lSpecies)) {
-    print(paste0('Species file ', fileName, ' no special function defined, using generic loading function.'))
+    log_message(paste0('Species file ', fileName, ' no special function defined, using generic loading function.'))
     lSpecies <- loadGenericGenes(fileName)
-    print('done')
+    log_message('done')
   }
 
   return(lSpecies)
@@ -26725,7 +26726,7 @@ batchConvert <- function()
   ## load a species object based on the user choice made in processGUI
   lSpecies <- loadSpecies(globalSettings$speciesFiles[globalSettings$processSpeciesID])
   
-  print('Loaded species file')
+  log_message('Loaded species file')
 
   if(is.null(lSpecies))
   {
@@ -26764,7 +26765,7 @@ batchConvert <- function()
       {
         for (j in 1:length(lFilesCSV))
         {
-          print(lFilesCSV[j])
+          log_message(lFilesCSV[j])
           result <- processFile(lFilesCSV[j], lSpecies)
           saveFileName <- strsplit(lFilesCSV[j], '.', fixed = TRUE)
           saveFileName <- paste(unlist(saveFileName[[1]][1:length(saveFileName[[1]])-1]), collapse='')
@@ -26773,13 +26774,13 @@ batchConvert <- function()
           if(is.numeric(result))
           {
             if(result == -1)
-              print(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
+              log_message(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
             else
-              print(paste0('No matches found, ', saveFileName, " could not be generated."))	
+              log_message(paste0('No matches found, ', saveFileName, " could not be generated."))	
           }else
           {
             sName <- writeDIANA(saveFileName, lSpecies, result) 
-            print(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))
+            log_message(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))
           }
         }
       }
@@ -27095,10 +27096,10 @@ prepGenomePlot <- function(w2Range, lSpecies, mapData, noise_est = -1)
     ## invalid indices...
     
   }
-  #print(firstGeneIndex)
-  #print(lastGeneIndex)	
+  #log_message(firstGeneIndex)
+  #log_message(lastGeneIndex)	
   geneNames = lSpecies$genes$name[firstGeneIndex:lastGeneIndex]
-  #print(geneNames)
+  #log_message(geneNames)
   chromData <- getChromPosition(lSpecies, firstGeneIndex, lastGeneIndex)
   
   chromDetails <- data.frame( chromName = chromData$name,
@@ -27383,7 +27384,7 @@ drawPeptides <- function ( in.folder = fileFolder[[wc()]], w1Range, w2Range,
       plotGenes( in.folder = in.folder, xlab = xlab, ylab = ylab, 
                  main = main, add = add, axes = axes, 
                  offset = offset, ...)
-      #		print("manually call plot1D")
+      #		log_message("manually call plot1D")
     }
     
   }
@@ -27443,7 +27444,7 @@ plotGenes <- function(
     
     if (in.folder$file.par$noise_est == -1) ## a noise estimate was not generated during data processing
     {
-      print('Insufficient data to generate noise estimate using FDR.')
+      log_message('Insufficient data to generate noise estimate using FDR.')
       flush.console()		
       noise_est <- sd(mapData$geneMap) * globalSettings$sd_noise_multiplier
       
@@ -27743,7 +27744,7 @@ plotAA <- function(	in.folder = fileFolder[[wc()]],
         
         if (length(geneSpan$x1) <= 10)
         {			
-          print(w2Range)
+          log_message(w2Range)
           drawAndLabelGenes(in.folder, w2Range[1:2], geneSpan, in.folder$geneNames, xlty)
           
         }else
@@ -27942,7 +27943,6 @@ gl <- function()
 pm <- function(species = globalSettings$speciesFiles)
 {
 
-  print('pm() digestR')
   ##creates main window
   tclCheck()
   dlg <- myToplevel('pm')
@@ -28164,7 +28164,7 @@ plot_peptides <- function(file.par, aaIndices, offset, col)
   {
     return()
   }else
-    print(length(points$x1))
+    log_message(length(points$x1))
   
   
   while(length(points$x1)>0)
@@ -28696,7 +28696,7 @@ ps <- function(dispPane='co'){
       ## do nothing, the status of plot type is equal to the original configuration
     }else
     {
-      print('Refreshing plot...')
+      log_message('Refreshing plot...')
       startCBPA <<- tclvalue(varCBPA)
       startCBPE <<- tclvalue(varCBPE)
       startCBPV <<- tclvalue(varCBPV)
@@ -28724,7 +28724,7 @@ ps <- function(dispPane='co'){
         analyze_genes(geneName)
       }else
       {
-        print(paste0(geneName, ' is not a valid gene of ', species$name))
+        log_message(paste0(geneName, ' is not a valid gene of ', species$name))
       }
     }
     
@@ -29534,8 +29534,8 @@ mf <- function()
     selectedFiles <- length(usrSel)
     myFactorVal <- tclvalue(factorEntryVar)
     
-    #		print(paste0('Selected Files: ', selectedFiles))
-    #		print(paste0('myFactorVal: ', myFactorVal))
+    #		log_message(paste0('Selected Files: ', selectedFiles))
+    #		log_message(paste0('myFactorVal: ', myFactorVal))
     
     if (!length(usrSel))
       err(paste('You must select one or more files before',
@@ -29543,7 +29543,7 @@ mf <- function()
     else
     {
       for(i in usrSel)
-        print(names(fileFolder)[i])
+        log_message(names(fileFolder)[i])
       
       switch(tclvalue(opType),
              'add' = {
@@ -29558,7 +29558,7 @@ mf <- function()
              'sub' = {
                if(selectedFiles > 1)
                {
-                 print('Please enter the number of the file you wish to act as the negative operand, in the operand entry field.')
+                 log_message('Please enter the number of the file you wish to act as the negative operand, in the operand entry field.')
                  
                  if((myFactorVal != 0) && (myFactorVal %in% usrSel))
                  {
@@ -29670,14 +29670,9 @@ mf <- function()
   #	tkbind(targetFrame, '<<ListboxSelect>>', olConfigGui)
   configGui()	
   
-  #	##resets widgets whenever the mouse enters the GUI
   ##resets widgets whenever the mouse enters the GUI
   onMouse <- function()
   {
-    #		reset(list(fileList), list(fileBox), 
-    #			list(fileNames), c('files'))
-    #		fileNames <<- names(fileFolder)
-    
     configGui()
   }
   tkbind(fileFrame, '<Enter>', onMouse)
@@ -29762,15 +29757,15 @@ im <- function()
   {
     if(nchar(tclvalue(fnOutput)) == 0)
     {
-      print('Please use the \'browse\' button to select a Maven file to import. ')	
+      log_message('Please use the \'browse\' button to select a Maven file to import. ')	
     }else if(!file.exists(tclvalue(fnOutput)))
     {
-      print('The selected file does not exist. Please use the \'browse\' button to select a new file.')
+      log_message('The selected file does not exist. Please use the \'browse\' button to select a new file.')
     }else
     {
       if((nchar(tclvalue(ciEntry)) == 0) || (nchar(tclvalue(biEntry)) == 0) || (nchar(tclvalue(siEntry)) == 0))
       {
-        print('Please ensure you have input the column numbers for compounds, blanks and samples.')
+        log_message('Please ensure you have input the column numbers for compounds, blanks and samples.')
       }else
       {
         compoundsIdx <- tclvalue(ciEntry)
@@ -29780,24 +29775,24 @@ im <- function()
         
         if(checkColumnList(compoundsIdx) && checkColumnList(blanksIdx) && checkColumnList(samplesIdx) && is.numeric(thresholdMult) )
         {
-          print(paste0(compoundsIdx, '_', blanksIdx, '_', samplesIdx, '_', thresholdMult))
+          log_message(paste0(compoundsIdx, '_', blanksIdx, '_', samplesIdx, '_', thresholdMult))
           parseMaven(sMavenFileName = tclvalue(fnOutput), compoundsIdx = compoundsIdx, vBlanksIdx = blanksIdx, vSamplesIdx = samplesIdx, kThresholdMult = thresholdMult)
           tkdestroy(dlg)			
         }else
         {
           if(!checkColumnList(compoundsIdx))
-            print('Please ensure that the compound column list contains only integer values separated by commas or a colon.')
+            log_message('Please ensure that the compound column list contains only integer values separated by commas or a colon.')
           
           if(!checkColumnList(blanksIdx))
-            print('Please ensure that the blanks column list contains only integer values separated by commas or a colon.')
+            log_message('Please ensure that the blanks column list contains only integer values separated by commas or a colon.')
           
           if(!checkColumnList(samplesIdx))
-            print('Please ensure that the samples column list contains only integer values separated by commas or a colon.')
+            log_message('Please ensure that the samples column list contains only integer values separated by commas or a colon.')
           
           if(!is.numeric(thresholdMult))
           {
-            print('Please ensure that the threshold multiplier is a numeric value.')
-            print(paste0('threshold: ', thresholdMult))
+            log_message('Please ensure that the threshold multiplier is a numeric value.')
+            log_message(paste0('threshold: ', thresholdMult))
           }
         }			
       }
@@ -30083,7 +30078,7 @@ plotCutSite <- function(seq, col)
     if(is.null(species))
       msg <- paste0(msg, 'Object \' species\' has not been initialized.')
   }
-  print(msg)
+  log_message(msg)
   flush.console()
 }
 
@@ -30409,16 +30404,16 @@ mapToAA <- function(lSpecies, lMatches)
 processFile <- function(fileName, species)
 {
   flush.console()
-  print('Parsing mascot file.')
+  log_message('Parsing mascot file.')
   resList <- parseMascot(fileName)
   
   if(is.null(resList))
   {
-    print('No records found.')
+    log_message('No records found.')
     return(NULL)
   }else
   {
-    print("Align and score peptides.")
+    log_message("Align and score peptides.")
     return(alignAndScorePeptides(resList, species))
   }
 }
@@ -30452,14 +30447,14 @@ alignAndScorePeptides <- function(resList, lSpecies)
   
   ## perform real alignment	
   msg <- paste0('Aligning ', length(dfPeptides$ID), ' peptides along genome. This may take a few minutes.')
-  print(msg)
+  log_message(msg)
   flush.console()	
   lMatches <- findAlignments(dfPeptides, lSpecies$seq)
   ## map matches
   if(!is.null(lMatches)) 
   {
     msg <- paste0('Generating coincidence map.')
-    print(msg)
+    log_message(msg)
     flush.console()		
     mapData <- mapToAA(lSpecies, lMatches)
     vEndPoints <- mapToAAEndPoints(lSpecies, lMatches)
@@ -30476,7 +30471,7 @@ alignAndScorePeptides <- function(resList, lSpecies)
   
   ## perform alignment against decoy proteome
   msg <- paste0('Aligning ', length(dfPeptides$ID), ' peptides along decoy genome for false discovery rate estimation. This may take a few minutes.')
-  print(msg)
+  log_message(msg)
   flush.console()	
   lDecoyMatches <- findAlignments(dfPeptides, lDecoy$seq)
   ## map decoy matches	
@@ -30579,7 +30574,7 @@ math_op <- function(fnc = "add", fileFolder, ffIndices, opp = NULL, saveFileName
                  appended_vectors <- 0
                }else
                {
-                 print("Inappropriate number of files selected for addition operation")
+                 log_message("Inappropriate number of files selected for addition operation")
                  return(-1)							
                }
              },
@@ -30603,7 +30598,7 @@ math_op <- function(fnc = "add", fileFolder, ffIndices, opp = NULL, saveFileName
                  noise_adj <- opp
                }else
                {
-                 print("Inappropriate number of files selected for subtraction operation")
+                 log_message("Inappropriate number of files selected for subtraction operation")
                  return(-1)
                }
                
@@ -30619,7 +30614,7 @@ math_op <- function(fnc = "add", fileFolder, ffIndices, opp = NULL, saveFileName
                  noise_adj <- opp
                }else
                {
-                 print("Inappropriate number of files selected for multiplication operation")
+                 log_message("Inappropriate number of files selected for multiplication operation")
                  return(-1)
                }
              },
@@ -30634,7 +30629,7 @@ math_op <- function(fnc = "add", fileFolder, ffIndices, opp = NULL, saveFileName
                  noise_adj <- opp
                }else
                {
-                 print("Inappropriate number of files selected for division operation")
+                 log_message("Inappropriate number of files selected for division operation")
                  return(-1)												
                }
                
@@ -30744,7 +30739,7 @@ mergeFiles <- function(fileFolder, ffIndices, species, name = '')
   result <- alignAndScorePeptides(resList, species)
   
   sName <- writeDIANA(name, species, result) 
-  print(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))	
+  log_message(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))	
   
 }
 
@@ -31003,7 +30998,7 @@ mergeResultList <- function(fileFolder, indices, species)
   for(i in 1:numIndices)
   {
     par <- fileFolder[[indices[i]]]$file.par
-    print(paste0('Retrieving peptides from: ', par$file.name, '.'))
+    log_message(paste0('Retrieving peptides from: ', par$file.name, '.'))
     flush.console()		
     if(i == 1)
     {
@@ -31015,7 +31010,7 @@ mergeResultList <- function(fileFolder, indices, species)
     }
   }
   
-  print('Compiling master peptide list.')
+  log_message('Compiling master peptide list.')
   flush.console()
   sequences <- sapply(pepListHolder, function(x){x$sequence})
   idx <- which(duplicated(sequences))
@@ -31088,7 +31083,7 @@ highlightZone <- function(seq, y, col, wid = 1)
     if(is.null(species))
       msg <- paste0(msg, 'Object \' species\' has not been initialized.')
   }
-  print(msg)
+  log_message(msg)
   flush.console()
 }
 
@@ -31250,7 +31245,7 @@ autoMeanFiles <- function()
     if (!exists("fileFolder") || is.null(fileFolder))
     {
       #do nothing
-      print('fileFolder does not exist')
+      log_message('fileFolder does not exist')
       
     }else if(length(names(fileFolder))>0)
       fc(names(fileFolder))
@@ -32598,7 +32593,7 @@ initTaurus <- function(sFileName = '')
 
 
 loadGenericGenes <- function(sFilename) {
-  print(sFilename)
+  log_message(sFilename)
   df <- read.csv(sFilename, head = TRUE, stringsAsFactors = FALSE)
   fileInfo <- file.info(sFilename)
   ID <- as.integer(fileInfo$mtime)
@@ -33021,7 +33016,7 @@ pd <- function() {
       # Get the second string in the filename by splitting on "_"
       second_str <- strsplit(filename, "_")[[1]][2]
       # Read the CSV file and extract the pep_seq column
-      csv_data <- read.csv(csv_files[i], skip = 0, header = TRUE)
+      csv_data <- read.csv(csv_files[i], skip = 3, header = TRUE)
       pep_seq_col <- csv_data$pep_seq
       # Create a new dataframe with the pep_seq column and the group name
       pep_seq_df <- data.frame(group_name = second_str, pep_seq = pep_seq_col)
@@ -33077,7 +33072,7 @@ pd <- function() {
       stop("Invalid plot_type argument. Please choose either 'Overlay', 'Ridges', or 'Colored Ridges'.")
     }
     
-    print(plot)
+    log_message(plot)
   }
   
   # Create the main window
@@ -33251,7 +33246,7 @@ csp <- function () {
       
       # Iterate over each CSV file in the group
       for (i in groups) {
-        print(i)
+        log_message(i)
         
         # Extract the first and last letters from the CSV file
         file_results <- extract_first_last_letters_from_csv(i)
@@ -33387,7 +33382,7 @@ csp <- function () {
     }
     
     # Return the plot
-    print(cutsiteplots)
+    log_message(cutsiteplots)
   }
   
   # Create the main window
@@ -33538,9 +33533,9 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
     if (j == "") {
       break
     }
-    print('################################################################')
-    print(j)
-    print('################################################################')
+    log_message('################################################################')
+    log_message(j)
+    log_message('################################################################')
     
     prev_index <- 0
     protcuts <- strsplit(seq, j)
@@ -33548,7 +33543,7 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
     # Iterate through the sequence segments
     for (k in protcuts[[1]]) {
       k <- paste(k, j, sep = '')
-      print(k)
+      log_message(k)
       
       # Find the location of the segment in the sequence
       loc <- gregexpr(k, seq, fixed = TRUE)
@@ -33567,10 +33562,10 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
           } else {
             plot_site <- prev_index + 1
           }
-          print('IS IT HERE?')
+          log_message('IS IT HERE?')
         }
         
-        print(plot_site)
+        log_message(plot_site)
         
         # Assuming you have initialized a plot or set up the plotting device
         abline(v = plot_site, col = colour, lty = 2)

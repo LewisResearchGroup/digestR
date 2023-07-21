@@ -39,8 +39,7 @@ BioMartData <- R6::R6Class(
       self$dataset <- dataset
       self$chromosomes <- getBM(attributes = 'chromosome_name', mart = self$ensembl)[,1]
     },
-    get_data = function(chromosomes = NULL) {
-      filepath <- "data"
+    get_data = function(chromosomes = NULL, filepath="data/proteomes") {
       
       if (!is.null(chromosomes)) {
         chromosomes <- intersect(chromosomes, self$chromosomes)

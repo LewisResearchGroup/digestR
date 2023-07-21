@@ -1,13 +1,80 @@
+library(shiny)
+source(system.file('R', "logger.R", package = "digestR"))
+
+# Define the directories at the top of your script
+proteomesDirectoryPath <- "data/proteomes"
+peptidesDirectoryPath <- "data/peptides"
+dfcDirectoryPath <- "data/dfc"
+
+
+maybeCreateDirectory <- function(dir) {
+  # Check if the directory exists
+  if (!dir.exists(dir)) {
+    # If the directory does not exist, create it
+    dir.create(dir, recursive = TRUE)  # The recursive = TRUE argument means that it will create any necessary parent directories as well
+  }
+}
+
+
+create_dcf_path <- function(peptidesFile) {
+  # Get the filename (without the extension)
+  filename <- tools::file_path_sans_ext(basename(peptidesFile))
+  
+  # Add the ".dcf" extension to the filename
+  filename_dcf <- paste0(filename, ".dcf")
+  
+  # Combine the directory path and the new filename to get the full path
+  full_path_dcf <- file.path(dfcDirectoryPath, filename_dcf)
+  
+  return(full_path_dcf)
+}
+
+
+processFile_Soren <- function(proteomeFile, peptidesFile) {
+  lSpecies <- loadSpecies(proteomeFile)
+
+  saveFileName <- create_dcf_path(peptidesFile)
+
+  log_message(paste('Results will be saved in', saveFileName, sep=' '))
+
+  result <- processFile(peptidesFile, lSpecies)
+
+  if(is.numeric(result))
+  {
+    if(result == -1)
+      log_message(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
+    else
+      log_message(paste0('No matches found, ', saveFileName, " could not be generated."))	
+  }else
+  {
+    sName <- writeDIANA(saveFileName, lSpecies, result) 
+    log_message(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))
+  }
+}  
+
+
+set_directory <- function(dir) {
+  # Check if the directory exists
+  if (!dir.exists(dir)) {
+    # If the directory does not exist, create it
+    dir.create(dir, recursive = TRUE)  # The recursive = TRUE argument means that it will create any necessary parent directories as well
+  }
+
+  # Set the working directory
+  setwd(dir)
+}
+
 # Define reactive expression for globalSettings
 initializeGlobalSettings <- function() {
   reactiveValues(
-    speciesFiles = list(),
-    peptideFiles = list(),
+    proteomeFiles = list(),
+    peptidesFiles = list(),
     results = NULL
   )
 }
 
-handleFileUpload <- function(input, fileInputName, globalSettings, globalSettingsName, label) {
+
+handleFileUpload <- function(input, fileInputName, globalSettings, globalSettingsName, label, uploadDirectory) {
   observe({
     inFile <- input[[fileInputName]]
     
@@ -15,11 +82,17 @@ handleFileUpload <- function(input, fileInputName, globalSettings, globalSetting
       return(NULL)
     }
     
+    # Create the upload directory if it doesn't already exist
+    if (!dir.exists(uploadDirectory)) {
+      dir.create(uploadDirectory, recursive = TRUE)
+    }
+    
+    # Move the uploaded file to the upload directory
+    fileDestination <- file.path(uploadDirectory, inFile$name)
+    file.copy(from = inFile$datapath, to = fileDestination, overwrite = TRUE)
+
     # Update globalSettings using reactive conduct
-    globalSettings[[globalSettingsName]][[inFile$name]] <- list(file = inFile$datapath, label = label)
-
-    print(globalSettings)
-
+    globalSettings[[globalSettingsName]][[inFile$name]] <- list(file = fileDestination, label = label)
   })
 }
 
@@ -28,58 +101,100 @@ createShinyUI <- function() {
   fluidPage(
     titlePanel("digestR"),
     fluidRow(
-      column(4, id = "sidebar", style = "padding: 15px; height: 90vh; max-width: 400px; overflow-y: auto; background-color: #f5f5f5;",
-        fileInput("file_genome", "Choose Genome CSV File",
-                  multiple = TRUE,
-                  accept = c("text/csv",
-                             "text/comma-separated-values,text/plain",
-                             ".csv")),
-        fileInput("file_peptides", "Choose Peptides CSV File",
-                  multiple = TRUE,
-                  accept = c("text/csv",
-                             "text/comma-separated-values,text/plain",
-                             ".csv")),
-        actionButton("button_run", "Run"),  # This creates a button
-        verbatimTextOutput("settingsOutput")
+      column(3,
+        wellPanel(
+          #style = "padding: 15px; height: 90vh; max-width: 400px; overflow-y: auto; background-color: #f5f5f5;",
+          uiOutput("proteome_selector"),
+          uiOutput("peptides_selector"),
+          h4("Log Messages:"),
+          verbatimTextOutput("log"),
+        )
       ),
-      column(8, 
-        textOutput("runOutput")  # This is where the message after clicking Run button will be displayed
+      column(9,
+        tabsetPanel(
+          tabPanel("Upload & BioMart",
+            fluidRow(
+              column(12,
+                wellPanel(
+                  tags$h2("Upload"),  # Add a title for the panel
+
+                  fileInput("file_proteome", "Choose Proteome CSV File to upload",
+                            multiple = TRUE,
+                            accept = c("text/csv",
+                                      "text/comma-separated-values,text/plain",
+                                      ".csv")),
+                  fileInput("file_peptides", "Choose Peptides CSV File to upload",
+                            multiple = TRUE,
+                            accept = c("text/csv",
+                                      "text/comma-separated-values,text/plain",
+                                      ".csv")),
+                ),
+                wellPanel(
+                  tags$h2("BioMart"),  # Add a title for the panel
+                  textInput("text_biomart", label = "Biomart", value = "ensembl"),
+                  textInput("text_biomart_dataset", label = "Dataset", value = "btaurus_gene_ensembl"),
+                  textInput("text_biomart_chromosomes", label = "Chromosomes", value = "1, 2"),
+                  actionButton("button_download", "Download"),
+                  verbatimTextOutput("settingsOutput")
+                )
+              )
+            )
+          ),
+
+          tabPanel("Results",
+            # Contents for displaying results...
+            actionButton("button_run", "Run"),
+          ),
+
+          tabPanel("Global Settings",
+            # Contents for displaying global settings...
+            verbatimTextOutput("globalSettingsOutput")
+          ),
+
+        )
       )
     )
   )
 }
 
 
-
-
 start_app <- function() {
   # Initialize globalSettings
+  set_directory("~/digestR")
+
+  maybeCreateDirectory(dfcDirectoryPath)
+  maybeCreateDirectory(proteomesDirectoryPath)
+  maybeCreateDirectory(peptidesDirectoryPath)
+
   globalSettings <- initializeGlobalSettings()
   
   ui <- createShinyUI()
 
-  server <- function(input, output) {
+  server <- function(input, output, session) {
     options(shiny.maxRequestSize = 500*1024^2)  # Set upload limit to 500MB
+      # Handle file uploads
+    handleFileUpload(input, "file_proteome", globalSettings, "proteomeFiles", "Choose Proteome CSV File", proteomesDirectoryPath)
+    handleFileUpload(input, "file_peptides", globalSettings, "peptidesFiles", "Choose Peptides CSV File", peptidesDirectoryPath)
 
-    # Handle file uploads
-    handleFileUpload(input, "file_genome", globalSettings, "speciesFiles", "Choose Genome CSV File")
-    handleFileUpload(input, "file_peptides", globalSettings, "peptideFiles", "Choose Peptides CSV File")
+    output$workingDirectory <- renderText({
+      getwd()
+    })   
 
     output$settingsOutput <- renderPrint({
       # Initialize an empty list to store settings
       settings <- list()
 
       # If any species files have been uploaded, add their labels to the settings list
-      if (length(globalSettings$speciesFiles) > 0) {
-        for (i in seq_along(globalSettings$speciesFiles)) {
-          settings[paste0("Species File ", i)] <- names(globalSettings$speciesFiles)[[i]]
+      if (length(globalSettings$proteomeFiles) > 0) {
+        for (i in seq_along(globalSettings$proteomeFiles)) {
+          settings[paste0("Species File ", i)] <- names(globalSettings$proteomeFiles)[[i]]
         }
       }
 
       # If any peptide files have been uploaded, add their labels to the settings list
-      if (length(globalSettings$peptideFiles) > 0) {
-        for (i in seq_along(globalSettings$peptideFiles)) {
-          settings[paste0("Peptide File ", i)] <- names(globalSettings$peptideFiles)[[i]]
+      if (length(globalSettings$peptidesFiles) > 0) {
+        for (i in seq_along(globalSettings$peptidesFiles)) {
+          settings[paste0("Peptide File ", i)] <- names(globalSettings$peptidesFiles)[[i]]
         }
       }
 
@@ -88,35 +203,151 @@ start_app <- function() {
         settings["No files"] <- "No files have been uploaded yet."
       }
 
+      settings['results'] <- class(globalSettings$results)
+
       # Print the formatted output
       cat(paste(names(settings), settings, sep = " = ", collapse = "\n"))
     })
 
-    observeEvent(input$button_run, {  # This code gets executed when the button is clicked
-      output$runOutput <- renderText({
-        "Analysing peptides!"
-      })
+    observeEvent(input$button_download, {
+      log_message('Downloading proteome')
 
-      if (length(globalSettings$speciesFiles) > 0) {
-        speciesFile = globalSettings$speciesFiles[[1]]$file
+      mart = input$text_biomart
+      dataset = input$text_biomart_dataset
+      chromosomes = input$text_biomart_chromosomes
+
+      if (chromosomes == "") {
+        chromosome_list <- NULL
+      } else {
+        chromosome_list <- strsplit(chromosomes, ", ?")[[1]]
       }
 
-      if (length(globalSettings$peptideFiles) > 0) {
-        peptideFile = globalSettings$peptideFiles[[1]]$file
+      log_message(mart)
+      log_message(dataset)  
+      log_message(chromosomes)
+
+      biomart <- BioMartData$new(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
+
+      # Retrieve and process the data
+      biomart$get_data(chromosomes = chromosome_list)
+    }) 
+
+    # Define reactive expressions for the directories
+    proteomesDirectory <- reactivePoll(1000, session, 
+      checkFunc = function() {
+        # This function is called to check if the value has changed
+        # We use file.info to get information about the directory, 
+        # including the last modification time
+        file.info(proteomesDirectoryPath)$mtime
+      }, 
+      valueFunc = function() {
+        # This function is called to get the actual value (the list of files)
+        list.files(proteomesDirectoryPath)
       }
+    )
 
-      print('Loading genome.')
-      lSpecies <- loadSpecies(speciesFile)
-      
-      print('Processing file.')
-      globalSettings$results <- processFile(peptideFile, lSpecies)
+    peptidesDirectory <- reactivePoll(1000, session, 
+      checkFunc = function() {
+        file.info(peptidesDirectoryPath)$mtime
+      }, 
+      valueFunc = function() {
+        list.files(peptidesDirectoryPath)
+      }
+    )
 
-      print('Done')
-      print(globalSettings$results)
-      print(class(globalSettings$results))
+    output$proteome_selector <- renderUI({
+      selectInput("proteome_selector", "Select proteome files", choices = proteomesDirectory(), multiple = TRUE)
     })
-  }
 
+    output$peptides_selector <- renderUI({
+      selectInput("peptides_selector", "Select peptides files", choices = peptidesDirectory(), multiple = TRUE)
+    })
+
+    # Then, use these variables in your code
+    observeEvent(input$proteome_selector, {
+      # Update the proteomeFiles element in globalSettings
+      selected_files <- input$proteome_selector
+      full_paths <- file.path(proteomesDirectoryPath, selected_files)
+      globalSettings$proteomeFiles <- full_paths
+    })
+
+    observeEvent(input$peptides_selector, {
+      # Update the peptideFiles element in globalSettings
+      selected_files <- input$peptides_selector
+      full_paths <- file.path(peptidesDirectoryPath, selected_files)
+      globalSettings$peptidesFiles <- full_paths
+    })
+
+    observeEvent(input$button_run, {  # This code gets executed when the button is clicked
+
+      proteomeFile = globalSettings$proteomeFiles[[1]]
+      peptidesFiles = globalSettings$peptidesFiles
+      
+      msg <- paste("Selected proteomeFile:", proteomeFile)
+      log_message(msg)
+      
+      msg <- paste("Selected peptidesFile:", peptidesFiles)
+      log_message(msg)
+     
+      #showModal(modalDialog(
+      #  title = "Please wait",
+      #  "Processing...",
+      #))
+
+
+      for (peptidesFile in peptidesFiles) {
+        log_message(paste('Processing', peptidesFile, sep=' '))
+        processFile_Soren(proteomeFile, peptidesFile)
+      }
+
+      #removeModal()
+
+    })
+
+
+    output$globalSettingsOutput <- renderPrint({
+      # Initialize an empty list to store settings
+      settings <- list()
+      
+      # For each element in globalSettings, add it to the settings list
+      for (name in names(globalSettings)) {
+        value <- globalSettings[[name]]
+        settings[[name]] <- value
+      }
+      
+      # Print the formatted output
+      cat(paste(names(settings), sapply(settings, function(x) paste(capture.output(print(x)), collapse = "\n")), sep = " = ", collapse = "\n"))
+    })
+
+    # Read the log file and send it to the UI
+    output$log <- renderText({
+      # reactivePoll checks every 1000 milliseconds (1 second)
+      logFileContent <- reactivePoll(1000, session,
+        checkFunc = function() {
+          # The check function returns the last modification time of the log file
+          if (file.exists("digestR.log")) {
+            x <- file.info("digestR.log")$mtime
+            print(x)
+            return(x)
+          }
+        },
+        valueFunc = function() {
+          # The value function returns the contents of the log file
+          if (file.exists("digestR.log")) {
+            lines <- readLines("digestR.log")
+            # Reverse the order of lines and only take the last 15
+            lines <- tail(lines, 40)
+            paste(lines, collapse = "\n")
+          } else {
+            "No log messages."
+          }
+        }
+      )
+
+      logFileContent()
+    })
+
+  }
   shinyApp(ui = ui, server = server)
 }
 
