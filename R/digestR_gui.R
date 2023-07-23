@@ -1,10 +1,19 @@
 library(shiny)
 source(system.file('R', "logger.R", package = "digestR"))
 
+
+library(promises)
+library(future)
+library(ggplot2)
+
+# Set the plan to multicore to allow for parallel execution
+plan(multisession)
+
+
 # Define the directories at the top of your script
 proteomesDirectoryPath <- "data/proteomes"
 peptidesDirectoryPath <- "data/peptides"
-dfcDirectoryPath <- "data/dfc"
+dcfDirectoryPath <- "data/dcf"
 
 
 maybeCreateDirectory <- function(dir) {
@@ -24,33 +33,45 @@ create_dcf_path <- function(peptidesFile) {
   filename_dcf <- paste0(filename, ".dcf")
   
   # Combine the directory path and the new filename to get the full path
-  full_path_dcf <- file.path(dfcDirectoryPath, filename_dcf)
+  full_path_dcf <- file.path(dcfDirectoryPath, filename_dcf)
   
   return(full_path_dcf)
 }
 
 
+
 processFile_Soren <- function(proteomeFile, peptidesFile) {
   lSpecies <- loadSpecies(proteomeFile)
 
-  saveFileName <- create_dcf_path(peptidesFile)
+  saveFileName <- normalizePath(create_dcf_path(peptidesFile), mustWork = FALSE)
+
+  peptidesFile <- normalizePath(peptidesFile)
 
   log_message(paste('Results will be saved in', saveFileName, sep=' '))
 
-  result <- processFile(peptidesFile, lSpecies)
-
-  if(is.numeric(result))
-  {
-    if(result == -1)
-      log_message(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
-    else
-      log_message(paste0('No matches found, ', saveFileName, " could not be generated."))	
-  }else
-  {
-    sName <- writeDIANA(saveFileName, lSpecies, result) 
-    log_message(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))
+  future({
+    # This code will be executed in a separate R process
+    result <- processFile(peptidesFile, lSpecies)
+    
+    if(is.numeric(result)) {
+      if(result == -1) {
+        log_message(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
+      } else {
+        log_message(paste0('No matches found, ', saveFileName, " could not be generated."))
+      }
+    } else {
+      sName <- writeDIANA(saveFileName, lSpecies, result) 
+      log_message(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))
+    }
+  }) %...>% {
+    # This code will be executed in the main R process, after the future has resolved
+    # You could put any post-processing code here
+  } %...!% {
+    # This code will be executed in the main R process if the future throws an error
+    error <- .
+    log_message(paste("An error occurred while processing the file:", error$message))
   }
-}  
+}
 
 
 set_directory <- function(dir) {
@@ -62,6 +83,8 @@ set_directory <- function(dir) {
 
   # Set the working directory
   setwd(dir)
+
+  log_message('Working directory:', getwd())
 }
 
 # Define reactive expression for globalSettings
@@ -106,8 +129,6 @@ createShinyUI <- function() {
           #style = "padding: 15px; height: 90vh; max-width: 400px; overflow-y: auto; background-color: #f5f5f5;",
           uiOutput("proteome_selector"),
           uiOutput("peptides_selector"),
-          h4("Log Messages:"),
-          verbatimTextOutput("log"),
         )
       ),
       column(9,
@@ -146,11 +167,24 @@ createShinyUI <- function() {
             actionButton("button_run", "Run"),
           ),
 
-          tabPanel("Global Settings",
-            # Contents for displaying global settings...
-            verbatimTextOutput("globalSettingsOutput")
+
+          tabPanel("Plotting",
+            # Contents for displaying results...
+            selectInput("var", 
+                  label = "Choose a variable", 
+                  choices = colnames(mtcars), 
+                  selected = "mpg"),
+            plotOutput("densityPlot")
           ),
 
+
+          tabPanel("Global Settings",
+            # Contents for displaying global settings...
+            verbatimTextOutput("globalSettingsOutput"),
+            h4("Log Messages:"),
+            verbatimTextOutput("log"),            
+          ),
+          
         )
       )
     )
@@ -162,7 +196,7 @@ start_app <- function() {
   # Initialize globalSettings
   set_directory("~/digestR")
 
-  maybeCreateDirectory(dfcDirectoryPath)
+  maybeCreateDirectory(dcfDirectoryPath)
   maybeCreateDirectory(proteomesDirectoryPath)
   maybeCreateDirectory(peptidesDirectoryPath)
 
@@ -304,6 +338,12 @@ start_app <- function() {
 
     })
 
+    output$densityPlot <- renderPlot({
+      ggplot(mtcars, aes_string(x = input$var)) +
+        geom_density(fill = 'blue', alpha = 0.5) +
+        theme_minimal() +
+        labs(x = input$var, y = "Density", title = paste("Density Plot of", input$var))
+    })
 
     output$globalSettingsOutput <- renderPrint({
       # Initialize an empty list to store settings
@@ -327,7 +367,6 @@ start_app <- function() {
           # The check function returns the last modification time of the log file
           if (file.exists("digestR.log")) {
             x <- file.info("digestR.log")$mtime
-            print(x)
             return(x)
           }
         },

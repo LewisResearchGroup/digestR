@@ -18,5 +18,7 @@ Imports:
     tcltk,
     tcltk2,
     magrittr,
+    future,
+    futile.logger",
 Depends: 
     R (>= 3.5.0)

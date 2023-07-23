@@ -17484,13 +17484,6 @@ ep <- function(dispPane=0){
                     'mar', 'mar.sub', 'mar.multi', 'overlay.text', 'overlay.textSuppress', 'processSpeciesID', 
                     'processSingleFile', 'speciesList', 'speciesFiles', 'sd_noise_multiplier', 'geneDisp', 'vectorType', 'plotStyle')		
     
-    #		globalPars <- c('offset', 'position.1D', 'filter', 'proj.direct', 
-    #				'proj.mode', 'proj.type', 'peak.disp', 'peak.noiseFilt', 'thresh.1D', 
-    #				'peak.pch', 'peak.cex', 'peak.labelPos', 'roiMain', 'roiMax', 
-    #				'roi.bcolor', 'roi.tcolor', 'roi.lwd', 'roi.lty', 'roi.cex', 
-    #				'roi.labelPos', 'roi.noiseFilt', 'roi.w1', 'roi.w2', 'roi.pad', 
-    #				'cex.roi.multi', 'cex.files.multi', 'cex.roi.sub', 'size.main', 
-    #				'size.sub', 'size.multi', 'mar', 'mar.sub', 'mar.multi')
     for (i in globalPars)
       newGlobal[i] <- defaultSettings[i]
     myAssign('globalSettings', newGlobal)
@@ -30524,12 +30517,19 @@ alignAndScorePeptides <- function(resList, lSpecies)
   }
 
 
+  if (exists('globalSettings')) {}
+  else
+  {
+    globalSettings <- new.env()
+    globalSettings$vectorType <- list('EndPoints' = 'EndPoints', 'PepPoints' = 'PepPoints')
+  }
+
   if(!is.null(vEndPoints))
   {
     appended_vectors <- appended_vectors + 1
     result$appended_vectors <- appended_vectors
     result$lVectors[[result$appended_vectors]] <- vEndPoints
-    result$sVecLabel[appended_vectors] <- globalSettings$vectorType$EndPoints		
+    #result$sVecLabel[appended_vectors] <- globalSettings$vectorType$EndPoints
   }
   
   if(!is.null(vPepPoints))
