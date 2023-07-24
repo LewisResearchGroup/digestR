@@ -26707,7 +26707,6 @@ loadSpecies <- function(fileName)
   if( is.null(lSpecies)) {
     log_message(paste0('Species file ', fileName, ' no special function defined, using generic loading function.'))
     lSpecies <- loadGenericGenes(fileName)
-    log_message('done')
   }
 
   return(lSpecies)
@@ -26758,7 +26757,6 @@ batchConvert <- function()
       {
         for (j in 1:length(lFilesCSV))
         {
-          log_message(lFilesCSV[j])
           result <- processFile(lFilesCSV[j], lSpecies)
           saveFileName <- strsplit(lFilesCSV[j], '.', fixed = TRUE)
           saveFileName <- paste(unlist(saveFileName[[1]][1:length(saveFileName[[1]])-1]), collapse='')
@@ -30183,6 +30181,7 @@ prepareSpecies <- function(name, ID, genes)
   lSpecies$genes["seq"] <- NULL
   return(lSpecies)
 }
+
 # add gc()
 findAlignments <- function (pep, targetSeq)
 {
@@ -30219,45 +30218,6 @@ findAlignments <- function (pep, targetSeq)
   }
 }
 
-
-
-##	Searches each peptide sequence against the proteome of the species of interest
-## the starting index of each location where the entire peptide matches the proteome is recorded
-## along with the mascot score of that peptide and the length of the peptide (for later use)
-#
-# findAlignments <- function (pep, targetSeq)
-# {
-# 	totPeps <- length(pep$ID)
-# 	indices <- vector(mode = "integer")
-# 	lMatch <- list(indices = indices, pepLength = 0, score = 0)
-# 	
-# 	lMatches <- vector(mode = "list", length = totPeps)
-# 	nonMatchIndices <- vector(mode = "integer", length=0)
-# 	
-# 	numMatches <- 0
-# 
-# 	for (i in 1:totPeps)
-# 	{	
-# 		matches <- cpp_gregexpr2(targetSeq, pep$sequence[i])
-# 		if (length(matches) > 0)	
-# 		{						
-# 			numMatches <- numMatches + 1
-# 			lMatch$indices <- matches
-# 			lMatch$pepLength <- nchar(pep$sequence[i])
-# 			lMatch$score <- pep$score[i]
-# 			lMatches[[numMatches]] <- lMatch
-# 		}
-# 	}
-# 	
-# 	if(numMatches > 0)
-# 	{
-# 		lMatches <- lMatches[1:numMatches]	#remove any excess members of list that weren't found
-# 		return(lMatches)
-# 	}else
-# 	{
-# 		return(NULL)
-# 	}
-# }
 
 ##############################################################################
 # getGenotype()
@@ -30397,7 +30357,8 @@ mapToAA <- function(lSpecies, lMatches)
 processFile <- function(fileName, species)
 {
   flush.console()
-  log_message('Parsing mascot file.')
+  log_message(paste('Parsing mascot file: ', fileName))
+
   resList <- parseMascot(fileName)
   
   if(is.null(resList))
@@ -30529,7 +30490,7 @@ alignAndScorePeptides <- function(resList, lSpecies)
     appended_vectors <- appended_vectors + 1
     result$appended_vectors <- appended_vectors
     result$lVectors[[result$appended_vectors]] <- vEndPoints
-    #result$sVecLabel[appended_vectors] <- globalSettings$vectorType$EndPoints
+    result$sVecLabel[appended_vectors] <- globalSettings$vectorType$EndPoints
   }
   
   if(!is.null(vPepPoints))

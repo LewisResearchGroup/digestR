@@ -51,13 +51,12 @@ BioMartData <- R6::R6Class(
         dir.create(filepath)
       }
 
-      print(getwd())
-      print("Fetching data for chromosomes...")
+      log_message("Fetching data for chromosomes...")
       data_list <- list()
       file_list <- list()  # Create a list to hold the filenames
       
       for (chrom in chromosomes) {
-        print(paste("Fetching data for chromosome", chrom))
+        log_message(paste("Fetching data for chromosome", chrom))
         tryCatch({
           annotLookup <- getBM(
             filters = c("chromosome_name"),
@@ -80,11 +79,11 @@ BioMartData <- R6::R6Class(
           file_list <- c(file_list, filename)  # Add the filename to the list
         },
         error = function(e) {
-          print(paste("Failed to fetch data for chromosome", chrom, "due to error:", e))
+          log_message(paste("Failed to fetch data for chromosome", chrom, "due to error:", e))
         })
       }
       
-      print("Data fetching completed.")
+      log_message("Data fetching completed.")
       
       self$combined_data <- do.call(rbind, data_list)
       self$combined_data <- self$combined_data[!(self$combined_data$peptide == "Sequence unavailable"), ]
@@ -106,12 +105,12 @@ BioMartData <- R6::R6Class(
       write.csv(self$combined_data, quoted_filename, row.names = FALSE, quote = FALSE)
       
       # Remove the temporary files
-      print(paste("Removing temporary files:", file_list))
+      log_message(paste("Removing temporary files:", file_list))
 
       full_file_paths <- normalizePath(file.path(file_list), mustWork = FALSE)
       file.remove(full_file_paths)
       
-      print("Data processing completed.")
+      log_message("Downloading proteome completed.")
     }
 
   )

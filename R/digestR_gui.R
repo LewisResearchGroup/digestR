@@ -8,7 +8,7 @@ library(ggplot2)
 
 # Set the plan to multicore to allow for parallel execution
 plan(multisession)
-
+#plan(sequential)
 
 # Define the directories at the top of your script
 proteomesDirectoryPath <- "data/proteomes"
@@ -41,27 +41,56 @@ create_dcf_path <- function(peptidesFile) {
 
 
 processFile_Soren <- function(proteomeFile, peptidesFile) {
-  lSpecies <- loadSpecies(proteomeFile)
-
+  proteomeFile <- normalizePath(proteomeFile)
+  peptidesFile <- normalizePath(peptidesFile)
   saveFileName <- normalizePath(create_dcf_path(peptidesFile), mustWork = FALSE)
 
-  peptidesFile <- normalizePath(peptidesFile)
+  log_message(paste('Preparing proteome file', proteomeFile, sep=' '))
 
+
+  if (proteomeFile == "" || is.null(proteomeFile)) {
+    stop("proteomeFile is missing or empty")
+  }
+  if (!file.exists(proteomeFile)) {
+    stop("proteomeFile does not exist at the provided path")
+  }
+
+  if (peptidesFile == "" || is.null(peptidesFile)) {
+    stop("peptidesFile is missing or empty")
+  }
+  if (!file.exists(peptidesFile)) {
+    stop("peptidesFile does not exist at the provided path")
+  }
+
+  log_message(paste('Preparing peptides file', peptidesFile, sep=' '))
   log_message(paste('Results will be saved in', saveFileName, sep=' '))
 
+  lSpecies <- loadSpecies(proteomeFile)
+  log_message("loadSpecies done")
+
   future({
+
+    print('Checking variables in future() block...')
+    print(paste('Peptides file', peptidesFile, sep=' '))
+    print(paste('Results will be saved in', saveFileName, sep=' '))
+
+    print('Processing file...')
+
     # This code will be executed in a separate R process
+  
     result <- processFile(peptidesFile, lSpecies)
-    
+
+    log_message(paste('Done processing file: ', peptidesFile))  
+
     if(is.numeric(result)) {
       if(result == -1) {
-        log_message(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
+        print(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
       } else {
-        log_message(paste0('No matches found, ', saveFileName, " could not be generated."))
+        print(paste0('No matches found, ', saveFileName, " could not be generated."))
       }
     } else {
       sName <- writeDIANA(saveFileName, lSpecies, result) 
-      log_message(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))
+      print(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))
     }
   }) %...>% {
     # This code will be executed in the main R process, after the future has resolved
@@ -69,7 +98,11 @@ processFile_Soren <- function(proteomeFile, peptidesFile) {
   } %...!% {
     # This code will be executed in the main R process if the future throws an error
     error <- .
-    log_message(paste("An error occurred while processing the file:", error$message))
+
+    log_message(paste("An error occurred while processing the file:", error$message, 
+                      "\nTraceback:\n", paste(capture.output(traceback()), collapse = "\n")))
+    log_message(paste('Proteome file', proteomeFile, sep=' '))
+    log_message(paste('Peptides file', peptidesFile, sep=' '))
   }
 }
 
@@ -129,10 +162,19 @@ createShinyUI <- function() {
           #style = "padding: 15px; height: 90vh; max-width: 400px; overflow-y: auto; background-color: #f5f5f5;",
           uiOutput("proteome_selector"),
           uiOutput("peptides_selector"),
+          actionButton("button_run", "Run"),
+
         )
       ),
       column(9,
         tabsetPanel(
+
+          tabPanel("Results",
+            # Contents for displaying results...
+            h4("Log Messages:"),
+            verbatimTextOutput("log"),                
+          ),
+
           tabPanel("Upload & BioMart",
             fluidRow(
               column(12,
@@ -162,10 +204,6 @@ createShinyUI <- function() {
             )
           ),
 
-          tabPanel("Results",
-            # Contents for displaying results...
-            actionButton("button_run", "Run"),
-          ),
 
 
           tabPanel("Plotting",
@@ -181,8 +219,7 @@ createShinyUI <- function() {
           tabPanel("Global Settings",
             # Contents for displaying global settings...
             verbatimTextOutput("globalSettingsOutput"),
-            h4("Log Messages:"),
-            verbatimTextOutput("log"),            
+        
           ),
           
         )
@@ -255,10 +292,6 @@ start_app <- function() {
       } else {
         chromosome_list <- strsplit(chromosomes, ", ?")[[1]]
       }
-
-      log_message(mart)
-      log_message(dataset)  
-      log_message(chromosomes)
 
       biomart <- BioMartData$new(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
 
@@ -375,7 +408,7 @@ start_app <- function() {
           if (file.exists("digestR.log")) {
             lines <- readLines("digestR.log")
             # Reverse the order of lines and only take the last 15
-            lines <- tail(lines, 40)
+            lines <- tail(lines, 80)
             paste(lines, collapse = "\n")
           } else {
             "No log messages."
