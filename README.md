@@ -33,10 +33,9 @@ This guide is intended to give an overview of DigestR's functions.
 
 This document provides details of several Graphical User Interface (GUI) functions implemented in the R programming language using the Tcl/Tk toolkit.
 
-## Supported file formats 
+### Supported file formats 
 
 DigestR supports Mascot (.csv) and MaxQuant (.mzXML) generated files. These files may be converted to .dcf files using DigestR file conversion functions pm() and im() respectively. 
-
 
 ### Converting files. 
 
