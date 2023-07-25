@@ -60,7 +60,25 @@ The ct() function allows users to interact with the "digestion" map directly thr
 #### 3. Plot colors: co()
 The cplot color function allows users to easily change the plot colors. To open the plot color GUI, enter the command co(). Color preferences can be applied to multiple spectra simultaneously by selecting names from the files list. Plot color options for the selected files may be configured individually using the buttons provided on the right side of the GUI. The "Axes" button changes the color of the x and y axes, "BG" changes the background color, and "Peak labels" changes the label color of identified peaks.
 
+#### 4. Overlays: ol()
+DigestR allows multiple "digestion" maps to be displayed concurrently on a single plot through the command ol(). To add or remove loaded files, select the digestion maps to overlay and click the "add" or "remove" buttons. The order of overlaid maps in the main plot window is taken directly from the order of digestion maps appearing in the overlays list box. Individual files can be assigned their own colors. The plot will be automatically generated, but it can be suppressed by unchecking the "Display names of the overlay spectrum on the plot" option. Similarly, the path of spectra can be suppressed by checking the corresponding checkbox.
 
+#### 5. Display protease cut sites: cs()
+Users can overlay known protease cut sites onto the "digestion" map(s) using the cs() command. The GUI will prompt the user to select the protease and choose the color of the lines representing cleavage sites. Note that this function requires a CSV file containing the names of the proteases and their cleavage sites. An example can be found here: XXXX
+
+#### 6. Zoom: zm()
+DigestR includes various zooming and scrolling commands, accessible through the zoom GUI by selecting "Zoom" from the View menu or using the command zm(). Digestion maps can be navigated using the arrow pad provided in the zoom GUI or by using the five distinct zoom functions called by the buttons provided on the right side of the zoom GUI. Many of these functions are iterative and must be exited by right-clicking in the main plot window.
+
+#### 7. Gene labelling: gl()
+The gl() function allows users to override the threshold at which proteins are labeled when viewing data on the proteome-wide level. By lowering the default value, more peptides will be labeled.
+
+### Peptides analyses 
+
+#### 1. Peptide length distribution: pd()
+Defect in proteolytic activity might have an impact on digested peptide length. Therefore, DigestR was developed to calculate and plot peptide length distributions in amino acids using the pd() command. Users can select a folder or subfolder and process all CSV files in that directory. Files will be grouped depending on the second string of the filename. Three types of density plots from grouped CSV files can be chosen by the user: Overlay, Ridges, and Colored Ridges.
+
+#### 2. Cleavage site specificity: csp()
+The csp() function allows users to plot amino acid distributions at C-terminus or N-terminus to track changes in cut site representation/specificity between groups. Similar to pd(), this function allows users to select a folder or subfolder and process all CSV files in that directory. Files will be grouped depending on the second string of the filename. The user can select to plot either C-terminus or N-terminus or both distributions.
 
 
 
