@@ -5,7 +5,7 @@
 ## Overview
 DigestR is an open-source software developed for the R statistical language environment. The DigestR package is based on rNMR and contains a collection of tools for visualizing and analyzing protein digestion. 
 Users can interact interact with DigestR in two major ways: via point and click graphical user interfaces (GUIs) or by entering command directly in the R console. 
-This guide is intended to give an overview of DigestR function.
+This guide is intended to give an overview of DigestR functions.
 
 
 ## Prerequisites
