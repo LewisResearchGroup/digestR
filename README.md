@@ -40,6 +40,8 @@ DigestR supports Mascot (.csv) and MaxQuant (.mzXML) generated files. These file
 
 ### Converting files. 
 
+required files: .csv and .mzXML
+
 #### 1. Prepare Mascot files: rd()
 Users can natively import in DigestR files generated from mascot (.csv) and from MaxQuant (.mzXML). However, these files need to be pre-processed to be analyzed by DigestR. To prepare the mascot files for digestR, call the function rd() or click on ‘Prepare Mascot file’ under the ‘Manipulate csv’ section. Select the file(s) to be preprocessed. The software will automatically prepare and save the new file.
 
@@ -50,6 +52,8 @@ DigestR allows users to compare two mascot files and identify peptides that are 
 To create "digestion" maps, peptides identified by Mascot or MaxQuant need to be mapped to their proteomic location. First, the user needs to select a proteome to align peptides against. DigestR natively includes five proteomes, such as Human, Bos Taurus, and Plasmodium falciparum. Users can import new proteomes using the function xxx(). After proteome selection, users can align Mascot or MaxQuant identified peptides along the proteome by selecting single or multiple Mascot files. The alignment generates a "coincidence" or "digestion" map that users can interact with.
 
 ### Viewing and interacting with Digestion maps. 
+
+required files: .dcf
 
 #### 1. Opening digestion maps: fo() / fs()
 To open a spectrum in DigestR, either select "Open/Close Files" from the File menu or use the commands fo() or fs() in the R console. If multiple files have been opened, only the most recently opened spectrum will appear in the main plot window. To switch to another spectrum, double-click on a file name within the GUI. To close one or more files, select the desired files from the table and then press the "Close file" button.
@@ -74,6 +78,8 @@ The gl() function allows users to override the threshold at which proteins are l
 
 ### Peptides analyses 
 
+required files: .csv
+
 #### 1. Peptide length distribution: pd()
 Defect in proteolytic activity might have an impact on digested peptide length. Therefore, DigestR was developed to calculate and plot peptide length distributions in amino acids using the pd() command. Users can select a folder or subfolder and process all CSV files in that directory. Files will be grouped depending on the second string of the filename. Three types of density plots from grouped CSV files can be chosen by the user: Overlay, Ridges, and Colored Ridges.
 
@@ -82,26 +88,3 @@ The csp() function allows users to plot amino acid distributions at C-terminus o
 
 
 
-
-
-
-
-
-
-### 1. Remove Duplicates Function
-The `rd()` function creates a main GUI window, which provides an option to remove duplicate entries from a CSV file. This function first creates a "Remove Duplicates" button. When clicked, the button opens a file dialog for the user to choose a CSV file. After the file is selected, the removeDuplicates function is called to remove duplicate entries based on the 'pep_seq' column. The resulting file is then saved to a location specified by the user.
-
-### 2. Unique Peptides Function
-The `up()` function creates a main GUI window, which provides options to select two CSV files (Query and Experimental) and find unique peptides in the Experimental file that are not present in the Query file. The function then writes the unique peptides to a CSV file named with the Experimental filename appended with "_Unique".
-
-### 3. Density Plot Function
-The `pd()` function creates a GUI that allows users to create density plots from grouped CSV files located in a specified directory. Users can choose from three types of plots: Overlay, Ridges, and Colored Ridges.
-
-### 4. Cut Sites Distribution
-The `csp()` function creates a GUI that allows users to create bar plots from grouped CSV files located in a specified directory. Users can choose from three types of plots: Nter, Cter, and Combined.
-
-### 5. Plotting Cut Sites Function
-The `cs()` function creates a GUI window that allows users to select a protease from a dropdown menu and input a color for the lines in the plot. Upon clicking the "Plot" button, the function calls the plotCutSite function, passing the selected protease and color as arguments, to generate a plot of cut sites.
-
-### 6. Testing the Functions
-For each function, to test the GUI, call the function without any arguments. For example, to test the up function, simply call up().
