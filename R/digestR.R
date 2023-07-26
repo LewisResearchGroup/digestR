@@ -3,8 +3,9 @@
 ################################################################################
 ##                                                                            ##
 ##                                                                            ##
-##    digestR version 2.0.0, Tools for viewing and analyzing NMR spectra.        ##
-##    Copyright (C) 2009 Ian A. Lewis and Seth C. Schommer under GPL-3        ##
+##    version 1.0.0, Tools for viewing and analyzing protein catabolism.      ##
+##    Copyright (C) 2023, Dimitri Desmonts de Lamache, Raied Aburashed,       ##
+##          Travis A. Bingemann, Ian A. Lewis under GPL-3                     ##
 ##                                                                            ##
 ##    This program is free software: you can redistribute it and/or modify    ##
 ##    it under the terms of the GNU General Public License as published by    ##
