@@ -44,11 +44,18 @@ Required files: .csv and .mzXML
 #### 1. Prepare Mascot files: rd()
 Users can natively import in DigestR files generated from mascot (.csv) and from MaxQuant (.mzXML). However, these files need to be pre-processed to be analyzed by DigestR. To prepare the mascot files for digestR, call the function rd() or click on ‘Prepare Mascot file’ under the ‘Manipulate csv’ section. Select the file(s) to be preprocessed. The software will automatically prepare and save the new file.
 
+<img width="964" alt="Remove Duplicate GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/485014ee-3498-444f-b425-752cd6bd8e49">
+
 #### 2. Unique peptides: up()
 DigestR allows users to compare two mascot files and identify peptides that are unique to a specific experimental group. The up() function opens a main GUI window with options to select two CSV files (Query and Experimental) and find unique peptides in the Experimental file that are not present in the Query file. The function then writes the peptides unique to the experimental group to a CSV file named with the Experimental filename appended with "_Unique".
 
+<img width="977" alt="Unique Peptides GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/e68caba8-b439-468e-9f79-a8648cfb7643">
+
 #### 3. Process mascot files: pm() 
 To create "digestion" maps, peptides identified by Mascot or MaxQuant need to be mapped to their proteomic location. First, the user needs to select a proteome to align peptides against. DigestR natively includes five proteomes, such as Human, Bos Taurus, and Plasmodium falciparum. Users can import new proteomes using the function xxx(). After proteome selection, users can align Mascot or MaxQuant identified peptides along the proteome by selecting single or multiple Mascot files. The alignment generates a "coincidence" or "digestion" map that users can interact with.
+
+<img width="1025" alt="Process Mascot GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/dafc4d86-aed2-4c43-bc81-c907fcae2dea">
+
 
 ### Viewing and interacting with Digestion maps. 
 
@@ -59,6 +66,8 @@ To open a "digestion" map in DigestR, either select "Open/Close Files" from the 
 
 #### 2. Manipulate dcf files: mf()
 The mf() function in DigestR allow users to perform various mathematical operations with dcf files, facilitating comprehensive data manipulation and analysis. With mf(), users can add, substract, multiply, merge and divide, the data contained in multiple dcf files. This functionality allows users to perform mathematical operations tailored to their specific research needs, streamlining data processing and enhancing the overall analytical capabilities of DigestR.
+
+<img width="958" alt="Manipulate files GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/54e99813-9c85-400e-9eb8-aefaa27b0ee3">
 
 #### 3. Plot settings: ct()
 The ct() function allows users to interact with the "digestion" map directly through the graphical interface. Users can display the "digestion" map either at a proteome or protein level. By default, the full proteome view is displayed. 
@@ -85,8 +94,12 @@ Users can overlay known protease cut sites onto the "digestion" map(s) using the
 #### 7. Zoom: zm()
 DigestR includes various zooming and scrolling commands, accessible through the zoom GUI by selecting "Zoom" from the View menu or using the command zm(). Digestion maps can be navigated using the arrow pad provided in the zoom GUI or by using the five distinct zoom functions called by the buttons provided on the right side of the zoom GUI. Many of these functions are iterative and must be exited by right-clicking in the main plot window.
 
+<img width="960" alt="Zm GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/a81055a2-8e06-46a0-bc1c-c5287e86a2df">
+
 #### 8. Gene labelling: gl()
 The gl() function allows users to override the threshold at which proteins are labeled when viewing data on the proteome-wide level. By lowering the default value, more peptides will be labeled.
+
+<img width="959" alt="gl GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/f639c95d-8dfb-4494-9c9e-117c90d90bb9">
 
 ### Peptides analyses 
 
