@@ -75,6 +75,8 @@ The ct() function allows users to interact with the "digestion" map directly thr
 
 <img width="960" alt="CT GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/ca1cbb63-0a06-428b-801d-d7775805ba9c">
 
+
+
 To display the digestion map of a specific protein, click on "Display Single Gene" and enter the protein name in capital letters (e.g., HBA1, BSA). It is also possible to display individual peptides and peptide endpoints. Additionally, variance can be displayed if the selected dataset is the mean of multiple datasets (see mf() function).
 
 <img width="959" alt="CT_GENE GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/8892b896-2c31-4be4-9cb9-4fdf9b44266d">
