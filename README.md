@@ -61,7 +61,11 @@ To open a "digestion" map in DigestR, either select "Open/Close Files" from the 
 The mf() function in DigestR allow users to perform various mathematical operations with dcf files, facilitating comprehensive data manipulation and analysis. With mf(), users can add, substract, multiply, merge and divide, the data contained in multiple dcf files. This functionality allows users to perform mathematical operations tailored to their specific research needs, streamlining data processing and enhancing the overall analytical capabilities of DigestR.
 
 #### 3. Plot settings: ct()
-The ct() function allows users to interact with the "digestion" map directly through the graphical interface. Users can display the "digestion" map either at a proteome or protein level. By default, the full proteome view is displayed. To display the digestion map of a specific protein, click on "Display Single Gene" and enter the protein name in capital letters (e.g., HBA1, BSA). It is also possible to display individual peptides and peptide endpoints. Additionally, variance can be displayed if the selected dataset is the mean of multiple datasets (see mf() function).
+The ct() function allows users to interact with the "digestion" map directly through the graphical interface. Users can display the "digestion" map either at a proteome or protein level. By default, the full proteome view is displayed. 
+<img width="960" alt="CT GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/ca1cbb63-0a06-428b-801d-d7775805ba9c">
+
+To display the digestion map of a specific protein, click on "Display Single Gene" and enter the protein name in capital letters (e.g., HBA1, BSA). It is also possible to display individual peptides and peptide endpoints. Additionally, variance can be displayed if the selected dataset is the mean of multiple datasets (see mf() function).
+<img width="959" alt="CT_GENE GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/8892b896-2c31-4be4-9cb9-4fdf9b44266d">
 
 #### 4. Plot colors: co()
 The plot color function allows users to easily manipulate the plot colors. To open the plot color GUI, enter the command co(). Color preferences can be applied to multiple spectra simultaneously by selecting names from the files list. Plot color options for the selected files may be configured individually using the buttons provided on the right side of the GUI. The "Axes" button changes the color of the x and y axes, "BG" changes the background color, and "Peak labels" changes the label color of identified peaks.
@@ -73,6 +77,8 @@ DigestR allows multiple "digestion" maps to be displayed concurrently on a singl
 
 #### 6. Display protease cut sites: cs()
 Users can overlay known protease cut sites onto the "digestion" map(s) using the cs() command. The GUI will prompt the user to select the protease and choose the color of the lines representing cleavage sites. Note that this function requires a CSV file containing the names of the proteases and their cleavage sites. An example can be found here: XXXX
+
+<img width="959" alt="cs GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/2baa3d3e-2f37-49c7-a07a-615f34ebed33">
 
 #### 7. Zoom: zm()
 DigestR includes various zooming and scrolling commands, accessible through the zoom GUI by selecting "Zoom" from the View menu or using the command zm(). Digestion maps can be navigated using the arrow pad provided in the zoom GUI or by using the five distinct zoom functions called by the buttons provided on the right side of the zoom GUI. Many of these functions are iterative and must be exited by right-clicking in the main plot window.
@@ -89,6 +95,7 @@ Defect in proteolytic activity might have an impact on digested peptide length. 
 
 #### 2. Cleavage site specificity: csp()
 The csp() function allows users to plot amino acid distributions at C-terminus or N-terminus to track changes in cut site representation/specificity between groups. Similar to pd(), this function allows users to select a folder or subfolder and process all CSV files in that directory. Files will be grouped depending on the second string of the filename. The user can select to plot either C-terminus or N-terminus or both distributions.
+<img width="959" alt="Csp GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/a505660d-4b2a-4474-8814-455fde46307b">
 
 
 
