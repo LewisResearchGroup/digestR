@@ -44,17 +44,18 @@ Required files: .csv and .mzXML
 #### 1. Prepare Mascot files: rd()
 Users can natively import in DigestR files generated from mascot (.csv) and from MaxQuant (.mzXML). However, these files need to be pre-processed to be analyzed by DigestR. To prepare the mascot files for digestR, call the function rd() or click on ‘Prepare Mascot file’ under the ‘Manipulate csv’ section. Select the file(s) to be preprocessed. The software will automatically prepare and save the new file.
 
-<img width="964" alt="Remove Duplicate GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/485014ee-3498-444f-b425-752cd6bd8e49">
+<img width="964" alt="Remove Duplicate GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/e19ac9bb-5bc5-4f22-96f7-73cae0cfed61">
+
 
 #### 2. Unique peptides: up()
 DigestR allows users to compare two mascot files and identify peptides that are unique to a specific experimental group. The up() function opens a main GUI window with options to select two CSV files (Query and Experimental) and find unique peptides in the Experimental file that are not present in the Query file. The function then writes the peptides unique to the experimental group to a CSV file named with the Experimental filename appended with "_Unique".
 
-<img width="977" alt="Unique Peptides GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/e68caba8-b439-468e-9f79-a8648cfb7643">
+<img width="959" alt="Unique Peptides GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/afbd9554-1ac2-4492-9434-edf70c846e41">
 
 #### 3. Process mascot files: pm() 
 To create "digestion" maps, peptides identified by Mascot or MaxQuant need to be mapped to their proteomic location. First, the user needs to select a proteome to align peptides against. DigestR natively includes five proteomes, such as Human, Bos Taurus, and Plasmodium falciparum. Users can import new proteomes using the function xxx(). After proteome selection, users can align Mascot or MaxQuant identified peptides along the proteome by selecting single or multiple Mascot files. The alignment generates a "coincidence" or "digestion" map that users can interact with.
 
-<img width="1025" alt="Process Mascot GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/dafc4d86-aed2-4c43-bc81-c907fcae2dea">
+<img width="958" alt="Process Mascot GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/67bf5d8f-cfbb-4d18-aac4-b7e511838809">
 
 
 ### Viewing and interacting with Digestion maps. 
