@@ -62,9 +62,11 @@ The mf() function in DigestR allow users to perform various mathematical operati
 
 #### 3. Plot settings: ct()
 The ct() function allows users to interact with the "digestion" map directly through the graphical interface. Users can display the "digestion" map either at a proteome or protein level. By default, the full proteome view is displayed. 
+
 <img width="960" alt="CT GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/ca1cbb63-0a06-428b-801d-d7775805ba9c">
 
 To display the digestion map of a specific protein, click on "Display Single Gene" and enter the protein name in capital letters (e.g., HBA1, BSA). It is also possible to display individual peptides and peptide endpoints. Additionally, variance can be displayed if the selected dataset is the mean of multiple datasets (see mf() function).
+
 <img width="959" alt="CT_GENE GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/8892b896-2c31-4be4-9cb9-4fdf9b44266d">
 
 #### 4. Plot colors: co()
@@ -93,9 +95,13 @@ Required files: .csv
 #### 1. Peptide length distribution: pd()
 Defect in proteolytic activity might have an impact on digested peptide length. Therefore, DigestR was developed to calculate and plot peptide length distributions in amino acids using the pd() command. Users can select a folder or subfolder and process all CSV files in that directory. Files will be grouped depending on the second string of the filename. Three types of density plots from grouped CSV files can be chosen by the user: Overlay, Ridges, and Colored Ridges.
 
+<img width="959" alt="Density Plot GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/25dff9dc-71da-43f4-87d9-882834331ac7">
+
 #### 2. Cleavage site specificity: csp()
 The csp() function allows users to plot amino acid distributions at C-terminus or N-terminus to track changes in cut site representation/specificity between groups. Similar to pd(), this function allows users to select a folder or subfolder and process all CSV files in that directory. Files will be grouped depending on the second string of the filename. The user can select to plot either C-terminus or N-terminus or both distributions.
-<img width="959" alt="Csp GUI" src="https://github.com/LewisResearchGroup/DigestR/assets/139395028/a505660d-4b2a-4474-8814-455fde46307b">
+
+![CSP GUI final](https://github.com/LewisResearchGroup/DigestR/assets/139395028/9586bc83-f20b-40e4-91de-114acdacbe7c)
+
 
 
 
