@@ -12,7 +12,6 @@ LazyData: true
 Imports: 
     dplyr,
     ggplot2,
-    biomaRt,
     ggridges,
     Rcpp,
     tcltk,
