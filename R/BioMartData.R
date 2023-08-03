@@ -1,3 +1,10 @@
+.onLoad <- function(libname, pkgname) {
+  if (!requireNamespace("biomaRt", quietly = TRUE)) {
+    message("The biomaRt package is required to use certain functionality in this package. ",
+            "Please install it using BiocManager::install('biomaRt') if you want to use this functionality.")
+  }
+}
+
 library(magrittr)
 library(biomaRt)
 
