@@ -5,7 +5,8 @@
 ##                                                                            ##
 ## DigestR version 1.0.0, Tools for viewing and analyzing protein catabolism. ##
 ##      Copyright (C) 2023, Dimitri Desmonts de Lamache, Raied Aburashed,     ##
-##               Travis A. Bingemann, Ian A. Lewis under GPL-3                ##
+##               Travis A. Bingemann, Soren Wacker Ian A. Lewis               ##
+##				under GPL-3                                   ##
 ##                                                                            ##
 ##    This program is free software: you can redistribute it and/or modify    ##
 ##    it under the terms of the GNU General Public License as published by    ##
