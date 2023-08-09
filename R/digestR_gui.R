@@ -1,5 +1,13 @@
+file_path <- system.file("logger.R", package = "digestR")
+
+print(file_path)
+if (file.exists(file_path)) {
+    base::source(file_path)
+} else {
+    stop("logger.R was not found!")
+}
+
 library(shiny)
-base::source(system.file("logger.R", package = "digestR"))
 
 library(promises)
 library(future)
