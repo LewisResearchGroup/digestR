@@ -1,17 +1,18 @@
 Package: digestR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: DigestR Package for Data Digestion
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: John Doe
+Maintainer: John Doe <johndoe@example.com>
+Description: 
+    This package provides functionalities for data digestion, visualization, 
+    and transformation. It integrates seamlessly with popular data visualization 
+    packages and offers additional tools for advanced analysis.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
-biocViews:
 Depends: 
-    R (>= 3.5.0)
+    R (>= 3.5.0),
     dplyr,
     ggplot2,
     ggridges,
@@ -22,11 +23,10 @@ Depends:
     future,
     biomaRt,
     futile.logger,
-    shiny,
+    shiny
 Suggests:
     testthat,
     knitr,
-    rcmdcheck,
+    rcmdcheck
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
-
