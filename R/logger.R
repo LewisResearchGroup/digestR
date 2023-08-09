@@ -1,8 +1,8 @@
 library(futile.logger)
 
 # Set up the logger
-flog.threshold(DEBUG)
-flog.appender(appender.file("digestR.log"))
+futile.logger::flog.threshold(DEBUG)
+futile.logger::flog.appender(appender.file("digestR.log"))
 
 # Define the logger function
 log_message <- function(...){
@@ -13,5 +13,5 @@ log_message <- function(...){
   message <- paste(sapply(args, as.character), collapse = " ")
   
   # Log the message with futile.logger
-  flog.info(message)
+  futile.logger::flog.info(message)
 }
