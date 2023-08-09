@@ -4,7 +4,24 @@ library(futile.logger)
 futile.logger::flog.threshold(DEBUG)
 futile.logger::flog.appender(appender.file("digestR.log"))
 
-# Define the logger function
+#' Log a Message
+#'
+#' This function logs a given message using the `futile.logger` package. 
+#' Multiple arguments are concatenated into a single log message.
+#'
+#' @param ... One or more values (of any type). Multiple values are concatenated 
+#'   into a single message string.
+#'
+#' @return NULL. The primary side effect is the logging of the provided message.
+#' @importFrom futile.logger flog.info
+#' @export
+#'
+#' @examples
+#' # Log a simple message
+#' log_message("This is a test log message.")
+#'
+#' # Log a message with multiple components
+#' log_message("Value of x:", x, "and value of y:", y)
 log_message <- function(...){
   # Store all arguments in a list
   args <- list(...)
