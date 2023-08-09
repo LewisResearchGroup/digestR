@@ -27,4 +27,7 @@ Imports:
     rcmdcheck,
 Suggests:
     testthat,
+    knitr,
 RoxygenNote: 7.2.3
+VignetteBuilder: knitr
+
