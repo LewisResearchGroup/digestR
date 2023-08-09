@@ -483,9 +483,10 @@ createObj <- function(objList, overwrite=FALSE, returnObj=FALSE){
   ## Create pkgVar
   defPkg <- list()
   defPkg$prevDir <- defSet$wd
-  defPkg$version <- suppressWarnings(paste(packageDescription('digestR', 
-                                                              fields='Version'), ' (',	packageDescription('digestR', 
-                                                                                                          fields='Date'), ')', sep=''))
+  
+  defPkg$version <- suppressWarnings(
+    paste(packageDescription('digestR', fields='Version'), ' (',	packageDescription('digestR', fields='Date'), ')', sep='')
+  )
   
   ## Create assignments
   defAssign <- NULL
@@ -21314,19 +21315,19 @@ if (!'package:digestR' %in% search() && !exists('fileFolder')){
   options(htmlhelp=TRUE, help_type='html', chmhelp=FALSE)
   
   ## Print message on package load
-  cat("\n", "digestR version", pkgVar$version, "\n", 
-      "Copyright (C) 2009 Ian A. Lewis and Seth C. Schommer\n",
-      "digestR is free software and comes with ABSOLUTELY NO WARRANTY.\n",
-      "digestR may be modified and redistributed under certain conditions.\n",
-      "Go to http://www.r-project.org/Licenses/GPL-3 for more details.\n\n", 
-      "Citation:\n",
-      "Lewis, I. A., Schommer, S. C., Markley, J. L.\n",
-      "Magn. Reson. Chem. 47, S123-S126 (2009).\n\n")
+  #cat("\n", "digestR version", pkgVar$version, "\n", 
+  #    "Copyright (C) 2009 Ian A. Lewis and Seth C. Schommer\n",
+  #    "digestR is free software and comes with ABSOLUTELY NO WARRANTY.\n",
+  #    "digestR may be modified and redistributed under certain conditions.\n",
+  #    "Go to http://www.r-project.org/Licenses/GPL-3 for more details.\n\n", 
+  #    "Citation:\n",
+  #    "Lewis, I. A., Schommer, S. C., Markley, J. L.\n",
+  #    "Magn. Reson. Chem. 47, S123-S126 (2009).\n\n")
 }
 
 
 .onAttach <- function(libname, pkgname) {
-    ## Print message on package load
+  ## Print message on package load
   packageStartupMessage("digestR version ", pkgVar$version, "\n", 
                         "Copyright (C) 2015 Ian A. Lewis and Seth C. Schommer\n",
                         "digestR is free software and comes with ABSOLUTELY NO WARRANTY.\n",
