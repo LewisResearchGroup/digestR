@@ -3,6 +3,5 @@
 export(BioMartData)
 export(cs)
 export(fo)
-export(log_message)
 export(pd)
 importFrom(futile.logger,flog.info)

@@ -14,7 +14,6 @@ futile.logger::flog.appender(appender.file("digestR.log"))
 #'
 #' @return NULL. The primary side effect is the logging of the provided message.
 #' @importFrom futile.logger flog.info
-#' @export
 #'
 #' @examples
 #' # Log a simple message
