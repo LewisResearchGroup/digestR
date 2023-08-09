@@ -11,6 +11,7 @@ Description:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+biocViews:
 Depends: 
     R (>= 3.5.0),
     dplyr,

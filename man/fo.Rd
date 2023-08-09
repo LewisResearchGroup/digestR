@@ -24,11 +24,13 @@ state. This function also provides error handling, ensuring that files with unsu
 corrupted formats do not crash the application.
 }
 \examples{
+\dontrun{
 # Load a single spectrum file (assumes valid path and format)
 fo("path_to_spectrum_file.txt")
 
 # Trigger GUI-based file selector for user to select files
 fo()
+}
 
 }
 \seealso{
