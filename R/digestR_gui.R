@@ -202,17 +202,6 @@ createShinyUI <- function() {
           ),
 
 
-
-          tabPanel("Plotting",
-            # Contents for displaying results...
-            selectInput("var", 
-                  label = "Choose a variable", 
-                  choices = colnames(mtcars), 
-                  selected = "mpg"),
-            plotOutput("densityPlot")
-          ),
-
-
           tabPanel("Global Settings",
             # Contents for displaying global settings...
             verbatimTextOutput("globalSettingsOutput"),
@@ -366,13 +355,6 @@ start_app <- function() {
 
       #removeModal()
 
-    })
-
-    output$densityPlot <- renderPlot({
-      ggplot(mtcars, aes_string(x = input$var)) +
-        geom_density(fill = 'blue', alpha = 0.5) +
-        theme_minimal() +
-        labs(x = input$var, y = "Density", title = paste("Density Plot of", input$var))
     })
 
     output$globalSettingsOutput <- renderPrint({
