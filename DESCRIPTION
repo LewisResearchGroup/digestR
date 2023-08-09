@@ -25,3 +25,4 @@ Imports:
     futile.logger,
     shiny,
     rcmdcheck,
+    testthat,
