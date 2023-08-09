@@ -1,11 +1,10 @@
-.onLoad <- function(libname, pkgname) {
+.onAttach <- function(libname, pkgname) {
   if (!requireNamespace("biomaRt", quietly = TRUE)) {
-    message("The biomaRt package is required to use certain functionality in this package. ",
-            "Installing biomRt using BiocManager::install('biomaRt').")
-    if (!require("BiocManager", quietly = TRUE))
-        install.packages("BiocManager")
-
-    BiocManager::install("biomaRt")
+    if (!requireNamespace("BiocManager", quietly = TRUE)) {
+      install.packages("BiocManager")
+    }
+    BiocManager::install("biomaRt", ask = FALSE)
+    message("`biomaRt` was missing and has been installed.")
   }
 }
 
