@@ -39,7 +39,7 @@ library(ggplot2)
 library(ggridges)
 library(dplyr)
 
-source(system.file('R', "logger.R", package = "digestR"))
+source(system.file("logger.R", package = "digestR"))
 
 ## Assigns objects to the global environment and creates an undo point
 myAssign <- function(in.name = NULL, in.object, save.backup = TRUE){
