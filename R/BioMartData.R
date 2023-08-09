@@ -2,6 +2,10 @@
   if (!requireNamespace("biomaRt", quietly = TRUE)) {
     message("The biomaRt package is required to use certain functionality in this package. ",
             "Please install it using BiocManager::install('biomaRt') if you want to use this functionality.")
+    if (!require("BiocManager", quietly = TRUE))
+        install.packages("BiocManager")
+
+    BiocManager::install("biomaRt")
   }
 }
 
