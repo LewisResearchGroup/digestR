@@ -1,5 +1,5 @@
 library(shiny)
-source(system.file('R', "logger.R", package = "digestR"))
+source(system.file("logger.R", package = "digestR"))
 
 
 library(promises)
