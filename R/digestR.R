@@ -5919,11 +5919,13 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #' @return Returns an invisibly the user-selected or provided file paths.
 #' 
 #' @examples 
+#' \dontrun{
 #' # Load a single spectrum file (assumes valid path and format)
 #' fo("path_to_spectrum_file.txt")
 #' 
 #' # Trigger GUI-based file selector for user to select files
 #' fo()
+#' }
 #' 
 #' @seealso `createObj`, `dianaHead`, `log_message`, `myAssign`, `refresh`
 #'
