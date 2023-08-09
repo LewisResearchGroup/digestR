@@ -1,6 +1,5 @@
 library(shiny)
-source(system.file("logger.R", package = "digestR"))
-
+base::source(system.file("logger.R", package = "digestR"))
 
 library(promises)
 library(future)
