@@ -12,7 +12,7 @@ LazyData: true
 Depends: 
     R (>= 3.5.0)
 biocViews:
-Imports: 
+Depends: 
     dplyr,
     ggplot2,
     ggridges,
