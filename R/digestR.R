@@ -484,9 +484,10 @@ createObj <- function(objList, overwrite=FALSE, returnObj=FALSE){
   defPkg <- list()
   defPkg$prevDir <- defSet$wd
   
-  defPkg$version <- suppressWarnings(
-    paste(packageDescription('digestR', fields='Version'), ' (',	packageDescription('digestR', fields='Date'), ')', sep='')
-  )
+  # Remove this to see if the error disappears
+  #defPkg$version <- suppressWarnings(
+  #  paste(packageDescription('digestR', fields='Version'), ' (',	packageDescription('digestR', fields='Date'), ')', sep='')
+  #)
   
   ## Create assignments
   defAssign <- NULL
@@ -21200,6 +21201,7 @@ checkImage <- function(){
                'setWindow', 'shiftToROI', 'showGui', 'spin', 'sr', 'ss', 'tableEdit', 
                'tclCheck', 'ucsf1D', 'ucsf2D', 'ud', 'vp', 'vpd', 'vpu', 'vs', 'wc', 
                'wl', 'writeUcsf', 'ws', 'zc', 'zf', 'zi', 'zm', 'zo', 'zp', 'zz', 'rd', 'up', 'csp', 'pd', 'cs')
+  
   for (i in digestRfun)
     suppressPackageStartupMessages(autoload(i, 'digestR', warn.conflicts=FALSE))
   
@@ -21246,6 +21248,7 @@ if (!'package:digestR' %in% search() && !exists('fileFolder')){
     X11(title='Main Plot Window', width=defaultSettings$size.main[1],	
         height=defaultSettings$size.main[2])
   }
+  
   tryCatch(splashScreen(), error=function(er){
     if (.Platform$OS != 'windows'){
       invisible(myMsg(paste('Your computer does not have the required ', 
@@ -21329,10 +21332,10 @@ if (!'package:digestR' %in% search() && !exists('fileFolder')){
                                                         defBgColor))
   tcl('ttk::style', 'configure', 'TFrame', '-background', defBgColor)
   tcl('ttk::style', 'configure', 'TLabelframe', '-background', defBgColor)
-  gui()
+  #gui()
   
   ## Turn on HTML help
-  options(htmlhelp=TRUE, help_type='html', chmhelp=FALSE)
+  # options(htmlhelp=TRUE, help_type='html', chmhelp=FALSE)
   
   ## Print message on package load
   #cat("\n", "digestR version", pkgVar$version, "\n", 

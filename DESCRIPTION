@@ -24,10 +24,10 @@ Imports:
     biomaRt,
     futile.logger,
     shiny,
-    rcmdcheck,
 Suggests:
     testthat,
     knitr,
+    rcmdcheck,
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 
