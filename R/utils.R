@@ -1,3 +1,5 @@
+#' @importFrom datasets mtcars
+
 #' @importFrom grDevices X11 bringToTop cm.colors col2rgb contourLines dev.cur dev.list dev.new dev.next dev.off dev.set rgb topo.colors windows
 NULL
 
