@@ -10800,7 +10800,7 @@ load <- wl <- function(fileName, plot=TRUE, clearAll=TRUE){
     }
     suppressWarnings(base::load(file=fileName, envir=.GlobalEnv))
     digestR:::patch()
-    gui()
+    # gui()
     if (exists('fileFolder') && !is.null(fileFolder) && plot)
       dd()
     cat('"', fileName, '"', ' successfully loaded','\n', sep='')}, 
