@@ -21182,133 +21182,9 @@ checkImage <- function(){
   for (i in digestRfun)
     suppressPackageStartupMessages(autoload(i, 'digestR', warn.conflicts=FALSE))
   
-  ### Set X11 options and display digestR splash screen
-  #if (.Platform$OS == 'windows')
-  #  dev.new(title='Main Plot Window', width=defaultSettings$size.main[1], 
-  #          height=defaultSettings$size.main[2])
-  #else{
-  #  tryCatch({X11.options(type='Xlib')
-  #    X11(title='Main Plot Window', width=defaultSettings$size.main[1],
-  #        height=defaultSettings$size.main[2])},
-  #    error=function(er) cat('\nError:', er$message, '\n'))
-  #}
-  #tryCatch(digestR:::splashScreen(), error=function(er){
-  #  if (.Platform$OS != 'windows'){
-  #    invisible(myMsg(paste('Your computer does not have the required ', 
-  #                          'fonts to support fast X11 graphics in R.\n',
-  #                          'To correct this issue you may need to download some or', 
-  #                          ' all of the following X11 fonts:     \n\n', 
-  #                          '                              xorg-x11-fonts-75dpi\n',
-  #                          '                              xorg-x11-fonts-100dpi\n', 
-  #                          '                              xorg-x11-fonts-truetype\n',
-  #                          '                              xorg-x11-fonts-Type1\n\n', 
-  #                          'Please refer to the R Installation and Administration',
-  #                          ' Manual for more information:\n', 
-  #                          'http://cran.r-project.org/doc/manuals/R-admin.html#X11-',
-  #                          'issues', 
-  #                          sep=''), 'ok', 'info'))
-  #    dev.off()
-  #    tryCatch({X11.options(type='cairo')
-  #      X11(title='Main Plot Window', 
-  #          width=defaultSettings$size.main[1], 
-  #          height=defaultSettings$size.main[2])
-  #      digestR:::splashScreen()},
-  #      error=function(er) cat('\nError:', er$message, '\n'))
-  #  }
-  #})
-  #
-  ### Use a functional version of ::tk::dialog::file:: on older Linux systems
-  #tclVer <- as.character(tcl('info', 'patchlevel'))
-  #tclVer <- unlist(strsplit(tclVer, '.', fixed=TRUE))
-  #if (tclVer[1] < 8 || (tclVer[1] == 8 && tclVer[2] < 5) ||
-  #    (tclVer[1] == 8 && tclVer[2] == 5 && tclVer[3] < 5)){
-  #  filePath <- system.file('tcltk/tkfbox.tcl', package='digestR')
-  #  tcl('source', filePath)
-  #}
-  #
-  ### Add the tablelist package to the Tcl search path and load the package
-  #invisible(addTclPath(system.file('tcltk/tablelist', package='digestR')))
-  #invisible(tclRequire('tablelist_tile'))
-  #if (.Platform$OS == 'windows')
-  #  tcl('option', 'add', '*Tablelist*selectBackground', 'SystemHighlight')
-  #tcl('option', 'add', '*Tablelist*stripeBackground', '#ececff')
-  #
-  ### Correct problems with the "xpnative" theme for the treeview widget
-  #if (.Platform$OS == 'windows'){
-  #  tcl('ttk::style', 'configure', 'Treeview', '-background', 'SystemWindow')
-  #  tcl('ttk::style', 'configure', 'Row', '-background', 'SystemWindow')
-  #  tcl('ttk::style', 'configure', 'Cell', '-background', 'SystemWindow')
-  #  tcl('ttk::style', 'map', 'Row', 
-  #      '-background', c('selected', 'SystemHighlight'), 
-  #      '-foreground', c('selected', 'SystemHighlightText'))
-  #  tcl('ttk::style', 'map', 'Cell', 
-  #      '-background', c('selected', 'SystemHighlight'), 
-  #      '-foreground', c('selected', 'SystemHighlightText'))
-  #  tcl('ttk::style', 'map', 'Item', 
-  #      '-background', c('selected', 'SystemHighlight'), 
-  #      '-foreground', c('selected', 'SystemHighlightText'))
-  #}
-  #
-  ### Load digestR and bring up the plot window when saved workspaces load
-  #.First <- function(){
-  #  .First.sys()
-  #  require(digestR, quietly=TRUE, warn.conflicts=FALSE)
-  #  setwd(path.expand('~'))
-  #  autoload('dd', 'digestR')
-  #  if (exists('fileFolder') && !is.null(fileFolder))
-  #    dd()
-  #  digestR:::createObj()
-  #  #digestR:::createTclImage('digestRIcon', DIGESTR_GIF_PATH)
-  #  tt <- tktoplevel()
-  #  #tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
-  #  tkdestroy(tt)
-  #  #gui()
-  #}
-  #assign(".First", .First, inherits=FALSE, envir=.GlobalEnv)
-  #
-  ### Assign the digestR icon to GUIs  
-  ##createTclImage('digestRIcon', DIGESTR_GIF_PATH)
-  #tt <- tktoplevel()
-  ##tcl('wm', 'iconphoto', tt, '-default', 'digestRIcon')
-  #
-  ### Make sure Ttk widgets display the same color background as toplevels
-  #defBgColor <- as.character(tkcget(tt, '-background'))
-  #tkdestroy(tt)
-  #tcl('ttk::style', 'configure', 'TRadiobutton', '-background', defBgColor)
-  #tcl('ttk::style', 'map', 'TRadiobutton', '-background', c('disabled', 
-  #                                                          defBgColor))
-  #tcl('ttk::style', 'configure', 'TCheckbutton', '-background', defBgColor)
-  #tcl('ttk::style', 'map', 'TCheckbutton', '-background', c('disabled', 
-  #                                                          defBgColor))
-  #tcl('ttk::style', 'configure', 'TSizegrip', '-background', defBgColor)
-  #tcl('ttk::style', 'map', 'TSizegrip', '-background', c('disabled', 
-  #                                                       defBgColor))
-  #tcl('ttk::style', 'configure', 'TLabel', '-background', defBgColor)
-  #tcl('ttk::style', 'map', 'TLabel', '-background', c('disabled', 
-  #                                                    defBgColor))
-  #tcl('ttk::style', 'configure', 'TNotebook', '-background', defBgColor)
-  #tcl('ttk::style', 'map', 'TNotebook', '-background', c('disabled', 
-  #                                                       defBgColor))
-  #tcl('ttk::style', 'configure', 'Treeview', '-background', 'white')
-  #tcl('ttk::style', 'map', 'Treeview', '-background', c('disabled', 
-  #                                                      defBgColor))
-  #tcl('ttk::style', 'configure', 'TFrame', '-background', defBgColor)
-  #tcl('ttk::style', 'configure', 'TLabelframe', '-background', defBgColor)
-  #gui()
-  #
   ## Turn on HTML help
   options(htmlhelp=TRUE, help_type='html', chmhelp=FALSE)
-  
-  ## Print message on package load
-  packageStartupMessage("digestR version ", pkgVar$version, "\n", 
-                        "Copyright (C) 2015 Ian A. Lewis and Seth C. Schommer\n",
-                        "digestR is free software and comes with ABSOLUTELY NO WARRANTY.\n",
-                        "digestR may be modified and redistributed under certain conditions.\n",
-                        "Go to http://www.r-project.org/Licenses/GPL-3 for more details.\n\n", 
-                        "Citation:\n",
-                        "Lewis, I. A., Schommer, S. C., Markley, J. L.\n",
-                        "Magn. Reson. Chem. 47, S123-S126 (2015).\n")
-  
+    
   ## Check if the Rgui is running in SDI (multiple windows) mode
   if (.Platform$GUI == 'Rgui')
     sdiCheck()
@@ -21449,11 +21325,17 @@ if (!'package:digestR' %in% search() && !exists('fileFolder')){
 }
 
 
-
-
-
-
-
+.onAttach <- function(libname, pkgname) {
+    ## Print message on package load
+  packageStartupMessage("digestR version ", pkgVar$version, "\n", 
+                        "Copyright (C) 2015 Ian A. Lewis and Seth C. Schommer\n",
+                        "digestR is free software and comes with ABSOLUTELY NO WARRANTY.\n",
+                        "digestR may be modified and redistributed under certain conditions.\n",
+                        "Go to http://www.r-project.org/Licenses/GPL-3 for more details.\n\n", 
+                        "Citation:\n",
+                        "Lewis, I. A., Schommer, S. C., Markley, J. L.\n",
+                        "Magn. Reson. Chem. 47, S123-S126 (2015).\n")
+}
 
 
 ############################ auto_assign.R ####################################
