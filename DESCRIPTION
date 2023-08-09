@@ -9,6 +9,9 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Depends: 
+    R (>= 3.5.0)
+biocViews:
 Imports: 
     dplyr,
     ggplot2,
@@ -18,7 +21,4 @@ Imports:
     tcltk2,
     magrittr,
     future,
-    otherCRANpackage,
-    anotherCRANpackage
-Depends: 
-    R (>= 3.5.0)
+    biomaRt,
