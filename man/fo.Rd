@@ -2,10 +2,35 @@
 % Please edit documentation in R/digestR.R
 \name{fo}
 \alias{fo}
-\title{A Function from gui.R}
+\title{Open and Load Spectrum Files for `digestR`}
 \usage{
 fo(fileName, ...)
 }
+\arguments{
+\item{fileName}{A character string specifying the path to a spectrum file to be loaded. 
+If `fileName` is missing, the user will be prompted to select files via a GUI-based selector.}
+
+\item{...}{Additional arguments passed to other methods or functions.}
+}
+\value{
+Returns an invisibly the user-selected or provided file paths.
+}
 \description{
-This function does something even more interesting.
+The `fo` function is responsible for loading one or more spectrum files, processing them, 
+and integrating them into the `digestR` environment. If the user does not specify a 
+filename, a GUI-based file selector will be triggered. The function will then read the 
+specified files, verify their format and content, and make necessary updates to the global 
+state. This function also provides error handling, ensuring that files with unsupported or 
+corrupted formats do not crash the application.
+}
+\examples{
+# Load a single spectrum file (assumes valid path and format)
+fo("path_to_spectrum_file.txt")
+
+# Trigger GUI-based file selector for user to select files
+fo()
+
+}
+\seealso{
+`createObj`, `dianaHead`, `log_message`, `myAssign`, `refresh`
 }
