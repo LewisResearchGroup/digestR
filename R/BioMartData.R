@@ -19,6 +19,8 @@
   }
 }
 
+source(system.file("logger.R", package = "digestR"))
+
 library(magrittr)
 library(biomaRt)
 
