@@ -18,5 +18,7 @@ Imports:
     tcltk2,
     magrittr,
     future,
+    otherCRANpackage,
+    anotherCRANpackage
 Depends: 
     R (>= 3.5.0)
