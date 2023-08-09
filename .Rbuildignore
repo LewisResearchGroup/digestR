@@ -1,2 +1,4 @@
-.gitignore
-notes
+^\.localhistory$
+^inst/\.localhistory$
+^\.github$
+^notes/
