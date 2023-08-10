@@ -1367,7 +1367,7 @@ about <- function(){
   
   ##display digestR package info
   msg <- paste('digestR version', pkgVar$version, '\n',
-               'Copyright (C) 2023 Dimitri Desmonts de Lamache, Travis Bingeman, Raied Aburashed, Sören Wacker and Ian A. Lewis )
+               'Copyright (C) 2023 Dimitri Desmonts de Lamache, Travis Bingeman, Raied Aburashed, Sören Wacker and Ian A. Lewis' )
   msgLabel <- ttklabel(dlg, text=msg)
   
   ##creates ok button
