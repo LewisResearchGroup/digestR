@@ -1,4 +1,4 @@
-#' @importFrom grDevices X11 bringToTop cm.colors col2rgb contourLines dev.cur dev.list dev.new dev.next dev.off dev.set rgb topo.colors windows
+#' @importFrom grDevices X11 cm.colors col2rgb contourLines dev.cur dev.list dev.new dev.next dev.off dev.set rgb topo.colors windows
 NULL
 
 #' @importFrom graphics .filled.contour abline axis box contour grconvertX grconvertY image legend lines locator par persp points polygon rect segments text title
