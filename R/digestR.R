@@ -30386,7 +30386,7 @@ alignAndScorePeptides <- function(resList, lSpecies)
   
   if (is.null(lMatches) & is.null(geneMap))
   {
-    return -2
+    return(-2)
   }
 
 
