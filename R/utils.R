@@ -7,7 +7,7 @@ NULL
 #' @importFrom stats approx fivenum median na.exclude na.omit sd smooth.spline
 NULL
 
-#' @importFrom utils Rprof available.packages browseURL capture.output compareVersion contrib.url download.file flush.console install.packages installed.packages packageDescription read.csv read.table select.list tail tar untar update.packages winMenuAdd winMenuAddItem winMenuNames write.csv write.table
+#' @importFrom utils Rprof available.packages browseURL capture.output compareVersion contrib.url download.file flush.console install.packages installed.packages packageDescription read.csv read.table select.list tail tar untar update.packages write.csv write.table
 NULL
 
 
