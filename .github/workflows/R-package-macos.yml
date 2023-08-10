@@ -26,7 +26,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
+
+      - name: Set non-interactive graphics device
+        run: |
+          echo "options(device = 'pdf')" >> ~/.Rprofile
+
       # Install XQuartz for tcltk support
       - name: Install XQuartz
         run: |
