@@ -5,7 +5,7 @@
 ##                                                                            ##
 ## DigestR version 1.0.0, Tools for viewing and analyzing protein catabolism. ##
 ##      Copyright (C) 2023, Dimitri Desmonts de Lamache, Raied Aburashed,     ##
-##               Travis A. Bingemann, Soren Wacker Ian A. Lewis               ##
+##               Travis A. Bingemann, Sören Wacker and Ian A. Lewis           ##
 ##				under GPL-3                                   ##
 ##                                                                            ##
 ##    This program is free software: you can redistribute it and/or modify    ##
@@ -1366,8 +1366,8 @@ about <- function(){
   tcl('wm', 'attributes', dlg, topmost=TRUE)
   
   ##display digestR package info
-  msg <- paste(' digestR version', pkgVar$version, '\n',
-               'Copyright (C) 2019 Travis Bingeman, Dimitri Desmonts de Lamache, Raied Aburashed, Ian A. Lewis and Seth C. Schommer\n')
+  msg <- paste('digestR version', pkgVar$version, '\n',
+               'Copyright (C) 2023 Dimitri Desmonts de Lamache, Travis Bingeman, Raied Aburashed, Sören Wacker and Ian A. Lewis )
   msgLabel <- ttklabel(dlg, text=msg)
   
   ##creates ok button
