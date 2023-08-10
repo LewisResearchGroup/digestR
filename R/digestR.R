@@ -32751,6 +32751,7 @@ rd <- function() {
     return(invisible())
   
   tkwm.title(dlg, 'Prepare Mascot file for digestR')
+  tkwm.geometry(dlg, "400x50")  # Set the window size
   tkfocus(dlg)
   tkwm.deiconify(dlg)
   
@@ -32809,6 +32810,7 @@ up <- function() {
   if (is.null(dlg))
     return(invisible())
   tkwm.title(dlg, 'Unique peptides')
+  tkwm.geometry(dlg, "300x105")  # Set the window size
   tkfocus(dlg)
   tkwm.deiconify(dlg)
   
