@@ -3789,6 +3789,7 @@ peakVolume <- function(inFile, gran = 200, c.vol = FALSE,
 bringFocus <- function(dev = -1){
   if( .Platform$OS.type == 'windows' && sdiCheck(FALSE) )
     # bringToTop( dev )
+    return(invisible())
 }
 
 ## Internal graphics function setWindow
