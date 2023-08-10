@@ -21175,6 +21175,8 @@ checkImage <- function(){
 
   log_message('Loading digestR backend functions')
 
+  set_directory("~/digestR")
+
   ## Create or update necessary digestR objects
   digestR:::patch()
   
@@ -27841,8 +27843,36 @@ gl <- function()
   invisible()
 }
 
-pm <- function(species = globalSettings$speciesFiles)
+look_up_species_files <- function(){
+  #look up all files in subfolder 'species' and return a list of files
+  species <- list.files(path = 'data/proteomes', pattern = '.csv', full.names = TRUE)
+  globalSettings$speciesFiles <<- species
+  globalSettings$speciesList <<- species
+  return(species)
+}
+
+#' Process Mascot Files
+#'
+#' This function provides a GUI for processing Mascot files. 
+#' The user can select a species and choose to either convert a single file or all files in a folder 
+#' and its subfolders.
+#'
+#' @return Invisible. The function internally updates global settings based on user inputs 
+#' from the GUI and then calls a batch conversion function.
+#'
+#' @note The function uses the `tcltk` package to create the GUI.
+#'
+#' @examples
+#' \dontrun{
+#' pm()
+#' }
+#'
+#' @import tcltk
+#' @export
+pm <- function()
 {
+
+  species <- look_up_species_files()
 
   ##creates main window
   tclCheck()

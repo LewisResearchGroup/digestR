@@ -27,7 +27,7 @@ log_message <- function(...){
   
   # Convert all arguments to character and collapse them into a single string
   message <- paste(sapply(args, as.character), collapse = " ")
-  
+  print(message)
   # Log the message with futile.logger
   futile.logger::flog.info(message)
 }
