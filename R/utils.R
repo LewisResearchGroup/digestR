@@ -9,3 +9,6 @@ NULL
 
 #' @importFrom utils Rprof available.packages browseURL capture.output choose.dir compareVersion contrib.url download.file flush.console install.packages installed.packages packageDescription read.csv read.table select.list tail tar untar update.packages winMenuAdd winMenuAddItem winMenuNames write.csv write.table
 NULL
+
+#' @importFrom windows bringToTop
+NULL
