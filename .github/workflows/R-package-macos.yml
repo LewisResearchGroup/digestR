@@ -26,11 +26,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set non-interactive graphics device
-        run: |
-          echo "options(device = 'pdf')" >> ~/.Rprofile
-
+      
       # Install XQuartz for tcltk support
       - name: Install XQuartz
         run: |
@@ -39,12 +35,13 @@ jobs:
       - name: Set DISPLAY for XQuartz
         run: |
           echo "DISPLAY=:0.0" >> $GITHUB_ENV
+          
+      - name: Start XQuartz
+        run: open -a XQuartz
 
-      - name: Install and set up xvfb
+      - name: Set non-interactive graphics device
         run: |
-          brew install xvfb
-          Xvfb :99 &
-          echo "DISPLAY=:99.0" >> $GITHUB_ENV
+          echo "options(device = 'pdf')" >> ~/.Rprofile
 
       - name: Set up R ${{ matrix.r-version }}
         uses: r-lib/actions/setup-r@f57f1301a053485946083d7a45022b278929a78a
@@ -56,10 +53,6 @@ jobs:
           install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
-
-      - name: Set non-interactive graphics device
-        run: |
-          echo "options(device = 'pdf')" >> ~/.Rprofile
 
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
