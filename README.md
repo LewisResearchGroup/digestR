@@ -1,3 +1,7 @@
+[![R package on Windows](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-windows.yml/badge.svg)](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-windows.yml)
+[![R package on Ubuntu](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-ubuntu.yml/badge.svg)](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-ubuntu.yml)
+[![R package on MacOS](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-macos.yml/badge.svg)](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-macos.yml)
+
 # DigestR
 
 **Author**: Dimitri Desmonts de Lamache
