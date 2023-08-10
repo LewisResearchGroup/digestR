@@ -22,6 +22,13 @@ library(biomaRt)
 #' chromosomes if none are specified. It also manages directory creation, error handling, 
 #' data combination, and temporary file handling.
 #'
+#' @examples
+#' # Create an instance of BioMartData
+#' biomart <- BioMartData$new(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
+#' 
+#' # Retrieve and process the data
+#' biomart$get_data(chromosomes = c("1", "2"), filepath = ".")
+#' 
 #' @export
 BioMartData <- R6::R6Class(
   "BioMartData",
