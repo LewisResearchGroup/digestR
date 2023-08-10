@@ -20870,99 +20870,101 @@ updater <- function(auto=FALSE){
   }
   writeVers <- digestRvers[writeDirs]
   
-  ##check for the newest version of digestR currently installed
-  currVers <- writeVers[1]
-  if (length(writeDirs) > 1){
-    for (i in 2:length(writeVers)){
-      cv <- compareVersion(currVers, writeVers[i])
-      if (cv < 0)
-        currVers <- writeVers[i]
-    }
-  }
-  digestRpath <- digestRpaths[match(currVers, digestRvers)]	
-  
-  ##check if the package is up to date
-  newVers <- suppressWarnings(available.packages(contriburl=contrib.url(repos=
-                                                                          'http://digestR.nmrfam.wisc.edu/R/', type='source')))
-  if (is.null(newVers) || !length(newVers) || !nzchar(newVers)){
-    if (auto){
-      cat('cancelled.\n  Could not access digestR repository.\n')
-      return(invisible())
-    }else
-      err(paste('Could not access digestR repository.\n', 
-                'Check your network settings and try again.', sep=''))
-  }
-  newVers <- newVers['digestR', 'Version']
-  
-  ##download and install the latest digestR package if update was selected manually
-  if (!auto){
-    detach(package:digestR)
-    tryCatch(install.packages('digestR', lib=digestRpath, 
-                              repos='http://digestR.nmrfam.wisc.edu/R/', type='source'),
-             error=function(er)
-               stop(paste('Could not update digestR.\nGo to the digestR homepage to ',
-                          'download and manually install the latest version.', 
-                          sep='')), call.=FALSE)
-    
-    ##check installation
-    tryCatch(require(digestR, quietly=TRUE, warn.conflicts=FALSE), 	
-             error=function(er)
-               stop(paste('Could not update digestR.\nGo to the digestR homepage to ',
-                          'download and manually install the latest version.', 
-                          sep='')), call.=FALSE)
-    currVers <- suppressWarnings(packageDescription('digestR', fields='Version', 
-                                                    lib.loc=digestRpath))
-    if (currVers == newVers){
-      try(Sys.chmod(system.file('linux/digestR.sh', package='digestR'), mode = '555'), 
-          silent=TRUE)
-      myMsg('digestR update successful.  Restart R to apply the changes.   ', 
-            icon='info')
-    }
-    return(invisible())
-  }
-  
-  ##download and install digestR if the current package is not up-to-date
-  if (compareVersion(newVers, currVers) < 1){
-    if (auto)
-      cat('done.\n')
-    return(invisible())
-  }
-  usrSel <- myMsg(paste('digestR version ', newVers, ' is now available.\n', 
-                        'Version ', pkgVar$version, ' is currently installed.\n', 
-                        'Would you like to update digestR?', sep=''), type='yesno')
-  if (usrSel == 'no'){
-    if (auto)
-      cat('cancelled.\n')
-    return(invisible())
-  }
-  tryCatch(update.packages(repos='http://digestR.nmrfam.wisc.edu/R/', ask=FALSE,
-                           type='source', lib.loc=digestRpath),
-           error=function(er){ 
-             require(digestR, quietly=TRUE, warn.conflicts=FALSE)
-             myMsg(paste('Could not update digestR.\nGo to the ',
-                         'digestR homepage to download and manually install the latest ', 
-                         'version.', sep=''), icon='error')
-           })
-  
-  ##check installation
-  currVers <- suppressWarnings(packageDescription('digestR', fields='Version', 
-                                                  lib.loc=digestRpath))
-  if (currVers == newVers){
-    try(Sys.chmod(system.file('linux/digestR.sh', package='digestR'), mode = '555'), 
-        silent=TRUE)
-    myMsg('digestR update successful.  Please restart R to apply changes.', 
-          icon='info')
-    q('no')
-  }
-  if (auto)
-    cat('done.\n')
-  
+  # ##check for the newest version of digestR currently installed
+  # currVers <- writeVers[1]
+  # if (length(writeDirs) > 1){
+  #   for (i in 2:length(writeVers)){
+  #     cv <- compareVersion(currVers, writeVers[i])
+  #     if (cv < 0)
+  #       currVers <- writeVers[i]
+  #   }
+  # }
+  # digestRpath <- digestRpaths[match(currVers, digestRvers)]	
+  # 
+  # ##check if the package is up to date
+  # newVers <- suppressWarnings(available.packages(contriburl=contrib.url(repos=
+  #                                                                         'http://digestR.nmrfam.wisc.edu/R/', type='source')))
+  # if (is.null(newVers) || !length(newVers) || !nzchar(newVers)){
+  #   if (auto){
+  #     cat('cancelled.\n  Could not access digestR repository.\n')
+  #     return(invisible())
+  #   }else
+  #     err(paste('Could not access digestR repository.\n', 
+  #               'Check your network settings and try again.', sep=''))
+  # }
+  # newVers <- newVers['digestR', 'Version']
+  # 
+  # ##download and install the latest digestR package if update was selected manually
+  # if (!auto){
+  #   detach(package:digestR)
+  #   tryCatch(install.packages('digestR', lib=digestRpath, 
+  #                             repos='http://digestR.nmrfam.wisc.edu/R/', type='source'),
+  #            error=function(er)
+  #              stop(paste('Could not update digestR.\nGo to the digestR homepage to ',
+  #                         'download and manually install the latest version.', 
+  #                         sep='')), call.=FALSE)
+  #   
+  #   ##check installation
+  #   tryCatch(require(digestR, quietly=TRUE, warn.conflicts=FALSE), 	
+  #            error=function(er)
+  #              stop(paste('Could not update digestR.\nGo to the digestR homepage to ',
+  #                         'download and manually install the latest version.', 
+  #                         sep='')), call.=FALSE)
+  #   currVers <- suppressWarnings(packageDescription('digestR', fields='Version', 
+  #                                                   lib.loc=digestRpath))
+  #   if (currVers == newVers){
+  #     try(Sys.chmod(system.file('linux/digestR.sh', package='digestR'), mode = '555'), 
+  #         silent=TRUE)
+  #     myMsg('digestR update successful.  Restart R to apply the changes.   ', 
+  #           icon='info')
+  #   }
+  #   return(invisible())
+  # }
+  # 
+  # ##download and install digestR if the current package is not up-to-date
+  # if (compareVersion(newVers, currVers) < 1){
+  #   if (auto)
+  #     cat('done.\n')
+  #   return(invisible())
+  # }
+  # usrSel <- myMsg(paste('digestR version ', newVers, ' is now available.\n', 
+  #                       'Version ', pkgVar$version, ' is currently installed.\n', 
+  #                       'Would you like to update digestR?', sep=''), type='yesno')
+  # if (usrSel == 'no'){
+  #   if (auto)
+  #     cat('cancelled.\n')
+  #   return(invisible())
+  # }
+  # tryCatch(update.packages(repos='http://digestR.nmrfam.wisc.edu/R/', ask=FALSE,
+  #                          type='source', lib.loc=digestRpath),
+  #          error=function(er){ 
+  #            require(digestR, quietly=TRUE, warn.conflicts=FALSE)
+  #            myMsg(paste('Could not update digestR.\nGo to the ',
+  #                        'digestR homepage to download and manually install the latest ', 
+  #                        'version.', sep=''), icon='error')
+  #          })
+  # 
+  # ##check installation
+  # currVers <- suppressWarnings(packageDescription('digestR', fields='Version', 
+  #                                                 lib.loc=digestRpath))
+  # if (currVers == newVers){
+  #   try(Sys.chmod(system.file('linux/digestR.sh', package='digestR'), mode = '555'), 
+  #       silent=TRUE)
+  #   myMsg('digestR update successful.  Please restart R to apply changes.', 
+  #         icon='info')
+  #   q('no')
+  # }
+  # if (auto)
+  #   cat('done.\n')
+  # 
   return(invisible())
 }
 
 ## Check for updates to BMRB standards library
 updateLib <- function(auto=FALSE){
-  
+  # Remove update for testing
+  return(invisible())
+
   ##exit if auto updates are turned off
   if (auto && !defaultSettings$libUpdate)
     return(invisible())
