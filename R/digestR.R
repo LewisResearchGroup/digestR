@@ -27524,7 +27524,7 @@ plotGenes <- function(
       points(in.folder$file.par$gOI$genomeAxis, in.folder$data[in.folder$file.par$gOI$geneAxis] + offset, col = col, pch = 16, type="p")
     }
   }
-  Rprof(NULL)
+  return(Rprof(NULL))
 }
 
 ## TSB Plot Gene level Detail
