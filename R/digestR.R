@@ -3788,7 +3788,7 @@ peakVolume <- function(inFile, gran = 200, c.vol = FALSE,
 ## This is a platform independant version of bringToTop
 bringFocus <- function(dev = -1){
   if( .Platform$OS.type == 'windows' && sdiCheck(FALSE) )
-    bringToTop( dev )
+    # bringToTop( dev )
 }
 
 ## Internal graphics function setWindow
