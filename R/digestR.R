@@ -985,10 +985,11 @@ gui <- function(top=NULL){
     winMenuAdd("Manipulate csv")
     winMenuAddItem("Manipulate csv", 'Remove Duplicates    rd()', "rd()")
     winMenuAddItem("Manipulate csv", 'Unique peptides    up()', "up()")
-    winMenuAddItem("Manipulate dcf", 'Process Mascot Files    pm()', "pm()")
+    winMenuAddItem("Manipulate csv", 'Process Mascot Files    pm()', "pm()")
+    winMenuAddItem("Manipulate csv", 'Generate New Proteome    np()', "np()")
     winMenuAddItem("Manipulate csv", 'Plot cut site preference   csp()', "csp()")
     winMenuAddItem("Manipulate csv", 'Plot peptide distribution    pd()', "pd()")
-    winMenuAddItem('Manipulate dcf', 'Import Maven Files        im()', "im()")
+    winMenuAddItem("Manipulate csv", 'Import Maven Files        im()', "im()")
     
     winMenuAdd("Manipulate dcf")
     winMenuAddItem("Manipulate dcf", 'Open/Close files        fs()', "fs()")
@@ -1124,10 +1125,12 @@ devGui <- function(dev){
   
   winMenuAdd(paste(devName, 'digestR --> ', sep='/'))
   winMenuAdd(paste(devName, 'Manipulate csv', sep='/'))
-  winMenuAddItem(paste(devName, 'Manipulate csv ', sep='/'), 
+  winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Remove Duplicates    rd()', "rd()")
-  winMenuAddItem(paste(devName, 'Manipulate csv ', sep='/'), 
+  winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Unique peptides    up()', "up()")
+  winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
+                 'Generate New Proteome    np()', "np()")
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Process Mascot Files     pm()', "pm()")
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
@@ -33477,5 +33480,61 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
     }
   }
   return(invisible(prot))
+}
+
+#############################################################################################
+# Importing new proteomes using bioMart
+library(tcltk)
+
+#biomartDownloadWindow <- function() {
+ np <- function() {
+  # Create a new top-level window
+  tt <- tktoplevel()
+  tkwm.title(tt, "DigestR BioMart Downloader")
+  tkwm.geometry(tt, "400x200")  # Set the window size
+
+  # Tcl variables for entry widgets
+  biomartVar <- tclVar("ensembl")
+  datasetVar <- tclVar("btaurus_gene_ensembl")
+  chromosomesVar <- tclVar("1, 2")
+
+  # Create and position the controls
+  lab1 <- tklabel(tt, text = "Biomart")
+  ent1 <- tkentry(tt, textvariable = biomartVar, width=30)
+  
+  lab2 <- tklabel(tt, text = "Dataset")
+  ent2 <- tkentry(tt, textvariable = datasetVar, width=30)
+  
+  lab3 <- tklabel(tt, text = "Chromosomes")
+  ent3 <- tkentry(tt, textvariable = chromosomesVar, width=30)
+
+  # When the button is clicked, this function will be executed
+  onDownloadClick <- function() {
+    mart <- tclvalue(biomartVar)
+    dataset <- tclvalue(datasetVar)
+    chromosomes <- tclvalue(chromosomesVar)
+
+    if (chromosomes == "") {
+      chromosome_list <- NULL
+    } else {
+      chromosome_list <- strsplit(chromosomes, ", ?")[[1]]
+    }
+
+    # Execute the provided code for download
+    biomart <- BioMartData$new(biomart = mart, dataset = dataset)
+    biomart$get_data(chromosomes = chromosome_list)
+   
+    # Add some logic here to show the results or log messages if needed
+  }
+
+  btn <- tkbutton(tt, text = "Download", command = onDownloadClick)
+
+  # Position controls in the window using grid layout with padding
+  tkgrid(lab1, ent1, padx=10, pady=10)
+  tkgrid(lab2, ent2, padx=10, pady=10)
+  tkgrid(lab3, ent3, padx=10, pady=10)
+  tkgrid(btn, padx=10, pady=20)
+
+  tkfocus(tt)
 }
 
