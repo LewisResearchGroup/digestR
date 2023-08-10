@@ -1348,8 +1348,9 @@ splashScreen <- function(){
   #	text(.73, .2, 'R', col='red', cex=5, pos=3, offset=.5)	
   text(0, .08, 'Digestomics Analyzer', col=colMain, cex=2)
   text(0, -.15, paste('ver', pkgVar$version), col=colMain)
+  text(0, -.25, 'np() - Generate New Proteome', col=colMain)
   text(0, -.35, 'pm() - process Mascot files', col=colMain)
-  text(0, -.35, 'fo() - open *.dcf files', col=colMain)
+  text(0, -.45, 'fo() - open *.dcf files', col=colMain)
   #	text(0, -.3, 'wl() - load a workspace', col='white')
 }
 #text(-.45, .2, 'r', col='#0065ca', cex=6.5, pos=3, offset=.5)
