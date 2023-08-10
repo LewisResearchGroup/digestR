@@ -1,4 +1,5 @@
 ^\.localhistory$
 ^inst/\.localhistory$
 ^\.github$
+^\.data$
 ^notes/
