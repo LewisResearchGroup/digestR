@@ -20987,7 +20987,7 @@ updateLib <- function(auto=FALSE){
   }
   
   ##read remote library index file
-  libUrl <- 'http://digestR.nmrfam.wisc.edu/pages/data/files/RSD_libraries'
+  libUrl <- 'http://digestR.nmrfam.wisc.edX/pages/data/files/RSD_libraries'
   remoteIndex <- try(read.table(file.path(libUrl, 'index.txt'), head=TRUE, 
                                 sep='\t', stringsAsFactors=FALSE), silent=TRUE)
   if (is.null(remoteIndex$Name)){
@@ -21216,21 +21216,21 @@ checkImage <- function(){
   if (.Platform$GUI == 'Rgui')
     sdiCheck()
   
-  ## Add digestR to list of repositories and update package if applicable
-  if (is.na(match('digestR', names(getOption('repos')))))
-    options(repos=c(getOption('repos'), digestR='http://digestR.nmrfam.wisc.edu/R'))
-  errMsg <- tryCatch(digestR:::updater(TRUE), error=function(er) 
-    return(er$message))
-  if (!is.null(errMsg))
-    packageStartupMessage('Non-fatal error occurred while checking for', 
-                          ' updates:\n  "', errMsg, '"\n')
+  # ## Add digestR to list of repositories and update package if applicable
+  # if (is.na(match('digestR', names(getOption('repos')))))
+  #   options(repos=c(getOption('repos'), digestR='http://digestR.nmrfam.wisc.edu/R'))
+  # errMsg <- tryCatch(digestR:::updater(TRUE), error=function(er) 
+  #   return(er$message))
+  # if (!is.null(errMsg))
+  #   packageStartupMessage('Non-fatal error occurred while checking for', 
+  #                         ' updates:\n  "', errMsg, '"\n')
   
-  ## Check for standards library updates
-  errMsg <- tryCatch(digestR:::updateLib(TRUE), error=function(er) 
-    return(er$message))
-  if (!is.null(errMsg))
-    packageStartupMessage('Non-fatal error occurred while checking for ', 
-                          'standards library updates:\n  "', errMsg, '"\n')
+  # ## Check for standards library updates
+  # errMsg <- tryCatch(digestR:::updateLib(TRUE), error=function(er) 
+  #   return(er$message))
+  # if (!is.null(errMsg))
+  #   packageStartupMessage('Non-fatal error occurred while checking for ', 
+  #                         'standards library updates:\n  "', errMsg, '"\n')
   
   ## Check for image() bug
   checkImage()
