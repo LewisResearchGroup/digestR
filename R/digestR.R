@@ -21175,8 +21175,6 @@ checkImage <- function(){
 
   log_message('Loading digestR backend functions')
 
-  set_directory("~/digestR")
-
   ## Create or update necessary digestR objects
   digestR:::patch()
   
