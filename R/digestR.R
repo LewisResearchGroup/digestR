@@ -26584,15 +26584,6 @@ generateDIANAFileName <- function(result)
   return(sFileName)
 }
 
-testDCF <- function()
-{
-  result <- readDIANA()
-  lSpecies <- get("lSpecies", envir=.GlobalEnv)
-  plotByChrom(lSpecies, result$geneMap)
-  windows()
-  plotByGene(lSpecies, "HBB", result$aaMap)
-}
-
 loadSpecies <- function(fileName)
 {
   lSpecies <- NULL
