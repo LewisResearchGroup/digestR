@@ -33354,13 +33354,31 @@ cut_sites_distribution <- function () {
 #csp ()
 
 ################################################################################
-# Plotting cut sites GUI.
-
-#' A Function from gui.R
-#'
-#' This function does something even more interesting.
-#'
-#' @export
+#   display_protease_cut_sites
+#   Plot the cut sites of a given protease on a protein sequence.
+# 
+#   Parameters:
+#   - prot (character): Name of the protease.
+#   - colour (character): Color for the lines on the plot.
+# 
+#   Returns:
+#   - Invisible: Returns the protease name invisibly.
+# 
+#   This function reads protease cut site data from a CSV file and visualizes
+#   the cut sites of the specified protease on a protein sequence. It retrieves
+#   the current gene information and finds the corresponding sequence based on
+#   the gene index. Then, it identifies the cut sites of the specified protease
+#   within the sequence and plots vertical lines at those positions using the
+#   provided color.
+# 
+#   Note: The function assumes that the necessary data structures like
+#   'globalSettings', 'species', and 'protCutSites' are available in the
+#   environment.
+# 
+#   Example usage:
+#   plotCutSite("Trypsin", "black")
+#   """
+				       
 display_protease_cut_sites <- function() {
   tclCheck()
   dlg <- myToplevel('cs')
