@@ -9,7 +9,7 @@ biomartDownloadWindow <- function() {
   tkwm.geometry(tt, "400x200")  # Set the window size
 
   # Tcl variables for entry widgets
-  biomartVar <- tclVar("ensembl")
+  biomartVar <- tclVar("genes")
   datasetVar <- tclVar("btaurus_gene_ensembl")
   chromosomesVar <- tclVar("1, 2")
 
