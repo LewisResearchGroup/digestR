@@ -920,7 +920,7 @@ closeGui <- function(guiName){
     for (i in ls(envir=.TkRoot$env, all.names=TRUE))
       tryCatch(tkdestroy(i), error=function(er){})
     guiList <- c('per', 'ps', 'co', 'ct', 'os', 'sr', 'pj', 'roi', 'zm', 'pp', 
-                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'rd', 'up', 'csp', 'pd', 'cs') ### TSB -- added pm and gl
+                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'rd', 'up', 'csd', 'pd', 'cs','gp') ### TSB -- added pm and gl
     for (i in guiList)
       tryCatch(tkdestroy(paste('.', i, sep='')), error=function(er){})
   }else{
@@ -940,7 +940,7 @@ hideGui <- function(guiName){
     for (i in ls(envir=.TkRoot$env, all.names=TRUE))
       tryCatch(tkwm.iconify(i), error=function(er){})
     guiList <- c('per', 'ps', 'co', 'ct', 'os', 'sr', 'pj', 'roi', 'zm', 'pp', 
-                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'rd', 'up', 'csp', 'pd', 'cs') ### TSB -- added pm and gl
+                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'rd', 'up', 'csd', 'pd', 'cs', 'gp') ### TSB -- added pm and gl
     for (i in guiList)
       tryCatch(tkwm.iconify(paste('.', i, sep='')), error=function(er){})
   }else{
@@ -959,7 +959,7 @@ showGui <- function(guiName){
     for (i in ls(envir=.TkRoot$env, all.names=TRUE))
       tryCatch(tkwm.deiconify(i), error=function(er){})
     guiList <- c('per', 'ps', 'co', 'ct', 'os', 'sr', 'pj', 'roi', 'zm', 'pp', 
-                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'rd', 'up', 'csp', 'pd', 'cs') ### TSB -- added pm and gl
+                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'rd', 'up', 'csd', 'pd', 'cs', 'gp') ### TSB -- added pm and gl
     for (i in guiList)
       tryCatch(tkwm.deiconify(paste('.', i, sep='')), error=function(er){})
   }else{
@@ -983,12 +983,12 @@ gui <- function(top=NULL){
     winMenuAdd("  digestR -->  ")
     
     winMenuAdd("Manipulate csv")
-    winMenuAddItem("Manipulate csv", 'Remove Duplicates    rd()', "rd()")
-    winMenuAddItem("Manipulate csv", 'Unique peptides    up()', "up()")
-    winMenuAddItem("Manipulate csv", 'Process Mascot Files    pm()', "pm()")
-    winMenuAddItem("Manipulate csv", 'Generate New Proteome    np()', "np()")
-    winMenuAddItem("Manipulate csv", 'Plot cut site preference   csp()', "csp()")
-    winMenuAddItem("Manipulate csv", 'Plot peptide distribution    pd()', "pd()")
+    winMenuAddItem("Manipulate csv", 'Remove Duplicates    prepare_mascot/rd()', "prepare_mascot_files/rd()")
+    winMenuAddItem("Manipulate csv", 'Unique peptides    unique_peptides/up()', "unique_peptides/up()")
+    winMenuAddItem("Manipulate csv", 'Process Mascot Files    process_mascot/pm()', "process_mascot/pm()")
+    winMenuAddItem("Manipulate csv", 'Generate New Proteome    generate_proteome/np()', "generate_proteome/gp()")
+    winMenuAddItem("Manipulate csv", 'Plot cut site distribution   cut_sites_distribution/csd()', "cut_sites_distribution/csd()")
+    winMenuAddItem("Manipulate csv", 'Plot peptide distribution    peptides_distribution/pd()', "peptides_distribution/pd()")
     winMenuAddItem("Manipulate csv", 'Import Maven Files        im()', "im()")
     
     winMenuAdd("Manipulate dcf")
@@ -1132,13 +1132,13 @@ devGui <- function(dev){
                  'Unique peptides    up()', "up()")
 
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
-                 'Generate New Proteome    np()', "np()")
+                 'Generate New Proteome    gp()', "gp()")
                  
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Process Mascot Files     pm()', "pm()")
 
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
-                 'Plot cut site preference   csp()', "csp()")
+                 'Plot cut site preference   csd()', "csd()")
 
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'),
                  'Plot peptide distribution    pd()', "pd()")
@@ -32755,7 +32755,7 @@ library(dplyr)
 #Modify the code to allow for the selection of one or multiple files => check pm function by Travis
 #Add close when clicked on the button. 
 
-prepare_mascot_files <- function() {
+prepare_mascot <- function() {
   ## creates main window
   tclCheck()
   dlg <- tktoplevel()
@@ -32809,7 +32809,7 @@ removeDuplicates <- function(input_file) {
 }
 
 # Test the RemoveDuplicate() function
-#rd()
+# prepare_mascot()
 
 ################################################################################
 # Unique peptides function  GUI 
@@ -32882,7 +32882,7 @@ unique_peptides <- function() {
 }
 
 # Test the up() function
-#up()
+# unique_peptides()
 
 ################################################################################
 # Density plot function GUI 
@@ -33040,7 +33040,7 @@ peptides_distribution <- function() {
   tkwait.visibility(win)
 }
 # call the function
-# pd()
+# peptides_distribution()
 
 ################################################################################ 
 # Cter, Nter function GUI 
@@ -33351,7 +33351,7 @@ cut_sites_distribution <- function () {
 }
 
 # call the function
-#csp ()
+# cut_sites_distribution()
 
 ################################################################################
 #   display_protease_cut_sites
@@ -33507,6 +33507,9 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
   }
   return(invisible(prot))
 }
+				       
+# Call the function 
+# display_protease_cut_sites()
 
 #############################################################################################
 # Importing new proteomes using bioMart
@@ -33564,3 +33567,5 @@ library(tcltk)
   tkfocus(tt)
 }
 
+# call the function
+# generate_proteome ()
