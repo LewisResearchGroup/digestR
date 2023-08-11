@@ -805,7 +805,7 @@ patch <- function(delete=TRUE){
               'old.folder', 'overlay.list', 'current.roi.summary', 'pdisp.all', 
               'pdisp.off', 'pdisp.off.all', 'plot.roi.summary', 'pm', 'pm.abs', 'pmv', 
               'pmv.abs', 'save.roi.summary', 'ucsfData', 'vsv', 'sdi', 'mdi', 'cf', 
-              'tkGuis', 'convList', 'rd', 'up', 'cs', 'csp', 'pd' )
+              'tkGuis', 'convList', 'rd', 'up', 'cs', 'csd', 'pd', 'gp' )
   
   if (delete)
     suppressWarnings(rm(list=oldObj, envir=.GlobalEnv))
@@ -815,7 +815,7 @@ patch <- function(delete=TRUE){
 
 ################################################################################
 ##                                                                            ##
-##     Internal functions for showing, hiding and working with digestR GUIs      ##
+##   Internal functions for showing, hiding and working with digestR GUIs     ##
 ##                                                                            ##
 ################################################################################
 
@@ -1202,11 +1202,12 @@ devGui <- function(dev){
                  'Display protease cut site      cs()', "cs()")
   winMenuAddItem(paste(devName, 'View', sep='/'), 
                  'Gene labeling              gl()', "gl()")			
-  ##	winMenuAddItem(paste(devName, 'View', sep='/'), 
-  ##			'1D Projections         pj()', "pj()")
+  
   winMenuAddItem(paste(devName, 'View', sep='/'), 
                  'Redraw spectrum   dd()', "dd()")
-  
+	
+  ##	winMenuAddItem(paste(devName, 'View', sep='/'), 
+  ##			'1D Projections         pj()', "pj()")
   ##	winMenuAdd(paste(devName, 'Tools', sep='/'))
   ##	winMenuAdd(paste(devName, 'Tools/Assignments', sep='/'))
   ##	winMenuAddItem(paste(devName, 'Tools/Assignments', sep='/'), 
