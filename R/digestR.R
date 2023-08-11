@@ -32754,8 +32754,8 @@ library(dplyr)
 #Remove duplicates GUI.
 #Modify the code to allow for the selection of one or multiple files => check pm function by Travis
 #Add close when clicked on the button. 
-rd <- PrepareMascotFiles
-PrepareMascotFiles <- function() {
+
+prepare_mascot_files <- function() {
   ## creates main window
   tclCheck()
   dlg <- tktoplevel()
@@ -32815,8 +32815,7 @@ removeDuplicates <- function(input_file) {
 # Unique peptides function  GUI 
 ## Change code so that it uses the current directory to export the file to.
 
-up <- UniquePeptides
-UniquePeptides <- function() {
+unique_peptides <- function() {
   ## creates main window
   tclCheck()
   dlg <- tktoplevel()
@@ -32899,9 +32898,7 @@ UniquePeptides <- function() {
 #' This function does something even more interesting.
 #'
 #' @export
-
-pd <- PeptidesDensity
-PeptidesDensity <- function() {
+peptides_distribution <- function() {
   # Define variables
   csv_dir <- ""
   plot_type <- ""
@@ -33047,9 +33044,7 @@ PeptidesDensity <- function() {
 
 ################################################################################ 
 # Cter, Nter function GUI 
-
-csd <- CutSitesDistribution
-CutSitesDistribution <- function () {
+cut_sites_distribution <- function () {
   # tclCheck()
   # dlg <- myToplevel('csp')
   # if (is.null(dlg))
@@ -33366,8 +33361,7 @@ CutSitesDistribution <- function () {
 #' This function does something even more interesting.
 #'
 #' @export
-cs <- DisplayProteaseCutSites
-DisplayProteaseCutSites <- function() {
+display_protease_cut_sites <- function() {
   tclCheck()
   dlg <- myToplevel('cs')
   if (is.null(dlg))
@@ -33501,8 +33495,7 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
 library(tcltk)
 
 #biomartDownloadWindow <- function() {
- gp <- GenerateProteome
- GenerateProteome <- function() {
+ generate_proteome <- function() {
   # Create a new top-level window
   tt <- tktoplevel()
   tkwm.title(tt, "DigestR BioMart Downloader")
