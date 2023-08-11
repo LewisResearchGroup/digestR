@@ -12,7 +12,7 @@ test_that("test in a temp directory", {
     biomart <- BioMartData$new(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
 
     # Retrieve and process the data
-    biomart$get_data(filepath = tmp_dir, chromosomes = c("1",))
+    biomart$get_data(filepath = tmp_dir, chromosomes = c("1"))
 
     # check file exists
     expect_true(file.exists(file.path(tmp_dir, "btaurus_gene_ensembl.txt")))
