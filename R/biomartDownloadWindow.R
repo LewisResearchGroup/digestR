@@ -59,7 +59,7 @@ biomartDownloadWindow <- function() {
   # Create a new top-level window
   tt <- tktoplevel()
   tkwm.title(tt, "DigestR BioMart Downloader")
-  tkwm.geometry(tt, "400x200")  # Set the window size
+  tkwm.geometry(tt, "400x250")  # Set the window size
 
   # Tcl variables for entry widgets
   biomartVar <- tclVar("genes")
@@ -95,8 +95,8 @@ biomartDownloadWindow <- function() {
 searchBtn <- tkbutton(tt, text = "Search Datasets", command = onSearchClick)
 
 # Position controls for search pattern
-tkgrid(lab4, ent4, padx = 10, pady = 10)
-tkgrid(searchBtn, padx = 10, pady = 20)
+#tkgrid(lab4, ent4, padx = 10, pady = 10)
+#tkgrid(searchBtn, padx = 10, pady = 20)
 
   # When the button is clicked, this function will be executed
   onDownloadClick <- function() {
@@ -117,13 +117,25 @@ tkgrid(searchBtn, padx = 10, pady = 20)
     # Add some logic here to show the results or log messages if needed
   }
 
-  btn <- tkbutton(tt, text = "Download", command = onDownloadClick)
+  btn <- tkbutton(tt, text = "Download proteome", command = onDownloadClick)
+  # btn2 <- tkbutton(tt, text = "Search Datasets", command = onSearchClick)
 
   # Position controls in the window using grid layout with padding
   tkgrid(lab1, ent1, padx=10, pady=10)
   tkgrid(lab2, ent2, padx=10, pady=10)
   tkgrid(lab3, ent3, padx=10, pady=10)
+  tkgrid(lab4, ent4, padx=10, pady=10)
   tkgrid(btn, padx=10, pady=20)
+  tkgrid(btn2, padx=20, pady=20)
 
   tkfocus(tt)
 }
+
+## Modify biomart function to integrate that
+ensembl <- useEnsembl(biomart = "genes")
+datasets <- listDatasets(ensembl)
+head(datasets)a
+searchDatasets(mart = ensembl, pattern = "")
+
+## Modify the GUI to get the buttons at the right spot etc...
+## Can't see button 2 
