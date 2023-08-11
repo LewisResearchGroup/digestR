@@ -27,3 +27,8 @@ set_directory <- function(dir) {
   setwd(dir)
   log_message('Working directory:', getwd())
 }
+
+
+recursive_delete <- function(dir) {
+  unlink(dir, recursive = TRUE, force = TRUE)
+}
