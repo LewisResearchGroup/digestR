@@ -33048,8 +33048,8 @@ PeptidesDensity <- function() {
 ################################################################################ 
 # Cter, Nter function GUI 
 
-csp <- CutSitesPlot
-CutSitesPlot <- function () {
+csd <- CutSitesDistribution
+CutSitesDistribution <- function () {
   # tclCheck()
   # dlg <- myToplevel('csp')
   # if (is.null(dlg))
@@ -33366,8 +33366,8 @@ CutSitesPlot <- function () {
 #' This function does something even more interesting.
 #'
 #' @export
-cs <- DisplayProteaseCut
-DisplayProteaseCut <- function() {
+cs <- DisplayProteaseCutSites
+DisplayProteaseCutSites <- function() {
   tclCheck()
   dlg <- myToplevel('cs')
   if (is.null(dlg))
@@ -33501,7 +33501,7 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
 library(tcltk)
 
 #biomartDownloadWindow <- function() {
- np <- GenerateProteome
+ gp <- GenerateProteome
  GenerateProteome <- function() {
   # Create a new top-level window
   tt <- tktoplevel()
