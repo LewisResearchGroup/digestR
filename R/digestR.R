@@ -1004,7 +1004,6 @@ gui <- function(top=NULL){
     winMenuAddItem("Edit", '--', "none")
     winMenuAddItem("Edit", 'Preferences       ep()', "ep()")
     
-    
     winMenuAdd("Graphics")
     winMenuAddItem("Graphics", 'Plot colors        co()', "co()")
     winMenuAddItem("Graphics", 'Plot settings      ct()', "ct()")
@@ -1024,7 +1023,7 @@ gui <- function(top=NULL){
                    "digestR:::myHelp('developers_guide/developers_guide', TRUE)")
     winMenuAddItem("Help", '--', "none")
     winMenuAddItem("Help", 'Homepage', 
-                   "browseURL('http://digestR.nmrfam.wisc.edu')")
+                   "browseURL(PROJECT_URL)")
     winMenuAddItem("Help", 'Update digestR', "digestR:::updater()")
     winMenuAddItem("Help", 'About digestR', "digestR:::about()")
     
@@ -1054,7 +1053,6 @@ gui <- function(top=NULL){
           command=function() ud())
     tkadd(editMenu, 'command', label='Redo', accelerator='rd()', 
           command=function() rd())
-    
     
     tkadd(editMenu, 'command', label='Edit Genotype', accelerator='gt()', 
           command=function() gt())
@@ -1099,7 +1097,7 @@ gui <- function(top=NULL){
     tkadd(helpMenu, 'command', label='Developer\'s guide', command=function(...) 
       digestR:::myHelp('developers_guide/developers_guide', TRUE))
     tkadd(helpMenu, 'command', label='Homepage', 
-          command=function(...) browseURL('http://digestR.nmrfam.wisc.edu'))
+          command=function(...) browseURL(PROJECT_URL))
     tkadd(helpMenu, 'command', label='About digestR',
           command=function() digestR:::about())
     tkadd(topMenu, 'cascade', label='Help', menu=helpMenu)
@@ -1124,26 +1122,35 @@ devGui <- function(dev){
     return(invisible())
   
   winMenuAdd(paste(devName, 'digestR --> ', sep='/'))
+
   winMenuAdd(paste(devName, 'Manipulate csv', sep='/'))
+
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Remove Duplicates    rd()', "rd()")
+
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Unique peptides    up()', "up()")
+
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Generate New Proteome    np()', "np()")
+                 
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Process Mascot Files     pm()', "pm()")
+
   winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'), 
                  'Plot cut site preference   csp()', "csp()")
-  winMenuAddItem(paste(devName, 'Manipulate dcf', sep='/'),
+
+  winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'),
                  'Plot peptide distribution    pd()', "pd()")
-  winMenuAddItem(paste(devName, 'Manipulate dcf', sep='/'),
+
+  winMenuAddItem(paste(devName, 'Manipulate csv', sep='/'),
                  'Import Maven Files      im()', "im()")	
   
-  
   winMenuAdd(paste(devName, 'Manipulate dcf', sep='/'))
+
   winMenuAddItem(paste(devName, 'Manipulate dcf', sep='/'), 
                  'Open/Close files      fs()', "fs()")
+
   winMenuAddItem(paste(devName, 'Manipulate dcf', sep='/'), 
                  'Save as               sa()', "sa()")
   
@@ -1223,8 +1230,9 @@ devGui <- function(dev){
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'Developer\'s guide', 
                  "digestR:::myHelp('developers_guide/developers_guide', TRUE)")
   winMenuAddItem(paste(devName, 'Help', sep='/'), '-', "none")
-  winMenuAddItem(paste(devName, 'Help', sep='/'), 'Homepage', 
-                 "browseURL('http://digestR.nmrfam.wisc.edu')")
+
+  winMenuAddItem(paste(devName, 'Help', sep='/'), 'Homepage', paste("browseURL('", PROJECT_URL, "')"))
+
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'Update digestR', 
                  "digestR:::updater()")
   winMenuAddItem(paste(devName, 'Help', sep='/'), 'About digestR', 
@@ -27847,7 +27855,7 @@ gl <- function()
 
 look_up_species_files <- function(){
   #look up all files in subfolder 'species' and return a list of files
-  species <- list.files(path = 'data/proteomes', pattern = '.csv', full.names = TRUE)
+  species <- list.files(path=PROTEOMES_PATH, pattern = '.csv', full.names = TRUE)
   globalSettings$speciesFiles <<- species
   globalSettings$speciesList <<- species
   return(species)

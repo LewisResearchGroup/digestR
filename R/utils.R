@@ -11,24 +11,19 @@ NULL
 NULL
 
 
-maybeCreateDirectory <- function(dir) {
+maybe_create_directory <- function(dir) {
   # Check if the directory exists
   if (!dir.exists(dir)) {
     # If the directory does not exist, create it
     dir.create(dir, recursive = TRUE)  # The recursive = TRUE argument means that it will create any necessary parent directories as well
+    log_message('Created directory:', dir)
   }
 }
 
 
 set_directory <- function(dir) {
-  # Check if the directory exists
-  if (!dir.exists(dir)) {
-    # If the directory does not exist, create it
-    dir.create(dir, recursive = TRUE)  # The recursive = TRUE argument means that it will create any necessary parent directories as well
-  }
-
+  maybe_create_directory(dir)
   # Set the working directory
   setwd(dir)
-
   log_message('Working directory:', getwd())
 }

@@ -161,15 +161,10 @@ BioMartData <- R6::R6Class(
 
     #' @description Fetch gene data from Ensembl BioMart.
     #' @param chromosomes Character vector (default NULL). The chromosomes for which data will be fetched.
-    #' @param filepath Character string (default "data/proteomes"). Path where the fetched data will be stored.
-    get_data = function(chromosomes = NULL, filepath = "data/proteomes") {
-      # Create folders if they don't exist
-      if (!dir.exists("data")) {
-        dir.create("data")
-      }
-      if (!dir.exists(filepath)) {
-        dir.create(filepath)
-      }
+    #' @param filepath Character string (default PROTEOMES_PATH). Path where the fetched data will be stored.
+    get_data = function(chromosomes = NULL, filepath = PROTEOMES_PATH) {
+      
+      maybe_create_directory(filepath)
 
       if (!is.null(chromosomes)) {
         chromosomes <- intersect(chromosomes, self$chromosomes)
