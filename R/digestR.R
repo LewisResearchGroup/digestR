@@ -30450,7 +30450,7 @@ alignAndScorePeptides <- function(resList, lSpecies)
     result$lVectors[[result$appended_vectors]] <- vPepPoints
     result$sVecLabel[appended_vectors] <- globalSettings$vectorType$PepPoints
   }
-  
+  log_message('Done')
   return(result)
 }
 
