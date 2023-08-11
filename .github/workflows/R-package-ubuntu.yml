@@ -49,8 +49,8 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          Xvfb :99 & 
-          echo "DISPLAY=:99.0" >> $GITHUB_ENV
+          Xvfb :99 &
+          export DISPLAY=:99.0
 
       - name: Check
         run: |
