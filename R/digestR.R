@@ -27879,7 +27879,7 @@ look_up_species_files <- function(){
 #'
 #' @import tcltk
 #' @export
-pm <- function()
+process_mascot <- function()
 {
 
   species <- look_up_species_files()
