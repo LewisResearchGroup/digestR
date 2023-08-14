@@ -134,7 +134,7 @@ searchBtn <- tkbutton(tt, text = "Search Datasets", command = onSearchClick)
 ## Modify biomart function to integrate that
 ensembl <- useEnsembl(biomart = "genes")
 datasets <- listDatasets(ensembl)
-head(datasets)a
+head(datasets)
 searchDatasets(mart = ensembl, pattern = "")
 
 ## Modify the GUI to get the buttons at the right spot etc...
