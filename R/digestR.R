@@ -27973,7 +27973,17 @@ process_mascot <- function()
   
   invisible()
 }
-
+		       
+#' Save File As DIANA Compressed File
+#'
+#' This function allows the user to save the current DIANA file in a compressed format.
+#'
+#' @param saveFileName Character string containing the desired save file name. If not provided,
+#'                     a file dialog will prompt the user to choose a save location.
+#' @return None (invisible return).
+#'
+#' @importFrom tcltk mySave saveAs fileFolder wc nzchar
+#' @export
 sa <- function(saveFileName = '')
 {
   if (saveFileName == '')
@@ -28813,6 +28823,42 @@ ps <- function(dispPane='co'){
 ##      vp() resets the zero point of the plot without affecting the max of the 
 ##      zlimit. Offset shifts a given plot up/down from the vp() specified zero.
 ## ...  - Additional plotting options can be passed to drawPeptides and par()
+
+#' Overlay Spectra and Generate Plot
+#'
+#' This function overlays spectra based on the provided list of spectrum indices and
+#' generates a plot with the overlaid spectra. It supports different types of overlay
+#' palettes and allows for customization of the overlay behavior.
+#'
+#' @param askUsr A logical value indicating whether to prompt the user for overlay list creation.
+#'               Default is \code{TRUE}.
+#' @param offset A numeric value indicating the offset between overlaid spectra. If not provided,
+#'               the offset from global settings is used.
+#' @param ... Additional parameters passed to internal plotting functions.
+#'
+#' @return None (invisible return).
+#'
+#' @details The function performs the following steps:
+#' \itemize{
+#'   \item It defines default overlay palettes for different numbers of colors.
+#'   \item It determines the current spectrum and its dimensions.
+#'   \item If \code{askUsr} is \code{TRUE} or \code{overlayList} is \code{NULL}, it opens
+#'     the GUI for creating an overlay list and returns.
+#'   \item If \code{askUsr} is \code{FALSE} and an overlay list is present, it overlays
+#'     the spectra as specified by the overlay list.
+#'   \item The function handles plot text overlay, removing the current spectrum, and plotting
+#'     the overlaid spectra.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#'   # Overlay spectra based on the provided list
+#'   ol(askUsr = FALSE, offset = 0.1)
+#' }
+#'
+#' @importFrom graphics legend par plot
+#' @importFrom DIANA::drawPeptides DIANA::ucsf1D DIANA::plot1D
+#' @export
 ol <- function(askUsr = TRUE, offset = NULL, ...)
 {
   ### Define default overlay palletes
@@ -32755,7 +32801,35 @@ library(dplyr)
 #Remove duplicates GUI.
 #Modify the code to allow for the selection of one or multiple files => check pm function by Travis
 #Add close when clicked on the button. 
-
+	 
+#' Prepare Mascot files function
+#' Remove Duplicate Entries from a CSV File
+#'
+#' This function prompts the user to select an input CSV file, reads its content,
+#' removes duplicate entries based on a specified column, and writes the unique
+#' data to a destination CSV file.
+#'
+#' @return A character string indicating the path of the destination CSV file
+#'
+#' @details The function performs the following steps:
+#' \itemize{
+#'   \item The user is prompted to select a directory, which becomes the working directory.
+#'   \item The user is prompted to select the input CSV file.
+#'   \item The CSV file is read, skipping the first 3 rows, and the header is assumed to be present.
+#'   \item The function checks if the 'pep_seq' column exists in the data. If not, an error is raised.
+#'   \item Duplicate values in the 'pep_seq' column are removed, and the resulting data frame is stored.
+#'   \item The user is prompted to select a destination CSV file.
+#'   \item The unique data is written to the destination CSV file, excluding row names.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#'   # Call the function
+#'   RemoveDuplicate()
+#' }
+#'
+#' @importFrom utils choose.dir file.choose read.csv write.csv
+#' @export	 
 prepare_mascot <- function() {
   ## creates main window
   tclCheck()
@@ -32813,9 +32887,38 @@ removeDuplicates <- function(input_file) {
 # prepare_mascot()
 
 ################################################################################
-# Unique peptides function  GUI 
 ## Change code so that it uses the current directory to export the file to.
 
+#' Find and Save Unique Peptides from a given mascot file
+#'
+#' This function prompts the user to select directories and files, reads input CSV files,
+#' and identifies unique peptides present in one file but not in another. It then saves
+#' these unique peptides to a new CSV file.
+#'
+#' @return A character string indicating the path of the destination CSV file
+#'
+#' @details The function performs the following steps:
+#' \itemize{
+#'   \item The user is prompted to select a directory to work in.
+#'   \item The user is prompted to select an input CSV file yo use as a Query (L1).
+#'   \item The user is prompted to select another input CSV file as the experimental group (L2).
+#'   \item The CSV files are read with headers assumed to be present.
+#'   \item The function checks if the 'pep_seq' column exists in both L1 and L2 files.
+#'     If not, an error is raised.
+#'   \item Unique peptides are identified in L2 that are not present in L1.
+#'   \item A new filename is created for the output CSV file by appending "_unique" to
+#'     the L2 file name (without extension).
+#'   \item The unique peptides are saved to the destination CSV file.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#'   # Call the function
+#'   uniquePeptides()
+#' }
+#'
+#' @importFrom utils choose.dir file.choose read.csv write.csv tools::file_path_sans_ext basename file.path
+#' @export
 unique_peptides <- function() {
   ## creates main window
   tclCheck()
@@ -32886,18 +32989,48 @@ unique_peptides <- function() {
 # unique_peptides()
 
 ################################################################################
-# Density plot function GUI 
-
-# pd <- function() {
-#   tclCheck()
-#   dlg <- myToplevel('pd')
-#   if (is.null(dlg))
-#     return(invisible())
-
-#' A Function from digest.R
+## Add the mean and peptide numbers to be displayed on the plot
+	 
+#' Create Density Plot for Peptide Length Distribution
 #'
-#' This function does something even more interesting.
+#' This function generates density plots for the distribution of peptide lengths across
+#' different groups based on input CSV files. The function provides options to create
+#' different types of plots including overlay density plot, ridges plot, and colored
+#' ridges plot.
 #'
+#' @param csv_dir A character string specifying the directory where the CSV files are located.
+#' @param plot_type A character string specifying the type of density plot to generate.
+#'                  Options are "overlay", "ridges", or "colored_ridges".
+#'
+#' @return A ggplot2 object representing the generated density plot.
+#'
+#' @details The function performs the following steps:
+#' \itemize{
+#'   \item The CSV files in the specified directory are grouped based on a second string
+#'     in their filenames.
+#'   \item The function calculates the number of characters in the 'pep_seq' column for
+#'     each group and calculates the mean length.
+#'   \item Depending on the \code{plot_type} argument, the function creates an overlay
+#'     density plot, a ridges plot, or a colored ridges plot using the \pkg{ggplot2}
+#'     and \pkg{ggridges} packages.
+#'   \item The mean length is annotated on the plot.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#'   # Generate an overlay density plot
+#'   overlay_plot <- create_density_plot(csv_dir = "path/to/csv/files", plot_type = "overlay")
+#'
+#'   # Generate a ridges plot
+#'   ridges_plot <- create_density_plot(csv_dir = "path/to/csv/files", plot_type = "ridges")
+#'
+#'   # Generate a colored ridges plot
+#'   colored_ridges_plot <- create_density_plot(csv_dir = "path/to/csv/files", plot_type = "colored_ridges")
+#' }
+#'
+#' @importFrom ggplot2 ggplot geom_density labs theme_bw geom_vline geom_text scale_fill_viridis_c annotate
+#' @importFrom ggridges geom_density_ridges2 geom_density_ridges_gradient
+#' @importFrom dplyr group_by summarise
 #' @export
 peptides_distribution <- function() {
   # Define variables
@@ -32931,6 +33064,10 @@ peptides_distribution <- function() {
       second_str <- strsplit(filename, "_")[[1]][2]
       # Read the CSV file and extract the pep_seq column
       csv_data <- read.csv(csv_files[i], skip = 3, header = TRUE)
+      # Check if the 'pep_seq' column exists
+      if (!("pep_seq" %in% colnames(csv_data))) {
+        stop("Error: 'pep_seq' column not found in the CSV file.")
+      }
       pep_seq_col <- csv_data$pep_seq
       # Create a new dataframe with the pep_seq column and the group name
       pep_seq_df <- data.frame(group_name = second_str, pep_seq = pep_seq_col)
@@ -33044,7 +33181,44 @@ peptides_distribution <- function() {
 # peptides_distribution()
 
 ################################################################################ 
-# Cter, Nter function GUI 
+#'  Cleavage Sites Distribution 
+#'
+#' This function generates various plots to visualize cleavage site distributions from
+#' input CSV files. The plots include percentages of mean first and last letter counts
+#' for different groups of data.
+#'
+#' @param csv_dir A character string specifying the directory containing the input CSV files.
+#' @param plot_type A character string specifying the type of plot to generate. Options are
+#'                  "Nter" (N-terminal cleavage sites), "Cter" (C-terminal cleavage sites),
+#'                  or "Combined" (combined plots for mean first and last letter counts).
+#'
+#' @return A ggplot2 object representing the generated plot.
+#'
+#' @details The function performs the following steps:
+#' \itemize{
+#'   \item The CSV files in the specified directory are grouped based on a second string
+#'     in their filenames.
+#'   \item First and last letters are extracted from each sequence in the CSV files.
+#'   \item Percentages of mean first and last letter counts are calculated for each group.
+#'   \item The function creates plots based on the specified plot type: "Nter" (N-terminal),
+#'     "Cter" (C-terminal), or "Combined" (both mean first and last letter counts).
+#' }
+#'
+#' @examples
+#' \dontrun{
+#'   # Generate a plot for N-terminal cleavage sites
+#'   nter_plot <- plotCutSites(csv_dir = "path/to/csv/files", plot_type = "Nter")
+#'
+#'   # Generate a plot for C-terminal cleavage sites
+#'   cter_plot <- plotCutSites(csv_dir = "path/to/csv/files", plot_type = "Cter")
+#'
+#'   # Generate a combined plot for mean first and last letter counts
+#'   combined_plot <- plotCutSites(csv_dir = "path/to/csv/files", plot_type = "Combined")
+#' }
+#'
+#' @importFrom dplyr group_by summarise
+#' @importFrom ggplot2 ggplot geom_bar geom_errorbar ggtitle xlab ylab theme_bw
+#' @export
 cut_sites_distribution <- function () {
   # tclCheck()
   # dlg <- myToplevel('csp')
