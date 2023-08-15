@@ -146,7 +146,7 @@ biomartDownloadWindow <- function() {
   # Create a new top-level window
   tt <- tktoplevel()
   tkwm.title(tt, "DigestR BioMart Downloader")
-  tkwm.geometry(tt, "400x400")  # Set the window size
+  tkwm.geometry(tt, "400x250")  # Set the window size
 
   # Tcl variables for entry widgets
   biomartVar <- tclVar("genes")
@@ -164,7 +164,7 @@ biomartDownloadWindow <- function() {
   lab3 <- tklabel(tt, text = "Chromosomes")
   ent3 <- tkentry(tt, textvariable = chromosomesVar, width=30)
 
-  lab4 <- tklabel(tt, text = "Search Pattern")
+  lab4 <- tklabel(tt, text = "Search Datasets")
   ent4 <- tkentry(tt, textvariable = searchPatternVar, width = 30)
 
   # Function to perform the dataset search
@@ -211,13 +211,21 @@ onSearchClick <- function() {
   btn <- tkbutton(tt, text = "Download proteome", command = onDownloadClick)
 
   # Position controls in the window using grid layout with padding
-  tkgrid(lab1, ent1, padx=10, pady=10)
-  tkgrid(lab2, ent2, padx=10, pady=10)
-  tkgrid(lab3, ent3, padx=10, pady=10)
-  tkgrid(lab4, ent4, padx=10, pady=10)
-  tkgrid(btn, padx=10, pady=20)
-  tkgrid(searchBtn, padx=10, pady=10)  # Position the search button
+  # Position controls in the window using grid layout with padding
+tkgrid(lab1, ent1, padx=10, pady=10)
+tkgrid(lab2, ent2, padx=10, pady=10)
+tkgrid(lab3, ent3, padx=10, pady=10)
+tkgrid(lab4, ent4, padx=10, pady=10)
+
+# Create a new frame to hold the buttons
+buttonFrame <- tkframe(tt)
+tkgrid(buttonFrame, columnspan=2, padx=10, pady=10)
+
+# Position the buttons side by side in the frame
+tkgrid(btn, column=1, row=5, padx=10, pady=20, sticky="w")
+tkgrid(searchBtn, column=0, row=5, padx=10, pady=20, sticky="e")
 
   tkfocus(tt)
 }
 
+biomartDownloadWindow()
