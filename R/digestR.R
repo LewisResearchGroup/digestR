@@ -28193,7 +28193,19 @@ modalDialog <- function(parent, title, question, entryInit, entryWidth = 20,
   returnVal
 }
 
-## Interactive GUI for manipulating plot settings
+#' Plot Settings GUI
+#'
+#' This function creates a graphical user interface (GUI) window for adjusting plot settings for DIANA spectra.
+#' The GUI allows users to change plot colors, configure color options for various components, and switch
+#' between different settings panels.
+#'
+#' @param dispPane A character specifying the default displayed pane in the GUI. Options are "co" (default) for
+#'                 the "Plot Colors" pane, and "sp" for the "Spectra" pane.
+#'
+#' @return None (invisible return).
+#'
+#' @importFrom tcltk tclCheck myToplevel tkwm.title tkfocus tkwm.deiconify tkadd tkgrid ttksizegrip tkselect tkcurselection tkitemconfigure na.omit tkselection.set tkbind tkdestroy
+#' @export
 ps <- function(dispPane='co'){
   
   ##create main window
