@@ -33601,7 +33601,7 @@ tkgrid(searchBtn, column=0, row=5, padx=10, pady=20, sticky="e")
   tkfocus(tt)
 }
 
-biomartDownloadWindow()
+#biomartDownloadWindow()
 ###############################################################################
 #biomartDownloadWindow <- function() {
  generate_proteome1 <- function() {
