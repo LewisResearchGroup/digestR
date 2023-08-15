@@ -131,12 +131,12 @@ biomartDownloadWindow <- function() {
   tkfocus(tt)
 }
 
-## Modify biomart function to integrate that
-ensembl <- useEnsembl(biomart = "genes")
-datasets <- listDatasets(ensembl)
-searchDatasets(mart = ensembl, pattern = "")
-head(datasets)
-searchDatasets(mart = ensembl, pattern = "")
+# ## Modify biomart function to integrate that
+# ensembl <- useEnsembl(biomart = "genes")
+# datasets <- listDatasets(ensembl)
+# searchDatasets(mart = ensembl, pattern = "")
+# head(datasets)
+# searchDatasets(mart = ensembl, pattern = "")
 
 ## Modify the GUI to get the buttons at the right spot etc...
 ## Can't see button 2 
@@ -228,4 +228,4 @@ tkgrid(searchBtn, column=0, row=5, padx=10, pady=20, sticky="e")
   tkfocus(tt)
 }
 
-biomartDownloadWindow()
+# biomartDownloadWindow()
