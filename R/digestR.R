@@ -23037,7 +23037,7 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
 #############################################################################################
 # Importing new proteomes using bioMart
 
-generate_proteome <- function() {
+generate_proteome2 <- function() {
   # Create a new top-level window
   tt <- tktoplevel()
   tkwm.title(tt, "DigestR BioMart Downloader")
@@ -23126,7 +23126,7 @@ tkgrid(searchBtn, column=0, row=5, padx=10, pady=20, sticky="e")
 }
 
 
-generate_proteome2 <- function() {
+generate_proteome <- function() {
   library(tcltk2)
   
   tt <- tktoplevel()
@@ -23146,7 +23146,9 @@ generate_proteome2 <- function() {
       tclvalue(datasetVar) <- dataset
     }
   }
-
+  
+  speciesLabelFrame <- ttklabelframe(tt, text='Species')
+	
   lab1 <- tklabel(tt, text = "Biomart")
   #ent1 <- tkentry(tt, textvariable = biomartVar, width=30)
   # Create a combobox for Biomart options:
@@ -23155,7 +23157,10 @@ generate_proteome2 <- function() {
   tclvalue(ent1) <- "genes"  
 
   lab2 <- tklabel(tt, text = "Dataset Results")
-  listbox <- tklistbox(tt, height=20, width=100, font='Consolas 10')
+  listbox <- tklistbox(tt, height=20, width=100, font='Consolas 10', selectmode='extended', active='dotbox', exportselection=FALSE, bg='white',
+			xscrollcommand=function(...) tkset(xscr, ...), yscrollcommand=function(...) tkset(yscr, ...))
+  xscr <- ttkscrollbar(speciesLabelFrame, orient='horizontal', command=function(...) tkxview(listbox, ...))
+  yscr <- ttkscrollbar(speciesLabelFrame, orient='vertical',	command=function(...) tkyview(listbox, ...))
   tkbind(listbox, "<Double-1>", set_dataset)
   
   lab3 <- tklabel(tt, text = "Chromosomes")
@@ -23208,6 +23213,7 @@ generate_proteome2 <- function() {
   tkgrid(lab4, ent4, padx=10, pady=10)
   tkgrid(searchBtn, btn, padx=10, pady=20)
 }
+generate_proteome()
 
 
  
