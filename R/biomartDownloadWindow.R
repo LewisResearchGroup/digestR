@@ -173,6 +173,7 @@ onSearchClick <- function() {
     
     # Display search results to the user
     tkmessageBox(message = paste("Search Results:\n", paste(search_results, collapse = "\n")))
+    log_message("Fetching Datasets...")
   }
 }
 
