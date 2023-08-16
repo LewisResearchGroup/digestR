@@ -15,7 +15,7 @@ test_that("test in a temp directory", {
     biomart$get_data(filepath = tmp_dir, chromosomes = c("1"))
 
     # check file exists
-    expect_true(file.exists(file.path(tmp_dir, "btaurus_gene_ensembl.txt")))
+    expect_true(file.exists(file.path(tmp_dir, "btaurus_gene_ensembl.csv")))
 
     # After the test code, cleanup the directory
     on.exit(recursive_delete(tmp_dir), add = TRUE)
