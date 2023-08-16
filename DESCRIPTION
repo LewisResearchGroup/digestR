@@ -20,6 +20,7 @@ Depends:
     Rcpp,
     tcltk,
     tcltk2,
+    gWidgets2tcltk,
     magrittr,
     future,
     biomaRt,
