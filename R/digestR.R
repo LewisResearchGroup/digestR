@@ -5944,7 +5944,7 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #' @seealso `createObj`, `dianaHead`, `log_message`, `myAssign`, `refresh`
 #'
 #' @export
-fo <- function(fileName, ...){
+file_open <- function(fileName, ...){
   
   ## Create any/all of the digestR objects that are missing
   createObj()
