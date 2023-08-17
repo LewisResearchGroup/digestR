@@ -23172,91 +23172,89 @@ BioMartData <- R6::R6Class(
 
 ##############################################################################################
 
+#' Generate a graphical user interface for the DigestR BioMart Downloader.
+#'
+#' This function sets up a Tkinter GUI for searching and downloading protein data using the BioMart API.
 generate_proteome <- function() {
-   library(tcltk2)
-   
-   tt <- tktoplevel()
-   tkwm.title(tt, "DigestR BioMart Downloader")
- 
-   biomartVar <- tclVar("genes")
-   datasetVar <- tclVar("btaurus_gene_ensembl")
-   chromosomesVar <- tclVar("1, 2")
-   searchPatternVar <- tclVar("taurus")
- 
-   set_dataset <- function(...) {
-     selected_index <- tclvalue(tkcurselection(listbox))
-     if (length(selected_index) > 0) {
-       selected_entry <- tkget(listbox, selected_index)
-       dataset <- unlist(strsplit(selected_entry, "\\|"))[1]
-       tclvalue(datasetVar) <- dataset
-     }
-   }
+  library(tcltk2)
+  
+  # Initialize main window
+  main_window <- tktoplevel()
+  tkwm.title(main_window, "DigestR BioMart Downloader")
+  
+  # Set initial values for tcl variables
+  biomart_var <- tclVar("genes")
+  dataset_var <- tclVar("none")
+  chromosomes_var <- tclVar("1, 2")
+  search_pattern_var <- tclVar("taurus")
+  
+  #' Update the dataset tcl variable based on user selection in the listbox.
+  update_dataset_var <- function(...) {
+    selected_index <- tclvalue(tkcurselection(listbox))
+    if (length(selected_index) > 0) {
+      selected_entry <- tkget(listbox, selected_index)
+      selected_dataset <- unlist(strsplit(as.character(selected_entry), "\\|"))[1]
+      tclvalue(dataset_var) <- selected_dataset
+    }
+  }
+  
+  #' Populate the listbox widget with search results.
+  populate_listbox_with_search_results <- function(search_results) {
+    tkdelete(listbox, 0, "end")
+    for (i in 1:nrow(search_results)) {
+      entry <- with(search_results[i, ], {
+        sprintf("%-30s | %-60s | %-20s", dataset, description, version)
+      })
+      tkinsert(listbox, "end", entry)
+    }
+  }
+  
+  #' Search datasets using the user-provided search pattern.
+  execute_dataset_search <- function() {
+    search_pattern <- tclvalue(search_pattern_var)
+    if (search_pattern != "") {
+      ensembl <- useEnsembl(biomart = "genes")
+      search_results <- searchDatasets(mart = ensembl, pattern = search_pattern)
+      populate_listbox_with_search_results(search_results)
+    }
+  }
+  
+  #' Download protein data based on user settings and selections.
+  download_proteome_data <- function() {
+    mart <- tclvalue(biomart_var)
+    dataset <- tclvalue(dataset_var)
+    chromosomes <- tclvalue(chromosomes_var)
+  
+    chromosome_list <- ifelse(chromosomes == "", NULL, strsplit(chromosomes, ", ?")[[1]])
+  
+    biomart_instance <- BioMartData$new(biomart = mart, dataset = dataset)
+    biomart_instance$get_data(chromosomes = chromosome_list)
+  }
+  
+  # Create and configure widgets
+  tkgrid(tklabel(main_window, text = "Biomart"),
+         tk2combobox(main_window, values = c("genes", "ensembl"), textvariable = biomart_var, state = "readonly"),
+         padx = 10, pady = 10, sticky = "nsew")
 
-   # Create a combobox for Biomart options:
-   lab1 <- tklabel(tt, text = "Biomart")
-   biomartOptions <- c("genes", "ensembl")
-   ent1 <- tk2combobox(tt, values=biomartOptions, textvariable=biomartVar, state="readonly")
-   tclvalue(ent1) <- "genes"  
- 
-   lab2 <- tklabel(tt, text = "Dataset Results")
-   listbox <- tklistbox(tt, height=20, width=100, font='Consolas 10', bg = 'white')
-   tkbind(listbox, "<Double-1>", set_dataset)
-   
-   lab3 <- tklabel(tt, text = "Chromosomes")
-   ent3 <- tkentry(tt, textvariable = chromosomesVar, width=30, bg = 'white')
- 
-   lab4 <- tklabel(tt, text = "Search Pattern")
-   ent4 <- tkentry(tt, textvariable = searchPatternVar, width=30, bg = 'white')
- 
-   populate_listbox <- function(search_results) {
-     tkdelete(listbox, 0, "end")
-     for (i in 1:nrow(search_results)) {
-       entry <- with(search_results[i, ], {
-         sprintf("%-30s | %-60s | %-20s", dataset, description, version)
-       })
-       tkinsert(listbox, "end", entry)
-     }
-   }
- 
-   onSearchClick <- function() {
-     search_pattern <- tclvalue(searchPatternVar)
-     if (search_pattern != "") {
-       ensembl <- useEnsembl(biomart = "genes")
-       search_results <- searchDatasets(mart = ensembl, pattern = search_pattern)
-       populate_listbox(search_results)
-     }
-   }
- 
-   searchBtn <- tkbutton(tt, text = "Search Datasets", command = onSearchClick)
- 
-   onDownloadClick <- function() {
-     mart <- tclvalue(biomartVar)
-     dataset <- tclvalue(datasetVar)
-     chromosomes <- tclvalue(chromosomesVar)
- 
-     if (chromosomes == "") {
-       chromosome_list <- NULL
-     } else {
-       chromosome_list <- strsplit(chromosomes, ", ?")[[1]]
-     }
- 
-     biomart <- BioMartData$new(biomart = mart, dataset = dataset)
-     biomart$get_data(chromosomes = chromosome_list)
-   }
- 
-   btn <- tkbutton(tt, text = "Download proteome", command = onDownloadClick)
- 
-   tkgrid(lab4, ent4, searchBtn, padx=10, pady=10, sticky = "nsew")
-   tkgrid(lab2, listbox, padx=10, pady=10, sticky = "nsew")
-   tkgrid(lab1, ent1, padx=10, pady=10, sticky = "nsew")
-   tkgrid(lab3, ent3, btn, padx=10, pady=10, sticky = "nsew")
-   #tkgrid(btn, padx=20, pady=20, sticky = "w")
-
-   # Allow widgets to expand and fill the available space
-   tkgrid.columnconfigure(tt, 0, weight = 1)
-   tkgrid.rowconfigure(tt, 3, weight = 1)
- }
-
-generate_proteome()
+  tkgrid(tklabel(main_window, text = "Search Pattern"),
+         tkentry(main_window, textvariable = search_pattern_var, width = 30, bg = 'white'),
+         tkbutton(main_window, text = "Search Datasets", command = execute_dataset_search),
+         padx = 10, pady = 10, sticky = "nsew")
+  
+  tkgrid(tklabel(main_window, text = "Dataset Results"),
+         listbox <- tklistbox(main_window, height = 20, width = 100, font = 'Consolas 10', bg = 'white'),
+         padx = 10, pady = 10, sticky = "nsew")
+  
+  tkbind(listbox, "<Double-1>", update_dataset_var)
+  
+  tkgrid(tklabel(main_window, text = "Chromosomes"),
+         tkentry(main_window, textvariable = chromosomes_var, width = 30, bg = 'white'),
+         tkbutton(main_window, text = "Download proteome", command = download_proteome_data),
+         padx = 10, pady = 10, sticky = "nsew")
+  
+  # Configure grid layout to make it expandable
+  tkgrid.columnconfigure(main_window, 0, weight = 1)
+  tkgrid.rowconfigure(main_window, 3, weight = 1)
+}
 
 
