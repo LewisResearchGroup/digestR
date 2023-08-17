@@ -17539,7 +17539,7 @@ modalDialog <- function(parent, title, question, entryInit, entryWidth = 20,
 #'
 #' @return None (invisible return).
 #'
-#' @importFrom tcltk tclCheck myToplevel tkwm.title tkfocus tkwm.deiconify tkadd tkgrid ttksizegrip tkselect tkcurselection tkitemconfigure na.omit tkselection.set tkbind tkdestroy
+#' @importFrom tcltk tclCheck tkwm.title tkfocus tkwm.deiconify tkadd tkgrid ttksizegrip tkselect tkcurselection tkitemconfigure na.omit tkselection.set tkbind tkdestroy
 #' @export
 ps <- function(dispPane='co'){
   
