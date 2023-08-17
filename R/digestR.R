@@ -18205,7 +18205,7 @@ ps <- function(dispPane='co'){
 #' }
 #'
 #' @importFrom graphics legend par plot
-#' @importFrom DIANA::drawPeptides DIANA::ucsf1D DIANA::plot1D
+###' @importFrom DIANA::drawPeptides DIANA::ucsf1D DIANA::plot1D
 #' @export
 ol <- function(askUsr = TRUE, offset = NULL, ...)
 {
