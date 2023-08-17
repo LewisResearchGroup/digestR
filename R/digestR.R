@@ -17318,7 +17318,6 @@ process_mascot <- function()
 #'                     a file dialog will prompt the user to choose a save location.
 #' @return None (invisible return).
 #'
-#' @importFrom tcltk mySave saveAs wc nzchar
 #' @export
 sa <- function(saveFileName = '')
 {
