@@ -23195,6 +23195,7 @@ generate_proteome <- function() {
       selected_entry <- tkget(listbox, selected_index)
       selected_dataset <- unlist(strsplit(as.character(selected_entry), "\\|"))[1]
       tclvalue(dataset_var) <- selected_dataset
+      log_message('Selected dataset:', selected_dataset)
     }
   }
   
@@ -23224,9 +23225,15 @@ generate_proteome <- function() {
     mart <- tclvalue(biomart_var)
     dataset <- tclvalue(dataset_var)
     chromosomes <- tclvalue(chromosomes_var)
-  
-    chromosome_list <- ifelse(chromosomes == "", NULL, strsplit(chromosomes, ", ?")[[1]])
-  
+
+    log_message(chromosomes)
+
+    if (chromosomes == "") {
+      chromosome_list <- NULL
+    } else {
+      chromosome_list <- strsplit(chromosomes, ", ?")[[1]]
+    }  
+    
     biomart_instance <- BioMartData$new(biomart = mart, dataset = dataset)
     biomart_instance$get_data(chromosomes = chromosome_list)
   }
