@@ -19304,6 +19304,203 @@ exportFileListRAW <- function()
   }
 }
 
+## Open files without refreshing, creating an undo point, or console messages
+## fileNames - character string or vector; full file paths for spectra being
+##	opened
+## Note - This function behaves differently than fo() and is meant for internal
+##	use.  Attempting to open a file that already exists in fileFolder will 
+##	create a duplicate entry.  3D spectra are not supported.
+silentOpen <- function(fileList){
+  
+  ## Read selected files
+  fileList <- sort(fileList)
+  for (i in seq_along(fileList)){
+    
+    ##Read Sparky Header and file info from binary
+    new.file <- try(dianaHead(file.name=fileList[i], print.info=FALSE), 
+                    silent=TRUE)
+    if (!is.list(new.file) || !length(new.file$file.par)){
+      fileList <- fileList[-i]
+      next
+    }	
+    
+    ## Fetch the default graphics settings 
+    new.file$graphics.par <- defaultSettings
+    
+    ## Set initial plotting range
+    if (new.file$file.par$number_dimensions == 1){
+      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
+                                     new.file$file.par$upfield_ppm[1], 
+                                     new.file$file.par$zero_offset - 
+                                       (new.file$file.par$max_intensity - new.file$file.par$zero_offset) 
+                                     * globalSettings$position.1D,
+                                     new.file$file.par$max_intensity)
+    }else{         
+      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[2],
+                                     new.file$file.par$upfield_ppm[2], 
+                                     new.file$file.par$downfield_ppm[1],
+                                     new.file$file.par$upfield_ppm[1])
+    }    
+    
+    ## Change name if spectrum already exists in fileFolder
+    fileNames <- as.vector(sapply(fileFolder, function(x) x$file.par$file.name))
+    matches <- which(fileNames == fileList[i])
+    if (length(matches)) {
+      newName <- paste(fileList[i], '(', length(matches) + 1, ')', sep='')
+      new.file$file.par$user_title <- basename(newName)
+      fileList[i] <- newName
+    }
+    
+    ## Add spectrum to fileFolder
+    fileFolder[[(length(fileFolder) + 1)]] <- new.file
+    names(fileFolder)[[(length(fileFolder))]] <- fileList[i]
+  }
+  
+  ## Assign the new objects to the global environment
+  myAssign('fileFolder', fileFolder, save.backup=FALSE)
+  
+  invisible(fileList)
+}
+
+## Create RSD file
+## fileName - character string; full file path for input spectrum
+## outPath - character string; full file path to save the output RSD to
+## roiTable - character string; ROI table or full path to ROI table text file
+createRsd <- function(fileName=currentSpectrum, outPath, rois=roiTable){
+  
+  if (missing(outPath)){
+    outPath <- paste(unlist(strsplit(basename(fileName), '.', fixed=TRUE))[1], 
+                     'rsd', sep='.')
+    outPath <- file.path(dirname(fileName), outPath)
+  }
+  suppressWarnings(dir.create(dirname(outPath), recursive=TRUE))
+  
+  ## Get file data
+  inFile <- ucsf2D(fileName)
+  fp <- inFile$file.par
+  
+  ## Get ROI table
+  if (is.null(rois))
+    err('ROI table does not exist or no ROIs have been created.')
+  else if (is.character(rois)){
+    if (!file.access(rois, mode=4))
+      rois <- read.table(rois,	head=TRUE, sep='\t', stringsAsFactors=FALSE)
+    else
+      err(paste('File does not exist or can\'t be accessed. ', 
+                'You must provide a valid ROI table.'))
+  }
+  rois <- rois[order(rois$w1_upfield, rois$w2_upfield), ]
+  
+  ###### Write main header
+  writeCon <- file(outPath, "w+b")
+  
+  ## format name
+  writeBin('RSD_NMR', writeCon)
+  writeBin(as.integer(rep(0, 2)), writeCon, size=1, endian='big')
+  
+  ## format version
+  writeBin('1.2', writeCon)
+  writeBin(as.integer(rep(0, 6)), writeCon, size=1, endian='big')
+  
+  ## number of dimensions
+  writeBin(as.integer(fp$number_dimensions), writeCon, size=4, endian='big')
+  
+  ## number of blocks (ROIs)
+  writeBin(as.integer(nrow(rois)), writeCon, size=4, endian='big')
+  
+  ## noise estimate from original spectrum
+  writeBin(as.numeric(fp$noise_est), writeCon, size=4, endian='big')
+  
+  ## make header size equal to 100 bytes by filling remainder with 0s
+  writeBin(as.integer(rep(0, 68)), writeCon, size=1, endian='big')
+  
+  ###### Write original spectrum header data for each dimension 
+  for (i in 1:fp$number_dimensions){
+    
+    ## dimension index
+    writeBin(as.integer(i - 1), writeCon, size=4, endian='big')
+    
+    ## number of points along this dimension
+    writeBin(as.integer(fp$matrix_size[i]), writeCon, size=4, endian='big')
+    
+    ## downfield chemical shift in this dimension
+    writeBin(as.numeric(fp$downfield_ppm[i]), writeCon, size=4, endian='big')
+    
+    ## upfield chemical shift in this dimension
+    writeBin(as.numeric(fp$upfield_ppm[i]), writeCon, size=4, endian='big')
+    
+    ## spectral width in this dimension (Hz)
+    writeBin(as.numeric(fp$spectrum_width_Hz[i]), writeCon, size=4, 
+             endian='big')
+    
+    ## spectrometer frequency in this dimension (MHz)
+    writeBin(as.numeric(fp$transmitter_MHz[i]), writeCon, size=4, endian='big')
+    
+    ## nucleus name in this dimension
+    writeBin(as.character(fp$nucleus[i]), writeCon)
+    writeBin(as.integer(rep(0, (10 - nchar(fp$nucleus[i]) - 1))), writeCon, 
+             size=1, endian='big')
+    
+    ## make header size equal to 50 bytes by filling remainder with 0s
+    writeBin(as.integer(rep(0, 16)), writeCon, size=1, endian='big')
+  }
+  
+  ###### Write block headers (contains information on each ROI)
+  for (i in 1:fp$number_dimensions){
+    for (j in 1:nrow(rois)){
+      
+      ## dimension index
+      writeBin(as.integer(i - 1), writeCon, size=4, endian='big')
+      
+      ## get upfield and downfield chemical shifts for current block
+      if (fp$number_dimensions == 1)
+        shifts <- matchShift(inFile, w2=c(rois[j, 'w2_upfield'], 
+                                          rois[j, 'w2_downfield']), return.seq=TRUE)$w2
+      else{
+        if (i == 1)
+          shifts <- matchShift(inFile, w1=c(rois[j, 'w1_upfield'], 
+                                            rois[j, 'w1_downfield']), return.seq=TRUE)$w1
+        else
+          shifts <- matchShift(inFile, w2=c(rois[j, 'w2_upfield'], 
+                                            rois[j, 'w2_downfield']), return.seq=TRUE)$w2
+      }
+      
+      ## number of points in this dimension for current block
+      np <- length(shifts)
+      writeBin(as.integer(np), writeCon, size=4, endian='big')
+      
+      ## downfield chemical shift in this dimension for current block
+      writeBin(as.numeric(shifts[np]), writeCon, size=4, endian='big')
+      
+      ## upfield chemical shift in this dimension for current block
+      writeBin(as.numeric(shifts[1]), writeCon, size=4, endian='big')
+      
+      ## make header size equal to 30 bytes by filling remainder with 0s
+      writeBin(as.integer(rep(0, 14)), writeCon, size=1, endian='big')
+    }
+  }
+  
+  ## Write data to file one block at a time
+  for (i in 1:nrow(rois)){
+    
+    if (fp$number_dimensions == 1){
+      bounds <- matchShift(inFile, w2=c(rois[i, 'w2_upfield'], 
+                                        rois[i, 'w2_downfield']), return.inc=TRUE, invert=TRUE)
+      writeBin(as.numeric(inFile$data[bounds$w2[1]:bounds$w2[2]]), writeCon, 
+               size=4, endian='big')
+    }else{
+      bounds <- matchShift(inFile, w1=c(rois[i, 'w1_upfield'], 
+                                        rois[i, 'w1_downfield']), w2=c(rois[i, 'w2_upfield'], 
+                                                                       rois[i, 'w2_downfield']), return.inc=TRUE, invert=TRUE)
+      writeBin(as.numeric(inFile$data[bounds$w2[1]:bounds$w2[2], 
+                                      bounds$w1[1]:bounds$w1[2]]), writeCon, size=4, endian='big')
+    }
+  }
+  close(writeCon)
+  
+  return(outPath)
+}
+
 ################################################################################
 #
 # Diana Processing
