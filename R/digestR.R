@@ -18205,7 +18205,7 @@ ps <- function(dispPane='co'){
 #' }
 #'
 #' @importFrom graphics legend par plot
-#' @importFrom DIANA::drawPeptides DIANA::ucsf1D DIANA::plot1D
+###' @importFrom DIANA::drawPeptides DIANA::ucsf1D DIANA::plot1D
 #' @export
 ol <- function(askUsr = TRUE, offset = NULL, ...)
 {
@@ -23233,7 +23233,7 @@ generate_proteome <- function() {
     } else {
       chromosome_list <- strsplit(chromosomes, ", ?")[[1]]
     }  
-    
+
     biomart_instance <- BioMartData$new(biomart = mart, dataset = dataset)
     biomart_instance$get_data(chromosomes = chromosome_list)
   }
