@@ -23399,7 +23399,7 @@ generate_proteome <- function() {
     tkdelete(listbox, 0, "end")
     for (i in 1:nrow(search_results)) {
       entry <- with(search_results[i, ], {
-        sprintf("%-30s | %-60s | %-20s", dataset, description, version)
+        sprintf("%-25s | %-30s | %-20s", dataset, description, version)
       })
       tkinsert(listbox, "end", entry)
     }
