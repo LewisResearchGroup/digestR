@@ -12,7 +12,7 @@ Users can interact with DigestR in two major ways: via point and click graphical
 This guide is intended to give an overview of DigestR's functions.
 
 
-## How to install digestR packag from GitHub
+## How to install digestR package from GitHub
 
 ### Step 1: Install the devtools package
 To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
