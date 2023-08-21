@@ -32,17 +32,9 @@ Install the package of interest from GitHub using the following code, where you 
 
 ## Run the following lines in the R console
 
-	library(Rcpp)
-	library(tcltk)
-	setwd('C:/Users/dimit/OneDrive/Bureau/DigestR')
- 
-	source('2017_09_16_rNMR_Travis_DD_Edits_Final.R')
-	source('digestR_Code_Dimitri_final.R')
-	
-	
-
-	rm(list = ls())
-	devtools::load_all("C:\\Users\\soere\\workspace\\digestR")
+	library(digrestR)
+	setwd('<your-working-directory>')  # Set your working directory, before you start.
+ 	...
 
 ## GUI Functions Documentation
 
