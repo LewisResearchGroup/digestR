@@ -35,13 +35,17 @@ jobs:
 
       - name: List Applications
         run: ls /Applications
-      
+              
+      - name: Check XQuartz installation
+        run: ls /usr/local/Caskroom/xquartz    
+        
       - name: Set DISPLAY for XQuartz
         run: |
           echo "DISPLAY=:0.0" >> $GITHUB_ENV
           
       - name: Start XQuartz
-        run: open -a XQuartz
+          run: open /usr/local/Caskroom/xquartz/XQuartz.app
+          #run: open -a XQuartz
 
       - name: Set non-interactive graphics device
         run: |
