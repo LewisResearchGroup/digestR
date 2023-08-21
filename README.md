@@ -1,6 +1,6 @@
 [![R package on Windows](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-windows.yml/badge.svg)](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-windows.yml)
-[![R package on Ubuntu](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-ubuntu.yml/badge.svg)](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-ubuntu.yml)
 [![R package on MacOS](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-macos.yml/badge.svg)](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-macos.yml)
+[![Install on Windows via GitHub](https://github.com/LewisResearchGroup/digestR/actions/workflows/R%20package%20on%20Windows%20-%20from%20GitHub.yml/badge.svg)](https://github.com/LewisResearchGroup/digestR/actions/workflows/R%20package%20on%20Windows%20-%20from%20GitHub.yml)
 
 # DigestR
 
@@ -26,7 +26,7 @@ To install a R package, start by installing the devtools package. The best way t
 Install the package of interest from GitHub using the following code, where you need to remember to list both the author and the name of the package (in GitHub jargon, the package is the repo, which is short for repository). In this example, we are installing the flipPlots package created by Displayr.
 
     library(devtools)
-    install_github("LewisResearchGroup/DigestR")
+    install_github("LewisResearchGroup/digestR")
 
 ### Step 3: Load the package
 
@@ -34,17 +34,9 @@ Install the package of interest from GitHub using the following code, where you 
 
 ## Run the following lines in the R console
 
-	library(Rcpp)
-	library(tcltk)
-	setwd('C:/Users/dimit/OneDrive/Bureau/DigestR')
- 
-	source('2017_09_16_rNMR_Travis_DD_Edits_Final.R')
-	source('digestR_Code_Dimitri_final.R')
-	
-	
-
-	rm(list = ls())
-	devtools::load_all("C:\\Users\\soere\\workspace\\digestR")
+	library(digrestR)
+	setwd('<your-working-directory>')  # Set your working directory, before you start.
+ 	...
 
 ## GUI Functions Documentation
 

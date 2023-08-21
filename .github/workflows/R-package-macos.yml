@@ -31,14 +31,21 @@ jobs:
       - name: Install XQuartz
         run: |
           brew install --cask xquartz
+          brew list --cask | grep xquartz
+
+      - name: List Applications
+        run: ls /Applications
+              
+      - name: Check XQuartz installation
+        run: ls /Applications/Utilities/XQuartz.app
 
       - name: Set DISPLAY for XQuartz
         run: |
           echo "DISPLAY=:0.0" >> $GITHUB_ENV
           
       - name: Start XQuartz
-        run: open -a XQuartz
-
+        run: open /Applications/Utilities/XQuartz.app
+        
       - name: Set non-interactive graphics device
         run: |
           echo "options(device = 'pdf')" >> ~/.Rprofile

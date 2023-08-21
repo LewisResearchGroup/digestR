@@ -1,4 +1,4 @@
-name: R package on Windows - from GitHub
+name: Install on Windows via GitHub
 
 on:
   push:
@@ -36,9 +36,11 @@ jobs:
         shell: Rscript {0}
 
       - name: Install package from GitHub
+        env:
+          GITHUB_PAT: ${{ secrets.SW_GITHUB_PAT }}      
         run: |
           library(devtools)
-          install_github("LewisResearchGroup/DigestR")
+          install_github("LewisResearchGroup/digestR")
         shell: Rscript {0}
         
       - name: Check
