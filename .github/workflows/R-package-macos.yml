@@ -44,7 +44,7 @@ jobs:
           echo "DISPLAY=:0.0" >> $GITHUB_ENV
           
       - name: Start XQuartz
-          run: open /usr/local/Caskroom/xquartz/XQuartz.app
+        run: open /usr/local/Caskroom/xquartz/XQuartz.app
           #run: open -a XQuartz
 
       - name: Set non-interactive graphics device
