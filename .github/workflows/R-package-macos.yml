@@ -31,7 +31,11 @@ jobs:
       - name: Install XQuartz
         run: |
           brew install --cask xquartz
+          brew list --cask | grep xquartz
 
+      - name: List Applications
+        run: ls /Applications
+      
       - name: Set DISPLAY for XQuartz
         run: |
           echo "DISPLAY=:0.0" >> $GITHUB_ENV
