@@ -22371,7 +22371,7 @@ library(dplyr)
 #'   RemoveDuplicate()
 #' }
 #'
-#' @importFrom utils choose.dir read.csv write.csv
+#' @importFrom utils read.csv write.csv
 #' @export	 
 prepare_mascot <- function() {
   ## creates main window
@@ -22460,7 +22460,7 @@ removeDuplicates <- function(input_file) {
 #'   uniquePeptides()
 #' }
 #'
-#' @importFrom utils choose.dir read.csv write.csv
+#' @importFrom utils read.csv write.csv
 #' @export
 unique_peptides <- function() {
   ## creates main window
