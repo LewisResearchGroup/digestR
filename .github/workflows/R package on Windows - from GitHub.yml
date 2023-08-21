@@ -36,6 +36,8 @@ jobs:
         shell: Rscript {0}
 
       - name: Install package from GitHub
+        env:
+          GITHUB_PAT: ${{ secrets.SW_GITHUB_PAT }}      
         run: |
           library(devtools)
           install_github("LewisResearchGroup/digestR")
