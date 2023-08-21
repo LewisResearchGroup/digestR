@@ -26,6 +26,10 @@ Install the package of interest from GitHub using the following code, where you 
     library(devtools)
     install_github("LewisResearchGroup/DigestR")
 
+### Step 3: Load the package
+
+    library(flipPlots)
+
 ## Run the following lines in the R console
 
 	library(Rcpp)
