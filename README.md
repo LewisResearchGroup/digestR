@@ -24,7 +24,7 @@ To install a R package, start by installing the devtools package. The best way t
 Install the package of interest from GitHub using the following code, where you need to remember to list both the author and the name of the package (in GitHub jargon, the package is the repo, which is short for repository). In this example, we are installing the flipPlots package created by Displayr.
 
     library(devtools)
-    install_github("LewisResearchGroup/DigestR")
+    install_github("LewisResearchGroup/digestR")
 
 ### Step 3: Load the package
 
