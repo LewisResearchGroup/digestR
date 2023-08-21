@@ -28,7 +28,7 @@ Install the package of interest from GitHub using the following code, where you 
 
 ### Step 3: Load the package
 
-    library(flipPlots)
+    library(digestR)
 
 ## Run the following lines in the R console
 

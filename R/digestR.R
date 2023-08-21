@@ -22460,7 +22460,7 @@ removeDuplicates <- function(input_file) {
 #'   uniquePeptides()
 #' }
 #'
-#' @importFrom utils choose.dir file.choose read.csv write.csv file.path
+#' @importFrom utils choose.dir read.csv write.csv
 #' @export
 unique_peptides <- function() {
   ## creates main window
