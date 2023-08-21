@@ -1,4 +1,4 @@
-name: R package on Windows - from GitHub
+name: Install on Windows via GitHub
 
 on:
   push:
