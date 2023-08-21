@@ -22371,7 +22371,7 @@ library(dplyr)
 #'   RemoveDuplicate()
 #' }
 #'
-#' @importFrom utils choose.dir file.choose read.csv write.csv
+#' @importFrom utils choose.dir read.csv write.csv
 #' @export	 
 prepare_mascot <- function() {
   ## creates main window
