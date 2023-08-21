@@ -37,8 +37,8 @@ jobs:
         run: ls /Applications
               
       - name: Check XQuartz installation
-        run: ls /Applications/Utilities/xquartz    
-        
+        run: ls /Applications/Utilities/XQuartz.app
+
       - name: Set DISPLAY for XQuartz
         run: |
           echo "DISPLAY=:0.0" >> $GITHUB_ENV
