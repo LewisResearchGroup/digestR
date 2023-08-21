@@ -12,12 +12,19 @@ Users can interact with DigestR in two major ways: via point and click graphical
 This guide is intended to give an overview of DigestR's functions.
 
 
-## Prerequisites
+## How to install digestR packag from GitHub
 
-	install.package('biomaRt')
-	library(biomarRt)
+### Step 1: Install the devtools package
+To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
 
+    install.packages("devtools")
 
+### Step 2: Install the package of interest from GitHub
+
+Install the package of interest from GitHub using the following code, where you need to remember to list both the author and the name of the package (in GitHub jargon, the package is the repo, which is short for repository). In this example, we are installing the flipPlots package created by Displayr.
+
+    library(devtools)
+    install_github("LewisResearchGroup/DigestR")
 
 ## Run the following lines in the R console
 
