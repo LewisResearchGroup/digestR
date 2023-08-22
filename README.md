@@ -50,13 +50,10 @@ DigestR supports Mascot (.csv) and MaxQuant (.mzXML) generated files. These file
 
 Required files: .csv and .mzXML
 
-| prot_hit_num | prot_acc | prot_mass | pep_query | pep_rank | pep_isbold | pep_isunique | pep_exp_mz | pep_exp_mr | pep_delta | pep_miss | pep_score | pep_expect | pep_res_before | pep_seq | pep_res_after | pep_var_mod | pep_var_mod_pos | pep_summed_mod_pos | pep_local_mod_pos |
-| 1 | A0A140T897_BOVIN | 69278 | 155 | 2 | 1 | 0 | 383.2656 | 382.2583 | 0.0255 | 0 | 6.36 | 6.5 | K | VHK | E |  |  |  |  |
-| 1 | A0A140T897_BOVIN | 69278 | 380 | 7 | 1 | 0 | 390.2134 | 389.2062 | -1.0205 | 0 | 3.51 | 2.90E+02 | K | FPK | A |  |  |  |  |
-| 1 | A0A140T897_BOVIN | 69278 | 952 | 7 | 1 | 0 | 403.8549 | 402.8477 | -0.3954 | 0 | 7.59 | 86 | R | SLGK | V |  |  |  |  |
-| 1 | A0A140T897_BOVIN | 69278 | 2287 | 2 | 1 | 0 | 431.2566 | 430.2493 | -0.9999 | 0 | 4.2 | 2.30E+02 | K | VGTR | C |  |  |  |  |
-| 1 | A0A140T897_BOVIN | 69278 | 3855 | 5 | 1 | 0 | 462.8132 | 461.8059 | 0.5938 | 0 | 4.68 | 54 | K | ADEK | K |  |  |  |  |
-| 1 | A0A140T897_BOVIN | 69278 | 3909 | 4 | 1 | 0 | 464.1997 | 463.1925 | -0.0176 | 0 | 7.55 | 20 | K | DVCK | N |  |  |  |  |
+To read a Mascot file, DigestR requires the following informations: protein accession number (prot_acc), the protein description (prot_desc) and the peptide sequence (pep_seq).
+By default, Mascot creates a header, this 3 line header is required for the .csv preprocessing (see Prepare Mascot files). 
+
+![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Mascot%20file%20format.png)
 
 #### 1. Prepare Mascot files: rd()
 Users can natively import in DigestR files generated from mascot (.csv) and from MaxQuant (.mzXML). However, these files need to be pre-processed to be analyzed by DigestR. To prepare the mascot files for digestR, call the function rd() or click on ‘Prepare Mascot file’ under the ‘Manipulate csv’ section. Select the file(s) to be preprocessed. The software will automatically prepare and save the new file.
