@@ -19625,9 +19625,11 @@ parseMascot <- function(sMascotFileName = "")
   if (sMascotFileName == "")
   {
     sMascotFileName <- myOpen("csv", list(csv = "Comma Separated Values File, xls = Excel File"), multiple = FALSE)
-    dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 3)
+    dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 0)
+    #dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 3)
   }else
-    dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 3)
+    dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 0)
+    #dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 3)
   
   
   if(length(dfMascot$pep_seq) == 0)
@@ -22606,7 +22608,7 @@ peptides_distribution <- function() {
       # Get the second string in the filename by splitting on "_"
       second_str <- strsplit(filename, "_")[[1]][2]
       # Read the CSV file and extract the pep_seq column
-      csv_data <- read.csv(csv_files[i], skip = 3, header = TRUE)
+      csv_data <- read.csv(csv_files[i], skip = 0, header = TRUE)
       # Check if the 'pep_seq' column exists
       if (!("pep_seq" %in% colnames(csv_data))) {
         stop("Error: 'pep_seq' column not found in the CSV file.")
@@ -22805,10 +22807,10 @@ cut_sites_distribution <- function () {
       data$last_letter <- substr(data$pep_seq, nchar(data$pep_seq), nchar(data$pep_seq))
       
       # Count the occurrences of each first letter
-      first_letter_counts <- table(factor(data$first_letter, levels = c("A", "C", "D", "E", "F", "G","H" ,"K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")))
+      first_letter_counts <- table(factor(data$first_letter, levels = c("A", "C", "D", "E", "F", "G","H", "I" ,"K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")))
       
       # Count the occurrences of each last letter
-      last_letter_counts <- table(factor(data$last_letter, levels = c("A", "C", "D", "E", "F", "G","H", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")))
+      last_letter_counts <- table(factor(data$last_letter, levels = c("A", "C", "D", "E", "F", "G","H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")))
       
       # Combine the counts for first and last letters
       combined_counts <- merge(
@@ -23096,21 +23098,33 @@ cut_sites_distribution <- function () {
 #   Example usage:
 #   plotCutSite("Trypsin", "black")
 #   """
-				       
+
 display_protease_cut_sites <- function() {
   tclCheck()
   dlg <- myToplevel('cs')
   if (is.null(dlg))
     return(invisible())
   
-  # Read protease data from CSV
-  protCutSites <- read.csv('C:/Users/dimit/OneDrive/Bureau/digestR/Proteasecutsiteslist.csv')
+  # Open a file dialog to choose the protease data CSV file
+  file_path <- tclvalue(tcltk::tkgetOpenFile())
+  
+  if (identical(file_path, "")) {
+    tkmessageBox(
+      title = "Error",
+      message = "No file selected. Please choose a CSV file.",
+      icon = "error"
+    )
+    return(invisible())
+  }
+  
+  # Read protease data from the chosen CSV file
+  protCutSites <- read.csv(file_path)
   
   # Create the main window
   mainWindow <- tktoplevel()
   tkwm.title(mainWindow, "Plot Cut Site")
-  
-  # Create protease label and dropdown menu
+
+	# Create protease label and dropdown menu
   proteaseLabel <- tklabel(mainWindow, text = "Select Protease:")
   tkgrid(proteaseLabel, padx = 10, pady = 10)
   
@@ -23226,9 +23240,6 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
   return(invisible(prot))
 }
 				       
-# Call the function 
-# display_protease_cut_sites()       
-
 ##############################################################################################
 
 #' Generate a graphical user interface for the DigestR BioMart Downloader.
