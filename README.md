@@ -112,7 +112,20 @@ The plot color function allows users to easily manipulate the plot colors. To op
 DigestR allows multiple "digestion" maps to be displayed concurrently on a single plot through the command ol(). To add or remove loaded files, select the digestion maps to overlay and click the "add" or "remove" buttons. The order of overlaid maps in the main plot window is taken directly from the order of digestion maps appearing in the overlays list box. Individual files can be assigned their own colors. The plot legend will be automatically generated, but it can be suppressed by unchecking the "Display names of the overlay spectrum on the plot" option. Similarly, the path of "digestion" maps can be suppressed by checking the corresponding checkbox.
 
 #### 6. Display protease cut sites: cs()
-Users can overlay known protease cut sites onto the "digestion" map(s) using the cs() command. The GUI will prompt the user to select the protease and choose the color of the lines representing cleavage sites. Note that this function requires a CSV file containing the names of the proteases and their cleavage sites. An example can be found here: (https://github.com/LewisResearchGroup/digestR/tree/main/tests)
+Users can overlay known protease cut sites onto the "digestion" map(s) using the cs() command. It is important to note that this function requires a CSV file containing the names of the proteases and their respective cleavage sites. An example CSV file can be found here: https://github.com/LewisResearchGroup/digestR/tree/main/tests. 
+
+| protease | abv | cutsites |---|---|---|---|---|---|---|--- |
+| Trypsin | Trp | K | R |  |  |  |  |
+| ChymotrypsinHA | ChymH | F | Y |  |  |  |  |
+| ChymotrypsinLA | ChymL | F | Y | L | M | H |  |
+| Pepsin1.3 | Pep1.3 | F | L |  |  |  |  |
+| Pepsin2 | Pep2 | F | L | W | Y |  |  |
+| Thermolysin  | Thermo | A | F | I | L | M | V |
+| GluC | GluC | E |  |  |  |  |  |
+| Proteinase K | ProtK | H | K | R | P |  |  |
+| LysC | LysC | K |  |  |  |  |  |
+
+Once the CSV file is loaded, users have to option to select a specific protease and choose the color for the lines representing the cleavage sites on the map. 
 
 ![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/cs%20GUI%20-%20Copy.png)
 
