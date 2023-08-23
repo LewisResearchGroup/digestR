@@ -56,7 +56,7 @@ By default, Mascot creates a header, this 3 line header is required for the .csv
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Mascot%20file%20format.png)
 
 #### 1. Prepare Mascot files: rd()
-Users can natively import in DigestR files generated from mascot (.csv) and from MaxQuant (.mzXML). However, these files need to be pre-processed to be analyzed by DigestR. To prepare the mascot files for digestR, call the function rd() or click on ‘Prepare Mascot file’ under the ‘Manipulate csv’ section. Select the file(s) to be preprocessed. The software will automatically prepare and save the new file.
+Users can natively import in DigestR files generated from mascot (.csv). However, these files need to be pre-processed to be analyzed by DigestR. To prepare the mascot files for digestR, call the function rd() or click on ‘Prepare Mascot file’ under the ‘Manipulate csv’ section. Select the file(s) to be preprocessed. The software will automatically prepare and save the new file.
 
 ![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/Remove%20Duplicate%20GUI.png)
 
