@@ -44,11 +44,11 @@ This document provides details of several Graphical User Interface (GUI) functio
 
 ### Supported file formats 
 
-DigestR supports Mascot (.csv) and MaxQuant (.mzXML) generated files. These files may be converted to .dcf files using DigestR file conversion functions pm() and im() respectively. 
+DigestR supports Mascot (.csv) generated files. These files may be converted to .dcf files using DigestR file conversion functions pm(). 
 
 ### Converting files. 
 
-Required files: .csv and .mzXML
+Required files: .csv
 
 To read a Mascot file, DigestR requires the following informations: protein accession number (prot_acc), the protein description (prot_desc) and the peptide sequence (pep_seq).
 By default, Mascot creates a header, this 3 line header is required for the .csv preprocessing (see Prepare Mascot files). 
