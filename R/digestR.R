@@ -1138,6 +1138,7 @@ gui <- function(top=NULL){
     tkwm.deiconify(top)
     
     invisible()
+    splashScreen()
   }
 }
 
