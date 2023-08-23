@@ -114,7 +114,17 @@ DigestR allows multiple "digestion" maps to be displayed concurrently on a singl
 #### 6. Display protease cut sites: cs()
 Users can overlay known protease cut sites onto the "digestion" map(s) using the cs() command. It is important to note that this function requires a CSV file containing the names of the proteases and their respective cleavage sites. An example CSV file can be found here: https://github.com/LewisResearchGroup/digestR/tree/main/tests. 
 
-https://github.com/LewisResearchGroup/digestR/blob/main/Images/Protease%20Cut%20site%20list%20Markdown.md
+| protease | abv | cutsites | X | X.1 | X.2 | X.3 | X.4 |
+|---|---|---|---|---|---|---|--- |
+| Trypsin | Trp | K | R |  |  |  |  |
+| ChymotrypsinHA | ChymH | F | Y |  |  |  |  |
+| ChymotrypsinLA | ChymL | F | Y | L | M | H |  |
+| Pepsin1.3 | Pep1.3 | F | L |  |  |  |  |
+| Pepsin2 | Pep2 | F | L | W | Y |  |  |
+| Thermolysin  | Thermo | A | F | I | L | M | V |
+| GluC | GluC | E |  |  |  |  |  |
+| Proteinase K | ProtK | H | K | R | P |  |  |
+| LysC | LysC | K |  |  |  |  |  |
 
 Once the CSV file is loaded, users have to option to select a specific protease and choose the color for the lines representing the cleavage sites on the map. 
 
