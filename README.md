@@ -34,7 +34,7 @@ Install the package of interest from GitHub using the following code, where you 
 
 ## Run the following lines in the R console
 
-	library(digrestR)
+	library(digestR)
 	setwd('<your-working-directory>')  # Set your working directory, before you start.
  	...
 
