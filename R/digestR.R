@@ -993,7 +993,6 @@ showGui <- function(guiName){
 #'          \code{\link{tkadd}}, \code{\link{tkconfigure}}, \code{\link{tkfocus}},
 #'          \code{\link{tkwm.deiconify}}
 #'
-#' @importFrom tcltk2 tkmenu tkadd tkconfigure tkfocus tkwm.deiconify
 #'
 #' @examples
 #' # Launch the digestR GUI
