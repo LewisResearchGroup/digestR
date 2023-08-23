@@ -1008,6 +1008,8 @@ showGui <- function(guiName){
 ## top - specifies a tk toplevel to send the tk menus to
 gui <- function(top=NULL){
   
+  splashScreen()
+
   if (.Platform$OS.type == 'windows' && .Platform$GUI == 'Rgui' && 
       is.null(top)){
     if ("  digestR -->  " %in% winMenuNames())
@@ -1138,7 +1140,6 @@ gui <- function(top=NULL){
     tkwm.deiconify(top)
     
     invisible()
-    splashScreen()
   }
 }
 
