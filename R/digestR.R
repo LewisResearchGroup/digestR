@@ -973,6 +973,36 @@ showGui <- function(guiName){
   #	bringFocus()
 }
 
+
+#' Launches the digestR GUI Menu
+#'
+#' This function creates a graphical user interface (GUI) menu for interacting
+#' with the digestR package. The GUI menu provides various options for manipulating
+#' CSV and DCF files, performing editing tasks, managing graphics, and accessing help
+#' topics related to the digestR package.
+#'
+#' @param top An optional parameter indicating the top-level window to use for the GUI.
+#'            If not provided, a new top-level window will be created.
+#'
+#' @details On Windows systems with Rgui, the function adds menu items to the Rgui
+#'          interface. On other systems or when a top-level window is provided, the
+#'          function creates a GUI using the Tcl/Tk package to display menu options.
+#'
+#' @seealso \code{\link{myToplevel}}, \code{\link{tclCheck}}, \code{\link{tkmenu}},
+#'          \code{\link{tkadd}}, \code{\link{tkconfigure}}, \code{\link{tkfocus}},
+#'          \code{\link{tkwm.deiconify}}
+#'
+#' @importFrom tcltk2 tkmenu tkadd tkconfigure tkfocus tkwm.deiconify
+#'
+#' @examples
+#' # Launch the digestR GUI
+#' gui()
+#'
+#' # Use a pre-existing top-level window for the GUI
+#' top <- myToplevel('menu', width = 400, height = 300)
+#' gui(top)
+#'
+#' @export
 ## Internal graphics function gui
 ## Sets window popup and dropdown windows 
 ## top - specifies a tk toplevel to send the tk menus to
