@@ -974,7 +974,9 @@ showGui <- function(guiName){
   #	bringFocus()
 }
 
-
+## Internal graphics function gui
+## Sets window popup and dropdown windows 
+## top - specifies a tk toplevel to send the tk menus to
 #' Launches the digestR GUI Menu
 #'
 #' This function creates a graphical user interface (GUI) menu for interacting
@@ -1003,9 +1005,6 @@ showGui <- function(guiName){
 #' gui(top)
 #'
 #' @export
-## Internal graphics function gui
-## Sets window popup and dropdown windows 
-## top - specifies a tk toplevel to send the tk menus to
 gui <- function(top=NULL){
   
   splashScreen()
