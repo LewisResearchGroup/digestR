@@ -386,4 +386,4 @@ sa <- save
 #' 
 #' @importFrom tcltk2
 #' @export
-undo <- ud()
+undo <- ud
