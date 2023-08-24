@@ -15017,7 +15017,7 @@ ep <- function(dispPane=0){
           else
             X11(title='Main Plot Window', width=defaultSettings$size.main[1],	
                 height=defaultSettings$size.main[2])
-          splashScreen()
+          #splashScreen()
         }
       }
       return(invisible())
@@ -15497,28 +15497,28 @@ if (!'package:digestR' %in% search() && !exists('fileFolder')){
         height=defaultSettings$size.main[2])
   }
   
-  tryCatch(splashScreen(), error=function(er){
-    if (.Platform$OS != 'windows'){
-      invisible(myMsg(paste('Your computer does not have the required ', 
-                            'fonts to support fast X11 graphics in R.\n',
-                            'To correct this issue you may need to download some or', 
-                            ' all of the following X11 fonts:     \n\n', 
-                            '                              xorg-x11-fonts-75dpi\n',
-                            '                              xorg-x11-fonts-100dpi\n', 
-                            '                              xorg-x11-fonts-truetype\n',
-                            '                              xorg-x11-fonts-Type1\n\n', 
-                            'Please refer to the R Installation and Administration',
-                            ' Manual for more information:\n', 
-                            'http://cran.r-project.org/doc/manuals/R-admin.html#X11-',
-                            'issues', 
-                            sep=''), 'ok', 'info'))
-      dev.off()
-      X11.options(type='cairo')
-      X11(title='Main Plot Window', width=defaultSettings$size.main[1], 
-          height=defaultSettings$size.main[2])
-      splashScreen()
-    }
-  })
+    tryCatch(splashScreen(), error=function(er){
+      if (.Platform$OS != 'windows'){
+        invisible(myMsg(paste('Your computer does not have the required ', 
+                              'fonts to support fast X11 graphics in R.\n',
+                              'To correct this issue you may need to download some or', 
+                              ' all of the following X11 fonts:     \n\n', 
+                              '                              xorg-x11-fonts-75dpi\n',
+                              '                              xorg-x11-fonts-100dpi\n', 
+                              '                              xorg-x11-fonts-truetype\n',
+                              '                              xorg-x11-fonts-Type1\n\n', 
+                              'Please refer to the R Installation and Administration',
+                              ' Manual for more information:\n', 
+                              'http://cran.r-project.org/doc/manuals/R-admin.html#X11-',
+                              'issues', 
+                              sep=''), 'ok', 'info'))
+        dev.off()
+        X11.options(type='cairo')
+        X11(title='Main Plot Window', width=defaultSettings$size.main[1], 
+            height=defaultSettings$size.main[2])
+        splashScreen()
+      }
+    })
   
   ## Use a functional version of ::tk::dialog::file:: on older Linux systems
   tclVer <- as.character(tcl('info', 'patchlevel'))
