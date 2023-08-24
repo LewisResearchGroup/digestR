@@ -261,3 +261,129 @@ pm <- process_mascot
 #' @export
 fo <- file_open
 
+#' zm()
+#' Interactive GUI for zooming and scrolling
+#' Zoom and Manipulate View using zoom
+#'
+#' This function opens a graphical user interface (GUI) that allows users to manipulate the zoom and view of a plot.
+#' Users can choose between zooming or scrolling mode, adjust the zoom increment, and perform various zooming actions,
+#' such as zooming in, zooming out, and focusing on specific regions of the plot. The GUI also provides options for
+#' resetting the view to full, centering the view, and more.
+#'
+#' @return NULL (The function primarily works with GUI elements.)
+#'
+#' @import tcltk2
+#'
+#' @export
+zm <- zoom
+
+#' ol()
+#' Overlay Spectra and Generate Plot
+#'
+#' This function overlays spectra based on the provided list of spectrum indices and
+#' generates a plot with the overlaid spectra. It supports different types of overlay
+#' palettes and allows for customization of the overlay behavior.
+#'
+#' @param askUsr A logical value indicating whether to prompt the user for overlay list creation.
+#'               Default is \code{TRUE}.
+#' @param offset A numeric value indicating the offset between overlaid spectra. If not provided,
+#'               the offset from global settings is used.
+#' @param ... Additional parameters passed to internal plotting functions.
+#'
+#' @return None (invisible return).
+#'
+#' @details The function performs the following steps:
+#' \itemize{
+#'   \item It defines default overlay palettes for different numbers of colors.
+#'   \item It determines the current spectrum and its dimensions.
+#'   \item If \code{askUsr} is \code{TRUE} or \code{overlayList} is \code{NULL}, it opens
+#'     the GUI for creating an overlay list and returns.
+#'   \item If \code{askUsr} is \code{FALSE} and an overlay list is present, it overlays
+#'     the spectra as specified by the overlay list.
+#'   \item The function handles plot text overlay, removing the current spectrum, and plotting
+#'     the overlaid spectra.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#'   # Overlay spectra based on the provided list
+#'   ol(askUsr = FALSE, offset = 0.1)
+#' }
+#'
+#' @importFrom graphics legend par plot
+#' @export
+ol <- overlay 
+
+#' ct()
+#' Wrapper function, displays the plot settings panes in ps()
+#' Plot Settings GUI
+#'
+#' This function creates a graphical user interface (GUI) window for adjusting plot settings for DIANA spectra.
+#' The GUI allows users to change plot colors, configure color options for various components, and switch
+#' between different settings panels.
+#'
+#' @param dispPane A character specifying the default displayed pane in the GUI. Options are "co" (default) for
+#'                 the "Plot Colors" pane, and "sp" for the "Spectra" pane.
+#'
+#' @return None (invisible return).
+#'
+#' @importFrom tcltk tkwm.title tkfocus tkwm.deiconify tkadd tkgrid ttksizegrip tkselect tkcurselection tkitemconfigure tkselection.set tkbind tkdestroy
+#' @export
+ct <- plot_settings
+
+#' co()
+#' Wrapper function, displays the plot colors pane in ps()
+#' @param dispPane A character specifying the default displayed pane in the GUI. Options are "co" (default) for
+#'                 the "Plot Colors" pane, and "sp" for the "Spectra" pane.
+#'
+#' @return None (invisible return).
+#'
+#' @importFrom tcltk tkwm.title tkfocus tkwm.deiconify tkadd tkgrid ttksizegrip tkselect tkcurselection tkitemconfigure tkselection.set tkbind tkdestroy
+#' @export
+co <- plot_colors 
+
+#' gl()
+#' Gene Name Threshold GUI
+#'
+#' This function opens a graphical user interface (GUI) that allows users to set threshold values for gene names.
+#' Users can interact with the GUI to select files, set and apply threshold values, and reset to default values.
+#'
+#' @return NULL (The function primarily works with GUI elements.)
+#'
+#' @import tcltk2
+#'
+#' @export
+gl <- gene_labeling
+
+#' dd()
+#' Refreshes the main plot without changing settings
+#' @import tcltk2
+#'
+#' @export
+dd <- redraw
+
+#' Sa()
+#' Save File As DIANA Compressed File
+#'
+#' This function allows the user to save the current DIANA file in a compressed format.
+#'
+#' @param saveFileName Character string containing the desired save file name. If not provided,
+#'                     a file dialog will prompt the user to choose a save location.
+#' @return None (invisible return).
+#'
+#' @export
+sa <- save
+
+#' ud()
+#' Undo Last Action
+#'
+#' This function allows users to undo the most recent action performed in the application. It restores the state of various global variables to their previous values, effectively reversing the most recent changes made.
+#'
+#' @return NULL (The function primarily works with global variables and their modifications.)
+#'
+#' @details
+#' The \code{undo} function works by decrementing the undo index in the \code{oldFolder} variable, which stores the history of changes. It resets each of the global files and adds new zoom changes to the \code{oldFolder} index.
+#' 
+#' @importFrom tcltk2
+#' @export
+undo <- ud()
