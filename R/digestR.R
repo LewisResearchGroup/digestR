@@ -1017,37 +1017,37 @@ gui <- function(top=NULL){
     winMenuAdd("  digestR -->  ")
     
     winMenuAdd("Manipulate csv")
-    winMenuAddItem("Manipulate csv", 'Remove Duplicates    prepare_mascot/rd()', "prepare_mascot_files/rd()")
-    winMenuAddItem("Manipulate csv", 'Unique peptides    unique_peptides/up()', "unique_peptides/up()")
-    winMenuAddItem("Manipulate csv", 'Process Mascot Files    process_mascot/pm()', "process_mascot/pm()")
-    winMenuAddItem("Manipulate csv", 'Generate New Proteome    generate_proteome/np()', "generate_proteome/gp()")
-    winMenuAddItem("Manipulate csv", 'Plot cut site distribution   cut_sites_distribution/csd()', "cut_sites_distribution/csd()")
-    winMenuAddItem("Manipulate csv", 'Plot peptide distribution    peptides_distribution/pd()', "peptides_distribution/pd()")
-    winMenuAddItem("Manipulate csv", 'Import Maven Files        im()', "im()")
+    winMenuAddItem("Manipulate csv", 'Remove Duplicates                   prepare_mascot/rd()', "prepare_mascot_files/rd()")
+    winMenuAddItem("Manipulate csv", 'Unique peptides                     unique_peptides/up()', "unique_peptides/up()")
+    winMenuAddItem("Manipulate csv", 'Process Mascot Files                process_mascot/pm()', "process_mascot/pm()")
+    winMenuAddItem("Manipulate csv", 'Generate New Proteome               generate_proteome/np()', "generate_proteome/gp()")
+    winMenuAddItem("Manipulate csv", 'Plot cut site distribution          cut_sites_distribution/csd()', "cut_sites_distribution/csd()")
+    winMenuAddItem("Manipulate csv", 'Plot peptide distribution           peptides_distribution/pd()', "peptides_distribution/pd()")
+    winMenuAddItem("Manipulate csv", 'Import Maven Files                  im()', "im()")
     
     winMenuAdd("Manipulate dcf")
     winMenuAddItem("Manipulate dcf", 'Open/Close files        fs()', "fs()")
-    winMenuAddItem("Manipulate dcf", 'Save as               sa()', "sa()")
-    winMenuAddItem('Manipulate dcf', 'Manipulate Files          mf()', "mf()")
+    winMenuAddItem("Manipulate dcf", 'Save as               save/sa()', "save/sa()")
+    winMenuAddItem('Manipulate dcf', 'Manipulate Files          manipulate_files/mf()', "manipulate_files/mf()")
         
     winMenuAdd("Edit")
-    winMenuAddItem("Edit", 'Undo                 ud()', "ud()")
-    winMenuAddItem("Edit", 'Redo                  rd()', "rd()") 
-    winMenuAddItem("Edit", 'Genotype              gt()', "gt()")
-    winMenuAddItem("Edit", 'Title                 ti()', "ti()")		
+    winMenuAddItem("Edit", 'Undo                 undo/ud()', "undo/ud()")
+    #winMenuAddItem("Edit", 'Redo                  redo/rd()', "redo/rd()") 
+    #winMenuAddItem("Edit", 'Genotype            genotype/gt()', "genotype/gt()")
+    #winMenuAddItem("Edit", 'Title                 title/ti()', "title/ti()")		
     winMenuAddItem("Edit", '--', "none")
     winMenuAddItem("Edit", 'Preferences       ep()', "ep()")
     
     winMenuAdd("Graphics")
-    winMenuAddItem("Graphics", 'Plot colors        co()', "co()")
-    winMenuAddItem("Graphics", 'Plot settings      ct()', "ct()")
+    winMenuAddItem("Graphics", 'Plot colors        plot_colors/co()', "plot_colors/co()")
+    winMenuAddItem("Graphics", 'Plot settings      plot_settings/ct()', "plot_settings/ct()")
     
     winMenuAdd("View")
-    winMenuAddItem("View", 'Zoom                       zm()', "zm()")
-    winMenuAddItem("View", 'Overlays                    ol()', "ol()")
-    winMenuAddItem("View", 'Display protease cut site      cs()', "cs()")
-    winMenuAddItem("View", 'Gene labeling              gl()', "gl()")		
-    winMenuAddItem("View", 'Redraw spectrum    dd()', "dd()")
+    winMenuAddItem("View", 'Zoom                           zoom/zm()', "zoom/zm()")
+    winMenuAddItem("View", 'Overlays                       overlay/ol()', "overlay/ol()")
+    winMenuAddItem("View", 'Display protease cut site      display_protease_cut_sites/cs()', "display_protease_cut_sites/cs()")
+    winMenuAddItem("View", 'Gene labeling              gene_labeling/gl()', "gene_labeling/gl()")		
+    winMenuAddItem("View", 'Redraw spectrum            redraw/dd()', "redraw/dd()")
     
     winMenuAdd("Help")
     winMenuAddItem("Help", 'Help topics', "?digestR")
@@ -6265,8 +6265,17 @@ ss <- function(...){
   refresh(multi.plot = FALSE, ...)  
 }
 
-## User edit function ud
-## Undo last action
+#' Undo Last Action
+#'
+#' This function allows users to undo the most recent action performed in the application. It restores the state of various global variables to their previous values, effectively reversing the most recent changes made.
+#'
+#' @return NULL (The function primarily works with global variables and their modifications.)
+#'
+#' @details
+#' The \code{undo} function works by decrementing the undo index in the \code{oldFolder} variable, which stores the history of changes. It resets each of the global files and adds new zoom changes to the \code{oldFolder} index.
+#' 
+#' @importFrom tcltk2
+#' @export
 ud <- function(){
   
   current <- wc()
@@ -6302,9 +6311,13 @@ ud <- function(){
   refresh()  
 }
 
-## Refreshes the main plot without changing settings 
-## ...  - Additional plotting options can be passed to drawPeptides and par() 
-dd <- function (...) {
+#' Refreshes the main plot without changing settings
+#' ...  - Additional plotting options can be passed to drawPeptides and par() 
+#' @import tcltk2
+#'
+#' @export
+
+redraw <- function (...) {
   
   ##Redraw the open spectra
   refresh(sub.plot = FALSE, multi.plot = FALSE, ...)
@@ -7870,7 +7883,7 @@ orderROI <- function( roiTable = NULL ){
 ## col     - line color vector [active, inactive]
 ## text.col	- text color vector [active, inactive]
 ## lw      - line width vector [active, inactive]
-## lty     - line type vector [active, inactive] (see par)
+## lty     - line type vector [active, inactive] (sudee par)
 ## cex     - Text size (see par)
 ## Note: this function is used to show ROIs on the main plot
 showRoi <- function ( rTable = roiTable, col = globalSettings$roi.bcolor, 
@@ -11291,13 +11304,33 @@ ps <- function(dispPane='co'){
   invisible()
 }
 
-## Wrapper function, displays the plot colors pane in ps()
-co <- function(){
+#' Wrapper function, displays the plot colors pane in ps()
+#' @param dispPane A character specifying the default displayed pane in the GUI. Options are "co" (default) for
+#'                 the "Plot Colors" pane, and "sp" for the "Spectra" pane.
+#'
+#' @return None (invisible return).
+#'
+#' @importFrom tcltk tkwm.title tkfocus tkwm.deiconify tkadd tkgrid ttksizegrip tkselect tkcurselection tkitemconfigure tkselection.set tkbind tkdestroy
+#' @export
+plot_colors <- function(){
   ps('co')
 }
 
-## Wrapper function, displays the plot settings panes in ps()
-ct <- function(){
+#' Wrapper function, displays the plot settings panes in ps()
+#' Plot Settings GUI
+#'
+#' This function creates a graphical user interface (GUI) window for adjusting plot settings for DIANA spectra.
+#' The GUI allows users to change plot colors, configure color options for various components, and switch
+#' between different settings panels.
+#'
+#' @param dispPane A character specifying the default displayed pane in the GUI. Options are "co" (default) for
+#'                 the "Plot Colors" pane, and "sp" for the "Spectra" pane.
+#'
+#' @return None (invisible return).
+#'
+#' @importFrom tcltk tkwm.title tkfocus tkwm.deiconify tkadd tkgrid ttksizegrip tkselect tkcurselection tkitemconfigure tkselection.set tkbind tkdestroy
+#' @export
+plot_settings <- function(){
   current <- wc()
   if (fileFolder[[current]]$file.par$number_dimensions == 1)
     ps('ct1D')
@@ -12870,8 +12903,21 @@ os <- function(dispPane='ol'){
   invisible()
 }
 
-## Interactive GUI for zooming and scrolling
-zm <- function(){
+#' Interactive GUI for zooming and scrolling
+#' Zoom and Manipulate View using zoom
+#'
+#' This function opens a graphical user interface (GUI) that allows users to manipulate the zoom and view of a plot.
+#' Users can choose between zooming or scrolling mode, adjust the zoom increment, and perform various zooming actions,
+#' such as zooming in, zooming out, and focusing on specific regions of the plot. The GUI also provides options for
+#' resetting the view to full, centering the view, and more.
+#'
+#' @return NULL (The function primarily works with GUI elements.)
+#'
+#' @import tcltk2
+#'
+#' @export
+
+zoom <- function(){
   
   ##Checks for open files
   wc()
@@ -13089,6 +13135,17 @@ openStored <- function(inFolder, fileName='storedSpec'){
 }
 
 ## Displays an interactive GUI for sorting files
+#' Open and Manage Spectra Files using fs
+#'
+#' This function provides a graphical user interface (GUI) for opening and managing spectra files.
+#' Users can view information about open files, rearrange their order, open new files, and close
+#' existing ones.
+#'
+#' @return NULL (The function primarily works with GUI elements.)
+#'
+#' @import tcltk2
+#'
+#' @export
 fs <- function(){
   
   ##call fo() if there are no open files
@@ -17083,7 +17140,17 @@ genomeToGene <- function(genomeIndex, lSpecies)
 
 ###############################
 
-gl <- function()
+#' Gene Name Threshold GUI
+#'
+#' This function opens a graphical user interface (GUI) that allows users to set threshold values for gene names.
+#' Users can interact with the GUI to select files, set and apply threshold values, and reset to default values.
+#'
+#' @return NULL (The function primarily works with GUI elements.)
+#'
+#' @import tcltk2
+#'
+#' @export
+gene_labeling <- function()
 {
   ##creates main window
   tclCheck()
@@ -17351,7 +17418,7 @@ process_mascot <- function()
 #' @return None (invisible return).
 #'
 #' @export
-sa <- function(saveFileName = '')
+save <- function(saveFileName = '')
 {
   if (saveFileName == '')
   {
@@ -17561,18 +17628,6 @@ modalDialog <- function(parent, title, question, entryInit, entryWidth = 20,
 }
 
 #' Plot Settings GUI
-#'
-#' This function creates a graphical user interface (GUI) window for adjusting plot settings for DIANA spectra.
-#' The GUI allows users to change plot colors, configure color options for various components, and switch
-#' between different settings panels.
-#'
-#' @param dispPane A character specifying the default displayed pane in the GUI. Options are "co" (default) for
-#'                 the "Plot Colors" pane, and "sp" for the "Spectra" pane.
-#'
-#' @return None (invisible return).
-#'
-#' @importFrom tcltk tkwm.title tkfocus tkwm.deiconify tkadd tkgrid ttksizegrip tkselect tkcurselection tkitemconfigure tkselection.set tkbind tkdestroy
-#' @export
 ps <- function(dispPane='co'){
   
   ##create main window
@@ -18237,7 +18292,7 @@ ps <- function(dispPane='co'){
 #'
 #' @importFrom graphics legend par plot
 #' @export
-ol <- function(askUsr = TRUE, offset = NULL, ...)
+overlay <- function(askUsr = TRUE, offset = NULL, ...)
 {
   ### Define default overlay palletes
   p4col <- c(rgb(215,48,39,maxColorValue=256), rgb(253,174,97,maxColorValue=256), rgb(171,217,233,maxColorValue=256), rgb(69,117,180,maxColorValue=256))
@@ -18761,6 +18816,17 @@ os <- function(dispPane='ol'){
   invisible()
 }
 
+#' Manipulate Files using mf
+#'
+#' This function opens a graphical user interface (GUI) for manipulating files. Users can select multiple files,
+#' perform various mathematical operations on them (such as addition, subtraction, multiplication, and division),
+#' merge files, and calculate the mean of selected files.
+#'
+#' @return NULL (The function primarily works with GUI elements.)
+#'
+#' @import tcltk2
+#'
+#' @export
 mf <- function()
 {
   ##create main window
