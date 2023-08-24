@@ -15078,35 +15078,47 @@ ep <- function(dispPane=0){
 
 #' Update My Package
 #'
-#' This function updates the R package by installing an updated version from GitHub
+#' This function updates the R package by installing an updated version from GitHub.
 #'
-#' @details This function loads the devtools package if not already loaded and then
-#' installs an updated version of the package "digestR" from the GitHub repository "LewisResearchGroup/digestR".
+#' If the package "digestR" is currently loaded, it will be detached before updating.
 #'
-#' @seealso \code{\link{install_github}}
 #' @importFrom devtools install_github
+#'
+#' @return Invisible NULL.
+#'
+#' @export
 #'
 #' @examples
 #' \dontrun{
 #' update_my_package()
 #' }
 #'
-#' @export
+#' @keywords internal
 updater <- function() {
-  # Load the devtools package
   if (!requireNamespace("devtools", quietly = TRUE)) {
     install.packages("devtools")
   }
   library(devtools)
   
-  # Install the updated package from GitHub
-  install_github("LewisResearchGroup/digestR")
+  # Check if the package is loaded
+  if ("digestR" %in% installed.packages()) {
+    if ("digestR" %in% search()) {
+      cat("Detaching package 'digestR'...\n")
+      detach("package:digestR", unload = TRUE)
+    }
+    cat("Updating package 'digestR'...\n")
+    devtools::install_github("LewisResearchGroup/digestR")
+  } else {
+    cat("Installing package 'digestR'...\n")
+    devtools::install_github("LewisResearchGroup/digestR")
+  }
   
   cat("Package updated successfully!\n")
+  invisible(NULL)
 }
 
-## Updates digestR
-updater1 <- function(auto=FALSE){
+## Updates digestR old
+updater_old <- function(auto=FALSE){
   return(NULL)  # switch off updates for now
 
   ##display message
