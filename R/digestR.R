@@ -15076,8 +15076,37 @@ ep <- function(dispPane=0){
 ##                                                                            ##
 ################################################################################
 
+#' Update My Package
+#'
+#' This function updates the R package by installing an updated version from GitHub
+#'
+#' @details This function loads the devtools package if not already loaded and then
+#' installs an updated version of the package "digestR" from the GitHub repository "LewisResearchGroup/digestR".
+#'
+#' @seealso \code{\link{install_github}}
+#' @importFrom devtools install_github
+#'
+#' @examples
+#' \dontrun{
+#' update_my_package()
+#' }
+#'
+#' @export
+updater <- function() {
+  # Load the devtools package
+  if (!requireNamespace("devtools", quietly = TRUE)) {
+    install.packages("devtools")
+  }
+  library(devtools)
+  
+  # Install the updated package from GitHub
+  install_github("LewisResearchGroup/digestR")
+  
+  cat("Package updated successfully!\n")
+}
+
 ## Updates digestR
-updater <- function(auto=FALSE){
+updater1 <- function(auto=FALSE){
   return(NULL)  # switch off updates for now
 
   ##display message
