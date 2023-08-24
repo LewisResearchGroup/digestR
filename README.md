@@ -38,6 +38,9 @@ Install the package of interest from GitHub using the following code, where you 
 	setwd('<your-working-directory>')  # Set your working directory, before you start.
  	...
 
+## To call the gui, run the following lines in the R console
+	gui()
+
 ## GUI Functions Documentation
 
 This document provides details of several Graphical User Interface (GUI) functions implemented in the R programming language using the Tcl/Tk toolkit.
