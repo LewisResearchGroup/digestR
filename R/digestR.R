@@ -1016,13 +1016,13 @@ gui <- function(top=NULL){
     winMenuAdd("  digestR -->  ")
     
     winMenuAdd("Manipulate csv")
-    winMenuAddItem("Manipulate csv", 'Remove Duplicates                   prepare_mascot/rd()', "prepare_mascot_files/rd()")
-    winMenuAddItem("Manipulate csv", 'Unique peptides                  unique_peptides/up()', "unique_peptides/up()")
-    winMenuAddItem("Manipulate csv", 'Process Mascot Files                  process_mascot/pm()', "process_mascot/pm()")
+    winMenuAddItem("Manipulate csv", 'Remove Duplicates                       prepare_mascot/rd()', "prepare_mascot_files/rd()")
+    winMenuAddItem("Manipulate csv", 'Unique peptides                         unique_peptides/up()', "unique_peptides/up()")
+    winMenuAddItem("Manipulate csv", 'Process Mascot Files                     process_mascot/pm()', "process_mascot/pm()")
     winMenuAddItem("Manipulate csv", 'Generate New Proteome                  generate_proteome/gp()', "generate_proteome/gp()")
-    winMenuAddItem("Manipulate csv", 'Plot cut site distribution                  cut_sites_distribution/csd()', "cut_sites_distribution/csd()")
+    winMenuAddItem("Manipulate csv", 'Plot cut site distribution                   cut_sites_distribution/csd()', "cut_sites_distribution/csd()")
     winMenuAddItem("Manipulate csv", 'Plot peptide distribution                  peptides_distribution/pd()', "peptides_distribution/pd()")
-    winMenuAddItem("Manipulate csv", 'Import Maven Files                  im()', "im()")
+    winMenuAddItem("Manipulate csv", 'Import Maven Files                        im()', "im()")
     
     winMenuAdd("Manipulate dcf")
     winMenuAddItem("Manipulate dcf", 'Open/Close files        fs()', "fs()")
