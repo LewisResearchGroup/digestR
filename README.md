@@ -38,7 +38,7 @@ Install the package of interest from GitHub using the following code, where you 
 	setwd('<your-working-directory>')  # Set your working directory, before you start.
  	...
 
-## To call the gui, run the following lines in the R console
+## To call the gui and the plot window, run the following line in the R console
 	gui()
 
 ## GUI Functions Documentation
