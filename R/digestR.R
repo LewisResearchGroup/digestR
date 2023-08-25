@@ -1391,8 +1391,8 @@ splashScreen <- function(){
   text(0.70, 0.2, 'R', col='#E74C3C', cex=5.5, pos=3, offset=0.4)
   
   # Other text elements (modify as needed)
-  text(0, 0.08, 'Digestomics Analyzer', col=colMain, cex=2.5, font=2)
-  text(0, -0.15, paste('ver 1.0.0', pkgVar$version), col=colMain, font=3)
+  text(0, 0.08, 'Digestomics Analyzer', col=colMain, cex=2.5, font=1)
+  text(0, -0.15, paste('version 1.0.0', pkgVar$version), col=colMain, font=3)
   text(0, -0.25, 'gp() - Generate New Proteome', col=colMain)
   text(0, -0.35, 'pm() - Process Mascot files', col=colMain)
   text(0, -0.45, 'fo() - Open *.dcf files', col=colMain)
@@ -1436,10 +1436,6 @@ about <- function(){
   
   invisible()
 }
-
-# Call the splashScreen function to display the splash screen
-#splashScreen()
-
 
 ## Internal function for displaying HTML help pages
 ## page - character string; name of the help page to open
