@@ -1372,34 +1372,33 @@ splashScreen <- function(){
   colMain <- '#b4d0f3'
   colBack <- '#0065ca'
   plot(0, 0, type='n', xlab='', ylab='', col.axis='black')
-  text(-.75, .2, 'D', col=colBack, cex=6.5, pos=3, offset=.4)
-  text(-.74, .2, 'D', col=colMain, cex=6, pos=3, offset=.5)
-  text(-.50, .2, 'I', col=colBack, cex=6.5, pos=3, offset=.4)
-  text(-.49, .2, 'I', col=colMain, cex=6, pos=3, offset=.5)
-  text(-.25, .2, 'G', col=colBack, cex=6.5, pos=3, offset=.4)
-  text(-.24, .2, 'G', col=colMain, cex=6, pos=3, offset=.5)
-  text(.0, .2, 'E', col=colBack, cex=6.5, pos=3, offset=.4)
-  text(.01, .2, 'E', col=colMain, cex=6, pos=3, offset=.5)	
-  text(.25, .2, 'S', col=colBack, cex=6.5, pos=3, offset=.4)
-  text(.26, .2, 'S', col=colMain, cex=6, pos=3, offset=.5)	
-  text(.50, .2, 'T', col=colBack, cex=6.5, pos=3, offset=.4)
-  text(.51, .2, 'T', col=colMain, cex=6, pos=3, offset=.5)
-  text(.70, .2, 'R', col='#121c78', cex=5.5, pos=3, offset=.4)
-  text(.71, .2, 'R', col=colBack, cex=5, pos=3, offset=.5)
-  #	text(.72, .2, 'R', col='#8f0303', cex=5.5, pos=3, offset=.4)
-  #	text(.73, .2, 'R', col='red', cex=5, pos=3, offset=.5)	
-  text(0, .08, 'Digestomics Analyzer', col=colMain, cex=2)
-  text(0, -.15, paste('ver 1.0.0', pkgVar$version), col=colMain)
-  text(0, -.25, 'gp() - Generate New Proteome', col=colMain)
-  text(0, -.35, 'pm() - process Mascot files', col=colMain)
-  text(0, -.45, 'fo() - open *.dcf files', col=colMain)
-  #	text(0, -.3, 'wl() - load a workspace', col='white')
-}
-#text(-.45, .2, 'r', col='#0065ca', cex=6.5, pos=3, offset=.5)
-#text(-.44, .2, 'r', col='red', cex=6, pos=3, offset=.6)
-## Displays digestR package info
-about <- function(){
+  # Define your color palette
+  #colMain <- '#FF5733'  # A warm main color
+  #colBack <- '#2E86C1'  # A contrasting background color
   
+  # Letter positions and colors
+  letters <- c('D', 'I', 'G', 'E', 'S', 'T', 'R')
+  colors <- c(colMain, colMain, colMain, colMain, colMain, colMain, colBack)
+  cex_values <- c(7, 7, 7, 7, 7, 7, 6.5)
+  offset_values <- c(0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4)
+  
+  # Loop to create and position letters
+  for (i in 1:length(letters)) {
+    text(-0.75 + (i-1)*0.25, 0.2, letters[i], col=colors[i], cex=cex_values[i], pos=3, offset=offset_values[i])
+  }
+  
+  # Add a decorative 'R' in a different color
+  text(0.70, 0.2, 'R', col='#E74C3C', cex=5.5, pos=3, offset=0.4)
+  
+  # Other text elements (modify as needed)
+  text(0, 0.08, 'Digestomics Analyzer', col=colMain, cex=2.5, font=2)
+  text(0, -0.15, paste('ver 1.0.0', pkgVar$version), col=colMain, font=3)
+  text(0, -0.25, 'gp() - Generate New Proteome', col=colMain)
+  text(0, -0.35, 'pm() - Process Mascot files', col=colMain)
+  text(0, -0.45, 'fo() - Open *.dcf files', col=colMain)
+}
+
+about <- function(){
   ##creates toplevel
   dlg <- tktoplevel()
   tkwm.title(dlg, 'About digestR')
@@ -1437,6 +1436,10 @@ about <- function(){
   
   invisible()
 }
+
+# Call the splashScreen function to display the splash screen
+#splashScreen()
+
 
 ## Internal function for displaying HTML help pages
 ## page - character string; name of the help page to open
