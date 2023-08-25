@@ -1016,18 +1016,18 @@ gui <- function(top=NULL){
     winMenuAdd("  digestR -->  ")
     
     winMenuAdd("Manipulate csv")
-    winMenuAddItem("Manipulate csv", 'Remove Duplicates                            prepare_mascot/rd()', "prepare_mascot_files/rd()")
-    winMenuAddItem("Manipulate csv", 'Unique peptides                               unique_peptides/up()', "unique_peptides/up()")
-    winMenuAddItem("Manipulate csv", 'Process Mascot Files                         process_mascot/pm()', "process_mascot/pm()")
-    winMenuAddItem("Manipulate csv", 'Generate New Proteome                  generate_proteome/gp()', "generate_proteome/gp()")
-    winMenuAddItem("Manipulate csv", 'Plot cut site distribution                   cut_sites_distribution/csd()', "cut_sites_distribution/csd()")
-    winMenuAddItem("Manipulate csv", 'Plot peptide distribution                  peptides_distribution/pd()', "peptides_distribution/pd()")
-    winMenuAddItem("Manipulate csv", 'Import Maven Files                          im()', "im()")
+    winMenuAddItem("Manipulate csv", 'Remove Duplicates				prepare_mascot/rd()', "prepare_mascot_files/rd()")
+    winMenuAddItem("Manipulate csv", 'Unique peptides				unique_peptides/up()', "unique_peptides/up()")
+    winMenuAddItem("Manipulate csv", 'Process Mascot Files			process_mascot/pm()', "process_mascot/pm()")
+    winMenuAddItem("Manipulate csv", 'Generate New Proteome			generate_proteome/gp()', "generate_proteome/gp()")
+    winMenuAddItem("Manipulate csv", 'Plot cut site distribution		cut_sites_distribution/csd()', "cut_sites_distribution/csd()")
+    winMenuAddItem("Manipulate csv", 'Plot peptide distribution			peptides_distribution/pd()', "peptides_distribution/pd()")
+    winMenuAddItem("Manipulate csv", 'Import Maven Files			im()', "im()")
     
     winMenuAdd("Manipulate dcf")
-    winMenuAddItem("Manipulate dcf", 'Open/Close files          fs()', "fs()")
-    winMenuAddItem("Manipulate dcf", 'Save as                   save/sa()', "save/sa()")
-    winMenuAddItem('Manipulate dcf', 'Manipulate Files          manipulate_files/mf()', "manipulate_files/mf()")
+    winMenuAddItem("Manipulate dcf", 'Open/Close files		fs()', "fs()")
+    winMenuAddItem("Manipulate dcf", 'Save as			save/sa()', "save/sa()")
+    winMenuAddItem('Manipulate dcf', 'Manipulate Files		manipulate_files/mf()', "manipulate_files/mf()")
         
     winMenuAdd("Edit")
     winMenuAddItem("Edit", 'Undo                 undo/ud()', "undo/ud()")
@@ -1038,8 +1038,8 @@ gui <- function(top=NULL){
     winMenuAddItem("Edit", 'Preferences       ep()', "ep()")
     
     winMenuAdd("Graphics")
-    winMenuAddItem("Graphics", 'Plot colors               plot_colors/co()', "plot_colors/co()")
-    winMenuAddItem("Graphics", 'Plot settings             plot_settings/ct()', "plot_settings/ct()")
+    winMenuAddItem("Graphics", 'Plot colors			plot_colors/co()', "plot_colors/co()")
+    winMenuAddItem("Graphics", 'Plot settings			plot_settings/ct()', "plot_settings/ct()")
     
     winMenuAdd("View")
     winMenuAddItem("View", 'Zoom					zoom/zm()', "zoom/zm()")
@@ -1438,7 +1438,7 @@ about <- function(){
 }
 
 # Call the splashScreen function to display the splash screen
-#splashScreen()
+splashScreen()
 
 
 ## Internal function for displaying HTML help pages
