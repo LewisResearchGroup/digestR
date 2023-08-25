@@ -1438,7 +1438,7 @@ about <- function(){
 }
 
 # Call the splashScreen function to display the splash screen
-splashScreen()
+#splashScreen()
 
 
 ## Internal function for displaying HTML help pages
