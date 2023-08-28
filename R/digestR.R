@@ -1016,12 +1016,12 @@ gui <- function(top=NULL){
     winMenuAdd("  digestR -->  ")
     
     winMenuAdd("Manipulate csv")
-    winMenuAddItem("Manipulate csv", 'Remove Duplicates				prepare_mascot/rd()', "prepare_mascot_files/rd()")
-    winMenuAddItem("Manipulate csv", 'Unique peptides				unique_peptides/up()', "unique_peptides/up()")
-    winMenuAddItem("Manipulate csv", 'Process Mascot Files			process_mascot/pm()', "process_mascot/pm()")
-    winMenuAddItem("Manipulate csv", 'Generate New Proteome			generate_proteome/gp()', "generate_proteome/gp()")
-    winMenuAddItem("Manipulate csv", 'Plot cut site distribution		cut_sites_distribution/csd()', "cut_sites_distribution/csd()")
-    winMenuAddItem("Manipulate csv", 'Plot peptide distribution			peptides_distribution/pd()', "peptides_distribution/pd()")
+    winMenuAddItem("Manipulate csv", 'Remove Duplicates				prepare_mascot()/rd()', "prepare_mascot()/rd()")
+    winMenuAddItem("Manipulate csv", 'Unique peptides				unique_peptides()/up()', "unique_peptides()/up()")
+    winMenuAddItem("Manipulate csv", 'Process Mascot Files			process_mascot()/pm()', "process_mascot()/pm()")
+    winMenuAddItem("Manipulate csv", 'Generate New Proteome			generate_proteome()/gp()', "generate_proteome()/gp()")
+    winMenuAddItem("Manipulate csv", 'Plot cut site distribution		cut_sites_distribution()/csd()', "cut_sites_distribution()/csd()")
+    winMenuAddItem("Manipulate csv", 'Plot peptide distribution			peptides_distribution()/pd()', "peptides_distribution()/pd()")
     winMenuAddItem("Manipulate csv", 'Import Maven Files			im()', "im()")
     
     winMenuAdd("Manipulate dcf")
@@ -1038,15 +1038,15 @@ gui <- function(top=NULL){
     winMenuAddItem("Edit", 'Preferences       ep()', "ep()")
     
     winMenuAdd("Graphics")
-    winMenuAddItem("Graphics", 'Plot colors			plot_colors/co()', "plot_colors/co()")
-    winMenuAddItem("Graphics", 'Plot settings			plot_settings/ct()', "plot_settings/ct()")
+    winMenuAddItem("Graphics", 'Plot colors			plot_colors/co()', "plot_colors()/co()")
+    winMenuAddItem("Graphics", 'Plot settings			plot_settings/ct()', "plot_settings()/ct()")
     
     winMenuAdd("View")
-    winMenuAddItem("View", 'Zoom					zoom/zm()', "zoom/zm()")
-    winMenuAddItem("View", 'Overlays					overlay/ol()', "overlay/ol()")
-    winMenuAddItem("View", 'Display protease cut site			display_protease_cut_sites/cs()', "display_protease_cut_sites/cs()")
-    winMenuAddItem("View", 'Gene labeling				gene_labeling/gl()', "gene_labeling/gl()")		
-    winMenuAddItem("View", 'Redraw spectrum				redraw/dd()', "redraw/dd()")
+    winMenuAddItem("View", 'Zoom					zoom/zm()', "zoom()/zm()")
+    winMenuAddItem("View", 'Overlays					overlay/ol()', "overlay()/ol()")
+    winMenuAddItem("View", 'Display protease cut site			display_protease_cut_sites()/cs()', "display_protease_cut_sites/cs()")
+    winMenuAddItem("View", 'Gene labeling				gene_labeling/gl()', "gene_labeling()/gl()")		
+    winMenuAddItem("View", 'Redraw spectrum				redraw/dd()', "redraw()/dd()")
     
     winMenuAdd("Help")
     winMenuAddItem("Help", 'Help topics', "?digestR")
@@ -12914,7 +12914,6 @@ os <- function(dispPane='ol'){
 #' @import tcltk2
 #'
 #' @export
-
 zoom <- function(){
   
   ##Checks for open files
