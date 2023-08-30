@@ -353,7 +353,7 @@ co <- plot_colors
 #' @import tcltk2
 #'
 #' @export
-gl <- gene_labeling
+glab <- gene_labeling
 
 #' dd()
 #' Refreshes the main plot without changing settings
