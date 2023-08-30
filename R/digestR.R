@@ -23234,7 +23234,6 @@ cut_sites_distribution <- function () {
 #   Example usage:
 #   plotCutSite("Trypsin", "black")
 #   """
-
 display_protease_cut_sites <- function() {
   tclCheck()
   dlg <- myToplevel('cs')
