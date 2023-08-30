@@ -1045,7 +1045,7 @@ gui <- function(top=NULL){
     winMenuAddItem("View", 'Zoom					zm()', "zm()")
     winMenuAddItem("View", 'Overlays					overlay/ol()', "ol()")
     winMenuAddItem("View", 'Display protease cut site			display_protease_cut_sites()/cs()', "cs()")
-    winMenuAddItem("View", 'Gene labeling				gene_labeling/gl()', "gl()")		
+    winMenuAddItem("View", 'Gene labeling				gene_labeling/glab()', "glab()")		
     winMenuAddItem("View", 'Redraw spectrum				redraw/dd()', "dd()")
     
     winMenuAdd("Help")
