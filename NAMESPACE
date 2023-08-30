@@ -2,6 +2,8 @@
 
 export(BioMartData)
 export(co)
+export(cs)
+export(display_protease_cut_sites)
 export(csd)
 export(ct)
 export(cut_sites_distribution)
