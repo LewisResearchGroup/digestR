@@ -152,7 +152,7 @@ Defect in proteolytic activity might have an impact on digested peptide length. 
 
 ![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/Density%20Plot%20GUI.png)
 
-#### 2. Cleavage site specificity: csp()
+#### 2. Cleavage site specificity: csd()
 The csp() function allows users to plot amino acid distributions at C-terminus or N-terminus to track changes in cut site representation/specificity between groups. Similar to pd(), this function allows users to select a folder or subfolder and process all CSV files in that directory. Files will be grouped depending on the second string of the filename. The user can select to plot either C-terminus or N-terminus or both distributions.
 
 ![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/CSPGUI%20final.png)
