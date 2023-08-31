@@ -15962,7 +15962,7 @@ loadSpecies <- function(fileName)
 
   if( is.null(lSpecies)) {
     log_message(paste0('Species file ', fileName, ' no special function defined, using generic loading function.'))
-    lSpecies <- loadGenericGenes(fileName)
+    lSpecies <- loadProteins(fileName)
   }
 
   return(lSpecies)
@@ -22101,7 +22101,7 @@ initTaurus <- function(sFileName = '')
 }
 
 
-loadGenericGenes <- function(sFilename) {
+loadProteins <- function(sFilename) {
   log_message(sFilename)
   df <- read.csv(sFilename, head = TRUE, stringsAsFactors = FALSE)
   fileInfo <- file.info(sFilename)
