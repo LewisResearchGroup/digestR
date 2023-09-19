@@ -71,7 +71,7 @@ BioMartData <- R6::R6Class(
         tryCatch({
           annotLookup <- getBM(
             filters = c("chromosome_name"),
-            values = list(chrom),
+            values = list(chromosomes),
             mart = self$ensembl,
             attributes = c(
               'external_gene_name',
@@ -91,7 +91,7 @@ BioMartData <- R6::R6Class(
           file_list <- c(file_list, filename)  # Add the filename to the list
         },
         error = function(e) {
-          log_message(paste("Failed to fetch data for chromosome", chrom, "due to error:", e))
+          log_message(paste("Failed to fetch data for chromosome", chromosomes, "due to error:", e))
         })
       }
 
@@ -102,7 +102,7 @@ BioMartData <- R6::R6Class(
 
       self$combined_data <- self$combined_data[, c("external_gene_name", "uniprot_gn_id", "chromosome_name", "start_position", "end_position", "peptide")]
       
-      colnames(self$combined_data) <- c("GeneName", "SwissID", "chrom", "start", "end", "seq")
+      colnames(self$combined_data) <- c("GeneName", "SwissID", "chromosomes", "start", "end", "seq")
 
       combined_filename <- file.path(filepath, paste0(self$dataset, "_combined.csv"))
       file_list <- c(file_list, combined_filename)
