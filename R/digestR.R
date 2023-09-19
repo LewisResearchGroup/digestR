@@ -17324,7 +17324,7 @@ loadProteome <- function(sFilename, speciesName) {
   df <- read.csv(sFilename, head = TRUE, stringsAsFactors = FALSE)
   fileInfo <- file.info(sFilename)
   ID <- as.integer(fileInfo$mtime)
-  df <- subset(df, select = c("GeneName", "seq", "chrom", "start"))
+  df <- subset(df, select = c("GeneName", "seq", "chromosome", "start"))
   names(df)[1] <- "name"
   return(prepareSpecies(speciesName, ID, df))
 }
