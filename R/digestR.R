@@ -15962,7 +15962,7 @@ loadSpecies <- function(fileName)
 
   if( is.null(lSpecies)) {
     log_message(paste0('Species file ', fileName, ' no special function defined, using generic loading function.'))
-    lSpecies <- loadProteins(fileName)
+    lSpecies <- loadProteome(fileName)
   }
 
   return(lSpecies)
@@ -17284,9 +17284,11 @@ process_mascot <- function()
   onApply <- function()
   {
     idx <- 1 + as.integer(tkcurselection(speciesBox))
+    selectedSpeciesName <- basename(species[idx]) # Added
     globalSettings$processSpeciesID <<- idx
     globalSettings$processSingleFile <<- (as.logical(tclObj(singleFileConvVal)) == TRUE)
     tkdestroy(dlg)
+    loadProteome(species[idx], selectedSpeciesName)  # Added Pass the selected file and name
     batchConvert()
   }
   apply <- ttkbutton(buttonFrame, text='Apply', width=10, command=onApply)
@@ -17316,6 +17318,17 @@ process_mascot <- function()
   
   invisible()
 }
+
+loadProteome <- function(sFilename, speciesName) {
+  log_message(sFilename)
+  df <- read.csv(sFilename, head = TRUE, stringsAsFactors = FALSE)
+  fileInfo <- file.info(sFilename)
+  ID <- as.integer(fileInfo$mtime)
+  df <- subset(df, select = c("GeneName", "seq", "chrom", "start"))
+  names(df)[1] <- "name"
+  return(prepareSpecies(speciesName, ID, df))
+}
+
 		       
 #' Save File As DIANA Compressed File
 #'
@@ -21989,7 +22002,7 @@ saveAs <- function(saveFileName, in.folder, mapData = NULL, includeMatches = TRU
 
 ################################################################################
 #
-# Prepare species files
+# Old Prepare species files
 #
 ################################################################################
 #
@@ -22099,18 +22112,6 @@ initTaurus <- function(sFileName = '')
   
   return(taurus)
 }
-
-
-loadProteins <- function(sFilename) {
-  log_message(sFilename)
-  df <- read.csv(sFilename, head = TRUE, stringsAsFactors = FALSE)
-  fileInfo <- file.info(sFilename)
-  ID <- as.integer(fileInfo$mtime)
-  df <- subset(df, select = c("GeneName", "seq", "chrom", "start"))
-  names(df)[1] <- "name"
-  return(prepareSpecies("generic", ID, df))
-}
-
 
 loadTaurusGenes <- function(sTaurusFilename = "")
 {
