@@ -15842,7 +15842,7 @@ plotByChrom <- function(lSpecies, map, yLabel = 'yAxis')
   maxY <- max(map) * 1.05 # maximum y value + 5% to provide padding in plot
   yLim <- c(0, maxY)
   
-  plot(map, xlab = "Proteome", xaxt = "n", ylab = yLabel, type="l", ylim = yLim)
+  plot(map, xlab = "Chromosome", xaxt = "n", ylab = yLabel, type="l", ylim = yLim)
   drawChromeBounds(chromP$upper)
   axis(side = 1, at = chromP$mid, labels = tar, tick = FALSE)
 }
