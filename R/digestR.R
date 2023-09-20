@@ -15842,7 +15842,7 @@ plotByChrom <- function(lSpecies, map, yLabel = 'yAxis')
   maxY <- max(map) * 1.05 # maximum y value + 5% to provide padding in plot
   yLim <- c(0, maxY)
   
-  plot(map, xlab = "Chromosome", xaxt = "n", ylab = yLabel, type="l", ylim = yLim)
+  plot(map, xlab = "Proteome", xaxt = "n", ylab = yLabel, type="l", ylim = yLim)
   drawChromeBounds(chromP$upper)
   axis(side = 1, at = chromP$mid, labels = tar, tick = FALSE)
 }
@@ -17284,11 +17284,11 @@ process_mascot <- function()
   onApply <- function()
   {
     idx <- 1 + as.integer(tkcurselection(speciesBox))
-    #selectedSpeciesName <- basename(species[idx]) # Added
+    selectedSpeciesName <- basename(species[idx]) # Added
     globalSettings$processSpeciesID <<- idx
     globalSettings$processSingleFile <<- (as.logical(tclObj(singleFileConvVal)) == TRUE)
     tkdestroy(dlg)
-    #loadProteome(species[idx], selectedSpeciesName)  # Added Pass the selected file and name
+    loadProteome(species[idx], selectedSpeciesName)  # Added Pass the selected file and name
     batchConvert()
   }
   apply <- ttkbutton(buttonFrame, text='Apply', width=10, command=onApply)
@@ -17319,14 +17319,14 @@ process_mascot <- function()
   invisible()
 }
 
-loadProteome <- function(sFilename) {
+loadProteome <- function(sFilename, selectedSpeciesName) {
   log_message(sFilename)
   df <- read.csv(sFilename, head = TRUE, stringsAsFactors = FALSE)
   fileInfo <- file.info(sFilename)
   ID <- as.integer(fileInfo$mtime)
   df <- subset(df, select = c("GeneName", "seq", "chromosome", "start"))
   names(df)[1] <- "name"
-  return(prepareSpecies("Proteome", ID, df))
+  return(prepareSpecies(selectedSpeciesName, ID, df))
 }
 
 		       
