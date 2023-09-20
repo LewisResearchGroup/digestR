@@ -22656,22 +22656,34 @@ peptides_distribution <- function() {
       group_by(group_name) %>%
       summarise(mean_nchar = mean(nchar))
     
-    if (plot_type == "Overlay") {
-      plot <- ggplot(nchar_df, aes(x = nchar, group = group_name, fill = group_name)) +
-        geom_density(alpha = 0.5) +
-        labs(title = "Peptide Length Distribution", x = "Peptide length in AA", y = "", fill = "Group") +
-        theme_bw() +
-        geom_vline(data = nchar_mean_df, aes(xintercept = mean_nchar, color = group_name), size = 1)
-    } else if (plot_type == "Ridges") {
-      plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = group_name)) +
-        geom_density_ridges2(alpha = 0.5, rel_min_height = 0.01, scale = 7, quantile_lines = TRUE, quantile_fun = function(x, ...) mean(x)) +
-        labs(title = "Peptide Length Distribution", x = "Peptide length in AA", y = "", fill = "Group") +
-        theme_bw()
-    } else if (plot_type == "Colored Ridges") {
-      plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = stat(x))) +
-        geom_density_ridges_gradient(alpha = 0.5, rel_min_height = 0.01, scale = 3, quantile_lines = TRUE, quantile_fun = function(x, ...) mean(x)) +
-        labs(title = "Peptide Length Distribution", x = "Peptide length in AA", y = "", fill = "Group") +
-        scale_fill_viridis_c(name = "Length", option = "H")
+     # Create the appropriate density plot based on the plot_type argument
+  if (plot_type == "overlay") {
+    plot <- ggplot(nchar_df, aes(x = nchar, group = group_name, fill = group_name, color = group_name)) +
+      geom_density(alpha = 0.5) +
+      labs(title = "Peptide Length Distribution", 
+           x = "Peptide length in AA", y = "Density", fill = "Groups") +
+      theme_bw() +
+      geom_vline(data = nchar_mean_df, aes(xintercept = mean_nchar, color = group_name),
+                 size = 1) +
+      labs(color = "Means") +
+      geom_text_repel(data = nchar_mean_df, aes(x = mean_nchar, y = 0, label = round(mean_nchar, 2)), 
+                      color = 'black', size = 4, nudge_x = 5)  
+  } else if (plot_type == "ridges") {
+    plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = group_name)) +
+      geom_density_ridges2(alpha = 0.5, rel_min_height = 0.01, scale = 7, quantile_lines = TRUE, quantile_fun = function(x,...)mean(x)) +
+      labs(title = "Peptide Length Distribution", 
+           x = "Peptide length in AA", y = "", fill = "Group") +
+      theme_bw()  +
+      geom_text(data = nchar_mean_df, aes(x = mean_nchar, y = group_name, label = round(mean_nchar, 2)),
+                color = 'black', size = 3.5, hjust = 0.5, vjust = - 0.05)
+  } else if (plot_type == "colored_ridges") {
+    plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = stat(x))) +
+      geom_density_ridges_gradient(alpha = 0.5, rel_min_height = 0.02, scale = 3, quantile_lines = TRUE, quantile_fun = function(x,...)mean(x)) +
+      labs(title = "Peptide Length Distribution", 
+           x = "Peptide length in AA", y = "", fill = "Group") +
+      scale_fill_viridis_c(name = "Petide length", option = "H") +
+      geom_text(data = nchar_mean_df, aes(x = mean_nchar, y = group_name, label = round(mean_nchar, 2)),
+                color = 'black', size = 3.5, hjust = - 0.5, vjust = -1) # Adjust hjust for label positioning
     } else {
       stop("Invalid plot_type argument. Please choose either 'Overlay', 'Ridges', or 'Colored Ridges'.")
     }
