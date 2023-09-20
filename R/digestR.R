@@ -17284,11 +17284,11 @@ process_mascot <- function()
   onApply <- function()
   {
     idx <- 1 + as.integer(tkcurselection(speciesBox))
-    selectedSpeciesName <- basename(species[idx]) # Added
+    #selectedSpeciesName <- basename(species[idx]) # Added
     globalSettings$processSpeciesID <<- idx
     globalSettings$processSingleFile <<- (as.logical(tclObj(singleFileConvVal)) == TRUE)
     tkdestroy(dlg)
-    loadProteome(species[idx], selectedSpeciesName)  # Added Pass the selected file and name
+    #loadProteome(species[idx], selectedSpeciesName)  # Added Pass the selected file and name
     batchConvert()
   }
   apply <- ttkbutton(buttonFrame, text='Apply', width=10, command=onApply)
@@ -17326,7 +17326,8 @@ loadProteome <- function(sFilename, selectedSpeciesName) {
   ID <- as.integer(fileInfo$mtime)
   df <- subset(df, select = c("GeneName", "seq", "chromosome", "start"))
   names(df)[1] <- "name"
-  return(prepareSpecies(selectedSpeciesName, ID, df))
+  #return(prepareSpecies(selectedSpeciesName, ID, df))
+  return(prepareSpecies('', ID, df))
 }
 
 		       
