@@ -17327,7 +17327,7 @@ loadProteome <- function(sFilename, selectedSpeciesName) {
   df <- subset(df, select = c("GeneName", "seq", "chromosome", "start"))
   names(df)[1] <- "name"
   #return(prepareSpecies(selectedSpeciesName, ID, df))
-  return(prepareSpecies('', ID, df))
+  return(prepareSpecies('Proteome:', ID, df))
 }
 
 		       
