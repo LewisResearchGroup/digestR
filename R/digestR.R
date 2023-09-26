@@ -22689,7 +22689,7 @@ peptides_distribution <- function() {
       stop("Invalid plot_type argument. Please choose either 'Overlay', 'Ridges', or 'Colored Ridges'.")
     }
     
-    log_message(plot)
+    print(plot)
   }
   
   # Create the main window
