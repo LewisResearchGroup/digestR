@@ -22724,15 +22724,15 @@ peptides_distribution <- function() {
   tkgrid(plotTypeRadioFrame, column = 2, row = 1)
   
   # Create and configure the Overlay radiobutton
-  overlayRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Overlay", variable = plot_type, value = "Overlay", command = function() setPlotType("Overlay"))
+  overlayRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Overlay", variable = plot_type, value = "overlay", command = function() setPlotType("overlay"))
   tkgrid(overlayRadio, column = 1, row = 1, sticky = "w")
   
   # Create and configure the Ridges radiobutton
-  ridgesRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Ridges", variable = plot_type, value = "Ridges", command = function() setPlotType("Ridges"))
+  ridgesRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Ridges", variable = plot_type, value = "ridges", command = function() setPlotType("ridges"))
   tkgrid(ridgesRadio, column = 1, row = 2, sticky = "w")
   
   # Create and configure theColored Ridges radiobutton
-  coloredRidgesRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Colored Ridges", variable = plot_type, value = "Colored Ridges", command = function() setPlotType("Colored Ridges"))
+  coloredRidgesRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Colored Ridges", variable = plot_type, value = "colored_ridges", command = function() setPlotType("colored_ridges"))
   tkgrid(coloredRidgesRadio, column = 1, row = 3, sticky = "w")
   
   # Create and configure the create plot button
