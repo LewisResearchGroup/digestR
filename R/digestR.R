@@ -40,6 +40,7 @@ library(ggridges)
 library(dplyr)
 library(magrittr)
 library(biomaRt)
+library(ggrepel)
 
 
 ## Assigns objects to the global environment and creates an undo point
