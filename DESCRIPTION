@@ -26,6 +26,7 @@ Depends:
     biomaRt,
     futile.logger,
     shiny
+    ggrepel
 Suggests:
     testthat,
     knitr,
