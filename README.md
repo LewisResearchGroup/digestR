@@ -53,10 +53,13 @@ DigestR supports Mascot (.csv) generated files. These files may be converted to 
 
 Required files: .csv
 
-To read a Mascot file, DigestR requires the following informations: protein accession number (prot_acc), the protein description (prot_desc) and the peptide sequence (pep_seq).
-By default, Mascot creates a header, this 3 line header is required for the .csv preprocessing (see Prepare Mascot files). 
+To read a Mascot file, DigestR requires the following information: protein accession number (prot_acc), protein description (prot_desc), and the peptide sequence (pep_seq).
+When exporting data from Mascot you should uncheck the "Include search information" box to prevent the inclusion of the search information header. This header will prevent digestR from reading the CSV file. 
+When importing the CSV file in DigestR, it should resemble the one below:
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Mascot%20file%20format.png)
+
+By default, Mascot creates a header, this 3 line header is required for the .csv preprocessing (see Prepare Mascot files). 
 
 #### 1. Prepare Mascot files: rd()
 Users can natively import in DigestR files generated from mascot (.csv). However, these files need to be pre-processed to be analyzed by DigestR. To prepare the mascot files for digestR, call the function rd() or click on ‘Prepare Mascot file’ under the ‘Manipulate csv’ section. Select the file(s) to be preprocessed. The software will automatically prepare and save the new file.
