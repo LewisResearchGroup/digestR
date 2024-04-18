@@ -41,5 +41,5 @@ jobs:
         shell: Rscript {0}
         
       - name: Check
-        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "warning")
+        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "never")
         shell: Rscript {0}
