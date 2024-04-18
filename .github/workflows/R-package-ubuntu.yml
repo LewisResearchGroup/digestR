@@ -7,9 +7,9 @@ name: R package on Ubuntu
 
 on:
   push:
-    branches: [ "dont-test" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "dont-test" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
