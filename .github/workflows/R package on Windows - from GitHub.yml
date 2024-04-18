@@ -42,6 +42,9 @@ jobs:
           library(devtools)
           install_github("LewisResearchGroup/digestR")
         shell: Rscript {0}
+
+      - name: Check build tools
+        run: Rscript -e "pkgbuild::check_build_tools(debug = TRUE)"
         
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
