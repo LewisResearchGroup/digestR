@@ -40,9 +40,6 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
       
-      - name: Check build tools
-        run: Rscript -e "pkgbuild::check_build_tools(debug = TRUE)"
-        
       - name: Check
-        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "never")
+        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "never", debug=TRUE)
         shell: Rscript {0}
