@@ -10,7 +10,7 @@ name: R package on MacOS
 
 on:
   push:
-    branches: [ "dont check" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "dont check" ]
 
