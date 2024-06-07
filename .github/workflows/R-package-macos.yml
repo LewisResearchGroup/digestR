@@ -6,7 +6,7 @@
 # See https://github.com/r-lib/actions/tree/master/examples#readme for
 # additional example workflows available for the R community.
 
-name: R package on MacOS
+name: Install local R package on MacOS.
 
 on:
   push:
