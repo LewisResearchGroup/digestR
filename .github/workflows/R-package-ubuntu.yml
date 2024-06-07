@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: R package on Ubuntu
+name: Install local R package on Ubuntu.
 
 on:
   push:
