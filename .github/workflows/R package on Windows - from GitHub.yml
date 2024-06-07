@@ -1,4 +1,4 @@
-name: Install on Windows via GitHub (install_github(...)).
+name: Install on Windows via GitHub.
 
 on:
   push:
