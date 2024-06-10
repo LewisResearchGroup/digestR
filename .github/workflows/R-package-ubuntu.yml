@@ -1,15 +1,10 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Install local R package on Ubuntu.
+name: Install local R package on Ubuntu
 
 on:
   push:
-    branches: [ "dont check" ]
+    branches: [ "dont-check" ]
   pull_request:
-    branches: [ "dont check" ]
+    branches: [ "dont-check" ]
 
 permissions:
   contents: read
@@ -27,7 +22,7 @@ jobs:
           fetch-depth: 0      
           
       - name: Set up R ${{ matrix.r-version }}
-        uses: r-lib/actions/setup-r@f57f1301a053485946083d7a45022b278929a78a
+        uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.r-version }}
           
@@ -39,11 +34,11 @@ jobs:
         
       - name: Install R dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck"))
+          install.packages(c("remotes"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
-      - name: Install dependencies
+      - name: Install rcmdcheck
         run: |
           Rscript -e 'install.packages("rcmdcheck")'
 
@@ -54,6 +49,6 @@ jobs:
 
       - name: Check
         run: |
-          library(rcmdcheck)
-          rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "never")
+          rcmdcheck::rcmdcheck(args = "--no-manual --as-cran", error_on = "never", build_args = "--no-build-vignettes")
         shell: Rscript {0}
+        timeout-minutes: 10
