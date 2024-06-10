@@ -1,9 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Install local R package on Windows.
+name: Install local R package on Windows
 
 on:
   push:
@@ -25,7 +20,7 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Set up R ${{ matrix.r-version }}
-        uses: r-lib/actions/setup-r@f57f1301a053485946083d7a45022b278929a78a
+        uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.r-version }}
           
@@ -36,6 +31,7 @@ jobs:
         shell: Rscript {0}
       
       - name: Check
+        run: |
           rcmdcheck::rcmdcheck(args = "--no-manual --as-cran", error_on = "never", build_args = "--no-build-vignettes")
         shell: Rscript {0}
         timeout-minutes: 10
