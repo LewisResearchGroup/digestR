@@ -1,4 +1,4 @@
-name: Install local R package on Windows
+1name: Install local R package on Windows
 
 on:
   push:
