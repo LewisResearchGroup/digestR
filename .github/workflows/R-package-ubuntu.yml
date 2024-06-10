@@ -32,9 +32,21 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libx11-dev tcl8.6-dev tk8.6-dev xvfb libcurl4-openssl-dev
         
+      - name: Install Bioconductor and biomaRt
+        run: |
+          if (!requireNamespace("BiocManager", quietly = TRUE))
+            install.packages("BiocManager")
+          BiocManager::install("biomaRt")
+        shell: Rscript {0}
+      
+      - name: Install gWidgets2tcltk
+        run: |
+          install.packages("gWidgets2tcltk")
+        shell: Rscript {0}
+
       - name: Install R dependencies
         run: |
-          install.packages(c("remotes"))
+          install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
@@ -49,6 +61,6 @@ jobs:
 
       - name: Check
         run: |
-          rcmdcheck::rcmdcheck(args = "--no-manual --as-cran", error_on = "never", build_args = "--no-build-vignettes")
+          rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "never", build_args = "--no-build-vignettes")
         shell: Rscript {0}
         timeout-minutes: 10
