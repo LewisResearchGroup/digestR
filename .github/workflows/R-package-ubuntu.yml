@@ -1,4 +1,4 @@
-name: Install local R package on Ubuntu
+name: Ubuntu 24.04
 
 on:
   push:
