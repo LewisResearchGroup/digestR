@@ -27,8 +27,6 @@ Imports:
     ggrepel,
     BiocManager,
     remotes
-Remotes:
-    https://cran.r-project.org/src/contrib/Archive/gWidgets2tcltk/gWidgets2tcltk_1.0-7.tar.gz
 Suggests:
     testthat,
     knitr,
