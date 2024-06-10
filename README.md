@@ -1,6 +1,7 @@
 [![R package on Windows](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-windows.yml/badge.svg)](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-windows.yml)
+[![R package on Ubuntu](https://github.com/LewisResearchGroup/digestR/actions/workflows/R-package-ubuntu.yml/badge.svg)](https://github.com/LewisResearchGroup/digestR/actions/workflows/R-package-ubuntu.yml)
 [![R package on MacOS](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-macos.yml/badge.svg)](https://github.com/LewisResearchGroup/DigestR/actions/workflows/R-package-macos.yml)
-[![Install on Windows via GitHub](https://github.com/LewisResearchGroup/digestR/actions/workflows/R%20package%20on%20Windows%20-%20from%20GitHub.yml/badge.svg)](https://github.com/LewisResearchGroup/digestR/actions/workflows/R%20package%20on%20Windows%20-%20from%20GitHub.yml)
+[![Install via GitHub](https://github.com/LewisResearchGroup/digestR/actions/workflows/R%20package%20on%20Windows%20-%20from%20GitHub.yml/badge.svg)](https://github.com/LewisResearchGroup/digestR/actions/workflows/R%20package%20on%20Windows%20-%20from%20GitHub.yml)
 
 # DigestR
  
