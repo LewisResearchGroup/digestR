@@ -7,7 +7,7 @@ name: Install local R package on Windows.
 
 on:
   push:
-    branches: [ ]
+    branches: [ 'none' ]
   pull_request:
     branches: [ ]
 
