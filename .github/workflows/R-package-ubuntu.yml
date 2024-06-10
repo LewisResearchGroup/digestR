@@ -2,7 +2,7 @@ name: Install local R package on Ubuntu
 
 on:
   push:
-    branches: [ "dont-check" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "dont-check" ]
 
