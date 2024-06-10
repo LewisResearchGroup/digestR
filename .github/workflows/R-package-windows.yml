@@ -29,11 +29,6 @@ jobs:
         with:
           r-version: ${{ matrix.r-version }}
           
-      # Additional step if there are any Windows-specific system dependencies
-      # - name: Install system dependencies
-      #   run: |
-      #     # Commands to install system dependencies
-          
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck"))
