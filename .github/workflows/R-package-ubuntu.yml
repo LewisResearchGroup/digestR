@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "dont-check" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
