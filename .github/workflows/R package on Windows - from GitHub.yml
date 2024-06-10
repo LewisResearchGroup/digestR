@@ -53,6 +53,6 @@ jobs:
         
       - name: Check
         run: |
-          rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "never", build_args = "--no-build-vignettes", check_dir = "check_dir")
+          rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error", build_args = "--no-build-vignettes", check_dir = "check_dir")
         shell: Rscript {0}
         timeout-minutes: 10
