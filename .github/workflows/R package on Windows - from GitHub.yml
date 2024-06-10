@@ -37,8 +37,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck", "devtools"))
-          remotes::install_deps(dependencies = TRUE)
+          install.packages(c("remotes", "rcmdcheck", "devtools"), repos = "https://cloud.r-project.org")
+          remotes::install_deps(dependencies = TRUE, repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
       - name: Install package from GitHub
@@ -47,6 +47,9 @@ jobs:
         run: |
           devtools::install_github("LewisResearchGroup/digestR")
         shell: Rscript {0}
+
+      - name: Check build tools
+        run: Rscript -e "pkgbuild::check_build_tools(debug = TRUE)"
         
       - name: Check
         run: |
