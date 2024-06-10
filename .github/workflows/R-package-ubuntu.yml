@@ -30,7 +30,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libx11-dev tcl8.6-dev tk8.6-dev xvfb libcurl4-openssl-dev libtcltk-dev
+          sudo apt-get install -y libx11-dev tcl8.6-dev tk8.6-dev xvfb libcurl4-openssl-dev tcl tcl-dev tk tk-dev
         
       - name: Install Bioconductor and biomaRt
         run: |
@@ -46,7 +46,7 @@ jobs:
 
       - name: Install R dependencies
         run: |
-          install.packages("remotes")
+          install.packages("remotes", repos = "https://cloud.r-project.org")
           remotes::install_deps(dependencies = TRUE, repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
