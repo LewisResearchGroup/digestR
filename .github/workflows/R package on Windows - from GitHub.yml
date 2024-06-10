@@ -2,7 +2,7 @@ name: Install on Windows via GitHub.
 
 on:
   push:
-    branches: [ "none" ]
+    branches: [ "main" ]
   pull_request:
     branches: []
 
