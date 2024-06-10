@@ -1,4 +1,4 @@
-name: Install local R package on MacOS
+name: MacOS
 
 on:
   push:
