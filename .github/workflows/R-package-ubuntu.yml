@@ -1,4 +1,4 @@
-name: Ubuntu 24.04
+name: Install on Ubuntu 24.04
 
 on:
   push:
@@ -38,10 +38,15 @@ jobs:
             install.packages("BiocManager")
           BiocManager::install("biomaRt")
         shell: Rscript {0}
-      
-      - name: Install gWidgets2tcltk
+
+      - name: Install gWidgets2tcltk dependencies
         run: |
-          install.packages("gWidgets2tcltk")
+          sudo apt-get install -y libtcltk2-dev
+        shell: bash
+
+      - name: Install gWidgets2tcltk from archive
+        run: |
+          remotes::install_url("https://cran.r-project.org/src/contrib/Archive/gWidgets2tcltk/gWidgets2tcltk_1.0-7.tar.gz")
         shell: Rscript {0}
 
       - name: Install R dependencies
