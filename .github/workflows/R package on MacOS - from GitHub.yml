@@ -1,4 +1,4 @@
-name: Install via GitHub
+name: Install via GitHub on MacOS
 
 on:
   push:
