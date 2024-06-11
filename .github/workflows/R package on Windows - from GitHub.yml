@@ -38,6 +38,10 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck", "devtools"), repos = "https://cloud.r-project.org")
+          if (!requireNamespace("BiocManager", quietly = TRUE)) {
+              install.packages("BiocManager", repos = "https://cloud.r-project.org")
+          }
+          BiocManager::install(c("biomaRt"))
           remotes::install_deps(dependencies = TRUE, repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
