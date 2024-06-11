@@ -26,7 +26,8 @@ Imports:
     shiny,
     ggrepel,
     BiocManager,
-    remotes
+    remotes,
+    AnnotationDbi
 Suggests:
     testthat,
     knitr,
