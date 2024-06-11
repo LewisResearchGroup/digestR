@@ -44,12 +44,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages("remotes")
-          remotes::install_deps(dependencies = TRUE)
+          install.packages(c("remotes", "rcmdcheck", "devtools"), repos = "https://cloud.r-project.org")
           if (!requireNamespace("BiocManager", quietly = TRUE)) {
-              install.packages("BiocManager")
+              install.packages("BiocManager", repos = "https://cloud.r-project.org")
           }
           BiocManager::install(c("biomaRt", "AnnotationDbi"))
+          remotes::install_deps(dependencies = TRUE, repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
       - name: Verify AnnotationDbi Installation
