@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
+
       # Install XQuartz for tcltk support
       - name: Install XQuartz
         run: |
@@ -27,7 +27,7 @@ jobs:
 
       - name: List Applications
         run: ls /Applications
-              
+
       - name: Check XQuartz installation
         run: ls /Applications/Utilities/XQuartz.app
 
@@ -46,19 +46,17 @@ jobs:
         run: |
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
-        shell: Rscript {0}
-        
-      - name: Install biomaRt
-        run: |
-          install.packages("BiocManager")
-          BiocManager::install("biomaRt")
+          if (!requireNamespace("BiocManager", quietly = TRUE)) {
+              install.packages("BiocManager")
+          }
+          BiocManager::install(c("biomaRt", "AnnotationDbi"))
         shell: Rscript {0}
 
       - name: Install gWidgets2tcltk
         run: |
           install.packages("https://cran.r-project.org/src/contrib/Archive/gWidgets2tcltk/gWidgets2tcltk_1.0-7.tar.gz", repos = NULL, type = "source")
         shell: Rscript {0}
-        
+
       - name: Set DISPLAY for XQuartz
         run: |
           echo "DISPLAY=:0.0" >> $GITHUB_ENV
