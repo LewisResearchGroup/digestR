@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: macos-latest  # Use macOS runner for testing on macOS
+    runs-on: macos-latest
     strategy:
       matrix:
         r-version: ['4.3.3', '4.4.0']
@@ -19,6 +19,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      # Install XQuartz for tcltk support
+      - name: Install XQuartz
+        run: |
+          brew install --cask xquartz
+          brew list --cask | grep xquartz
+
+      - name: Set DISPLAY for XQuartz
+        run: |
+          echo "DISPLAY=:0.0" >> $GITHUB_ENV
+
+      - name: List Applications
+        run: ls /Applications
+
+      - name: Check XQuartz installation
+        run: ls /Applications/Utilities/XQuartz.app
+
       - name: Set up R ${{ matrix.r-version }}
         uses: r-lib/actions/setup-r@v2
         with:
