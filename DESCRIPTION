@@ -1,7 +1,7 @@
 Package: digestR
 Type: Package
 Title: Data Digestion, Visualization, and Transformation
-Version: 0.1.0
+Version: 1.0.0
 Author: John Doe
 Maintainer: Ian Lewis <ian.lewis2@ucalgary.ca>
 Description: This package provides functionalities for data digestion, visualization, 

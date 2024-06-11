@@ -1,5 +1,6 @@
 library(testthat)
 library(withr)
+library(biomaRt)
 
 test_that("test in a temp directory", {
   # Create a unique temp directory
