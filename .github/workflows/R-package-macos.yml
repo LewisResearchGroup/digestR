@@ -2,7 +2,7 @@ name: MacOS
 
 on:
   push:
-    branches: [ "" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "" ]
 
@@ -14,7 +14,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        r-version: ['4.3.2']
+        r-version: ['4.4.0']
 
     steps:
       - uses: actions/checkout@v3
@@ -69,6 +69,6 @@ jobs:
 
       - name: Check
         run: |
-          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "never", build_args = "--no-build-vignettes")
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error", build_args = "--no-build-vignettes")
         shell: Rscript {0}
         timeout-minutes: 10
