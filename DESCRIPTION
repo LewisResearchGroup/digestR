@@ -4,7 +4,7 @@ Title: Data Digestion, Visualization, and Transformation
 Version: 1.0.0
 Author: John Doe
 Maintainer: Ian Lewis <ian.lewis2@ucalgary.ca>
-Description: This package provides functionalities for data digestion, visualization, 
+Description: Provides functionalities for data digestion, visualization, 
     and transformation. It integrates seamlessly with popular data visualization 
     packages and offers additional tools for advanced analysis.
 License: GPL-3

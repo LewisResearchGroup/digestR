@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -51,6 +51,10 @@ jobs:
           }
           BiocManager::install(c("biomaRt", "AnnotationDbi"))
         shell: Rscript {0}
+
+      - name: Verify AnnotationDbi Installation
+        run: |
+          Rscript -e "if (!requireNamespace('AnnotationDbi', quietly = TRUE)) stop('AnnotationDbi not installed')"
 
       - name: Install gWidgets2tcltk
         run: |

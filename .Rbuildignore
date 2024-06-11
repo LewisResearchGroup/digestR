@@ -3,3 +3,12 @@
 ^\.github$
 ^\.data$
 ^notes/
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw/
+^.*\.tar\.gz$
+^README\.md$
+^.*\.RData$
+^.*\.Rhistory$
+^.*\.Ruserdata$
+^.*\.Rproj$
