@@ -69,6 +69,8 @@ When importing the CSV file in DigestR, it should resemble the one below:
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Mascot%20file%20format.png)
 
+An example data file can be found here: https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Data_Example.csv
+
 By default, Mascot creates a header, this 3 line header is required for the .csv preprocessing (see Prepare Mascot files). 
 
 #### 1. Prepare Mascot files: rd()
@@ -90,6 +92,11 @@ Following this, users input a search pattern to explore datasets within the Biom
 Subsequently, users have the option to download data from specific chromosomes by entering a list of chromosomes separated by commas (e.g., "1, 2" or "10, X"). Alternatively, leaving this field empty will result in data retrieval for all chromosomes. Finally, users initiate the data retrieval process by clicking the "Download proteome" button. The function then acquires protein data from the selected dataset and chromosomes, saving the findings as CSV files within a dedicated "data/proteomes" subfolder. 
 
 ![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/generate%20proteome.png)
+
+Example proteome files can be found here: 
+https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Human_proteome.csv
+https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Pfal_3D7_proteome.csv
+
 
 #### 4. Process mascot files: pm() 
 To create "digestion" maps, peptides identified by Mascot or MaxQuant need to be mapped to their proteomic location. First, the user needs to select a proteome to align peptides against (see Generate Proteome). DigestR will automatically detect and utilize all proteomes located within the "data/proteomes" subfolder. Users can also import their own proteomes into this subfolder. After proteome selection, users can align Mascot identified peptides along the selected proteome from a single or multiple files. These alignments generate "coincidence" or "digestion" maps that users can interact with.
