@@ -10,10 +10,20 @@ DigestR is an open-source software developed for the R statistical language envi
 Users can interact with DigestR in two major ways: via point and click graphical user interfaces (GUIs) or by entering command directly in the R console. 
 This guide is intended to give an overview of DigestR's functions.
 
-
 ## How to install digestR package from GitHub
 DigestR was tested with `R v4.3.1`.
 
+## Reproducing the Environment
+
+This project uses `renv` to manage package dependencies. To reproduce the exact environment used:
+
+1. Clone this repository:
+   ```sh
+   git clone https://github.com/LewisResearchGroup/digestR
+   cd digestR
+
+2. Open R in the project directory and run:
+   renv::restore()
 
 ### Step 1: Install the devtools package
 To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
