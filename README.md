@@ -23,8 +23,9 @@ This project uses `renv` to manage package dependencies. To reproduce the exact 
    cd digestR
 
 2. Open R in the project directory and run:
+   ```sh
    renv::restore()
-
+   
 ### Step 1: Install the devtools package
 To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
 
