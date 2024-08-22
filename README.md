@@ -69,9 +69,9 @@ When importing the CSV file in DigestR, it should resemble the one below:
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Mascot%20file%20format.png)
 
-An example data file can be found here: https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Data_Example.csv
-
 By default, Mascot creates a header, this 3 line header is required for the .csv preprocessing (see Prepare Mascot files). 
+
+An example data file can be found here: https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Data_Example.csv
 
 #### 1. Prepare Mascot files: rd()
 Users can natively import in DigestR files generated from mascot (.csv). However, these files need to be pre-processed to be analyzed by DigestR. To prepare the mascot files for digestR, call the function rd() or click on ‘Prepare Mascot file’ under the ‘Manipulate csv’ section. Select the file(s) to be preprocessed. The software will automatically prepare and save the new file.
