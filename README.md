@@ -15,6 +15,33 @@ DigestR was tested with `R v4.3.1`.
 
 Some dependencies required for DigestR are not currently available for R v4.4, consequently we recommand using 'R. v 4.3.1' or earlier versions
 
+If you have R. v 4.3.1' or earlier versions proceed to installation method A, if you have later R versions we recommend using installation method B. 
+
+### A - Installing using devtools package.
+   
+### Step 1: Install the devtools package
+To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
+
+    install.packages("devtools")
+
+### Step 2: Install the package of interest from GitHub
+
+Install the the digestR package directly from GitHub
+
+    library(devtools)
+    install_github("LewisResearchGroup/digestR")
+
+### Step 3: Load the package
+
+    library(digestR)
+
+### Setp 4: Set your working directory before you start
+
+	setwd('<your-working-directory>')  
+
+### Step 5: Call DigestR gui and the plot window
+	gui()
+
 ### A - Reproducing the Environment
 
 This project uses `renv` to manage package dependencies. To reproduce the exact environment used:
@@ -56,31 +83,6 @@ devtools::install()
 ```sh
 library(DigestR)
    ```
-
-### A - Installing using devtools package.
-   
-### Step 1: Install the devtools package
-To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
-
-    install.packages("devtools")
-
-### Step 2: Install the package of interest from GitHub
-
-Install the the digestR package directly from GitHub
-
-    library(devtools)
-    install_github("LewisResearchGroup/digestR")
-
-### Step 3: Load the package
-
-    library(digestR)
-
-### Setp 4: Set your working directory before you start
-
-	setwd('<your-working-directory>')  
-
-### Step 5: Call DigestR gui and the plot window
-	gui()
 
 ## GUI Functions Documentation
 
