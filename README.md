@@ -13,6 +13,8 @@ This guide is intended to give an overview of DigestR's functions.
 ## How to install digestR package from GitHub
 DigestR was tested with `R v4.3.1`.
 
+Some dependencies required for DigestR are not currently available for R (4.4), consequently we recommand using 'R. v 4.3.1' or earlier versions
+
 ## Reproducing the Environment
 
 This project uses `renv` to manage package dependencies. To reproduce the exact environment used:
