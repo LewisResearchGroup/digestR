@@ -28,7 +28,7 @@ This project uses `renv` to manage package dependencies. To reproduce the exact 
    ```sh
    renv::restore()
    
-### Step 1: Install the devtools package
+#### Step 1: Install the devtools package
 To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
 
     install.packages("devtools")
