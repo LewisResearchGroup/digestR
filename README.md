@@ -15,7 +15,7 @@ DigestR was tested with `R v4.3.1`.
 
 Some dependencies required for DigestR are not currently available for R v4.4, consequently we recommand using 'R. v 4.3.1' or earlier versions
 
-If you have R. v 4.3.1' or earlier versions proceed to installation method A, if you have later R versions we recommend using installation method B. 
+If you have R. v 4.3' or earlier versions proceed to installation method A, if you have later R versions we recommend using installation method B. 
 
 ### A - Installing using devtools package.
    
