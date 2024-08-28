@@ -15,7 +15,7 @@ DigestR was tested with `R v4.3.1`.
 
 Some dependencies required for DigestR are not currently available for R v4.4, consequently we recommand using 'R. v 4.3.1' or earlier versions
 
-## Reproducing the Environment
+### 1 - Reproducing the Environment
 
 This project uses `renv` to manage package dependencies. To reproduce the exact environment used:
 
