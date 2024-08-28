@@ -11,11 +11,7 @@ Users can interact with DigestR in two major ways: via point and click graphical
 This guide is intended to give an overview of DigestR's functions.
 
 ## How to install digestR package from GitHub
-DigestR was tested with `R v4.3.1`.
-
-Some dependencies required for DigestR are not currently available for R v4.4, consequently we recommand using 'R. v 4.3.1' or earlier versions
-
-If you have R. v 4.3 or earlier versions proceed to installation method A, if you have later R versions we recommend using installation method B. 
+DigestR was tested with `R v4.4.1`.
 
 ### Prerequisites
 
@@ -27,7 +23,6 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 
 BiocManager::install("biomaRt")
 ```
-### A - Installing using devtools package.
    
 ### Step 1: Install the devtools package
 To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
@@ -52,47 +47,6 @@ Install the the digestR package directly from GitHub
 ### Step 5: Call DigestR gui and the plot window
 	gui()
 
-### B - Reproducing the R Environment
-
-This project uses `renv` to manage package dependencies. To reproduce the exact environment used:
-### Step 1: Install and Load renv
-   ```sh
-install.packages("renv")
-library(renv)
-   ```
-### Step 2: Clone the Repository
-You can clone the repository using your system's terminal. Run the following command:
-```sh
-git clone https://github.com/LewisResearchGroup/DigestR.git
-cd digestR
-   ```
-Alternatively, if you want to clone the repository from within R, you can do so using system commands:
-```sh
-system("git clone https://github.com/LewisResearchGroup/DigestR.git")
-   ```
-### Step 3: Navigate to the Project Directory
-Change the working directory to where you cloned the repository:
-```sh
-setwd("path/to/DigestR")
-   ```
-Replace "path/to/DigestR" with the actual path where the repository was cloned.
-
-### Setp 4: Initialize renv
-```sh
-renv::init()
-   ```
-### Step 5: Restore the Project Environment
-```sh
-renv::restore()
-   ```
-### Step 6: Install the Package
-```sh
-devtools::install()
-   ```
-### Step 7: load the Package
-```sh
-library(DigestR)
-   ```
 
 ## GUI Functions Documentation
 
