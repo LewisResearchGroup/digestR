@@ -42,7 +42,7 @@ Install the the digestR package directly from GitHub
 ### Step 5: Call DigestR gui and the plot window
 	gui()
 
-### A - Reproducing the Environment
+### B - Reproducing the R Environment
 
 This project uses `renv` to manage package dependencies. To reproduce the exact environment used:
 ### Step 1: Install and Load renv
