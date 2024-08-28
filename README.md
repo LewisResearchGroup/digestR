@@ -17,6 +17,16 @@ Some dependencies required for DigestR are not currently available for R v4.4, c
 
 If you have R. v 4.3 or earlier versions proceed to installation method A, if you have later R versions we recommend using installation method B. 
 
+### Prerequisites
+
+Before installing DigestR, ensure that `BiocManager` is installed to manage Bioconductor packages:
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("biomaRt")
+```
 ### A - Installing using devtools package.
    
 ### Step 1: Install the devtools package
