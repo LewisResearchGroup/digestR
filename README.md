@@ -24,16 +24,16 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("biomaRt")
 ```
    
-### Step 1: Install the devtools package
+### Step 1: Install and load the devtools package
 To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
 
     install.packages("devtools")
+    library(devtools)
 
 ### Step 2: Install the package of interest from GitHub
 
 Install the the digestR package directly from GitHub
-
-    library(devtools)
+    
     install_github("LewisResearchGroup/digestR")
 
 ### Step 3: Load the package
