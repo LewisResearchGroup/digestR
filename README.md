@@ -18,6 +18,10 @@ Some dependencies required for DigestR are not currently available for R v4.4, c
 ### 1 - Reproducing the Environment
 
 This project uses `renv` to manage package dependencies. To reproduce the exact environment used:
+#### Step 1: Install and Load renv
+	```sh
+	install.packages("renv")
+
 
 1. Clone this repository:
    ```sh
