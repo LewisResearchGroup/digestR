@@ -75,13 +75,11 @@ Install the the digestR package directly from GitHub
 
     library(digestR)
 
-## Run the following lines in the R console
+### Setp 4: Set your working directory before you start
 
-	library(digestR)
-	setwd('<your-working-directory>')  # Set your working directory, before you start.
- 	...
+	setwd('<your-working-directory>')  
 
-## To call the gui and the plot window, run the following line in the R console
+### Step 5: Call DigestR gui and the plot window
 	gui()
 
 ## GUI Functions Documentation
