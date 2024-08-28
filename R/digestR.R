@@ -23363,6 +23363,7 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
 #' This function sets up a Tkinter GUI for searching and downloading protein data using the BioMart API.
 generate_proteome <- function() {
   library(tcltk2)
+  library(biomaRt)
   
   # Initialize main window
   main_window <- tktoplevel()
