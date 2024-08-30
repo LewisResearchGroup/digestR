@@ -41,6 +41,7 @@ library(dplyr)
 library(magrittr)
 library(biomaRt)
 library(ggrepel)
+library(ggseqlogo)
 
 
 ## Assigns objects to the global environment and creates an undo point
