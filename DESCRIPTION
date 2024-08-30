@@ -27,7 +27,9 @@ Imports:
     ggrepel,
     BiocManager,
     remotes,
-    AnnotationDbi
+    AnnotationDbi,
+    ggseqlogo
+    
 Suggests:
     testthat,
     knitr,
