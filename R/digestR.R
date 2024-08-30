@@ -22746,7 +22746,11 @@ peptides_distribution <- function() {
 # call the function
 # peptides_distribution()
 
-################################################################################ 
+################################################################################
+# Old Cleavage site distribution function
+# Updated with a seq logo distribution function
+################################################################################
+
 #'  Cleavage Sites Distribution 
 #'
 #' This function generates various plots to visualize cleavage site distributions from
@@ -22785,406 +22789,606 @@ peptides_distribution <- function() {
 #' @importFrom dplyr group_by summarise
 #' @importFrom ggplot2 ggplot geom_bar geom_errorbar ggtitle xlab ylab theme_bw
 #' @export
+
+# cut_sites_distribution <- function() {
+#   # Load required libraries
+#   library(dplyr)
+#   library(ggplot2)
+#   library(tcltk)
+
+#   # Define variables
+#   csv_directory <- ""
+#   PlotType <- ""
+#   protein_seq <- ""
+  
+#   # Function to select the CSV directory
+#   selectCSVDir <- function() {
+#     csv_directory <<- tclvalue(tcl("tk_chooseDirectory"))
+#     csv_directory <- tclVar(csv_directory)  # Update the csv_directory variable
+#     tkconfigure(csvDirEntry, text = csv_directory)  # Update the csvDirEntry widget
+#   }
+  
+#   # Function to set the selected plot type
+#   setPlotType <- function(value) {
+#     PlotType <<- value
+#   }
+
+  
+#   calculateLetterPercentages <- function(protein_seq) {
+
+#     #protein_sequence <- tclvalue(protein_seq)
+#     protein_seq <- as.character(protein_seq)
+#     print(protein_seq)
+#     letter_percentages <<- table(strsplit(protein_seq, "")[[1]]) / nchar(protein_seq) * 100
+#   }
+  
+  
+#   # Function to create the bar plot
+#   createBarPlot <- function(protein_seq, PlotType) {
+    
+#     library(dplyr)
+#     library(ggplot2)
+
+#     valid_plot_types <- c("Nter", "Cter", "Cter_normalized", "Nter_normalized", "Combined_normalized")
+#     if (!(PlotType %in% valid_plot_types)) {
+#       stop("Error: Invalid PlotType argument. Valid options are 'Nter', 'Cter', 'Cter_normalized', 'Nter_normalized' and 'Combined_normalized'.")
+#     }
+    
+#     extract_first_last_letters_from_csv <- function(file_path) {
+#       # Read the CSV file skipping the first 3 lines (assuming headers are in line 4)
+#       data <- read.csv(file_path, skip = 0, header = TRUE)
+      
+#       # Check if the 'pep_seq' column exists
+#       if (!("pep_seq" %in% colnames(data))) {
+#         stop("Error: 'pep_seq' column not found in the CSV file.")
+#       }
+      
+#       # Extract the first and last letters from each sequence
+#       data$first_letter <- substr(data$pep_seq, 1, 1)
+#       data$last_letter <- substr(data$pep_seq, nchar(data$pep_seq), nchar(data$pep_seq))
+      
+#       # Count the occurrences of each first letter
+#       first_letter_counts <- table(factor(data$first_letter, levels = c("A", "C", "D", "E", "F", "G","H", "I" ,"K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")))
+      
+#       # Count the occurrences of each last letter
+#       last_letter_counts <- table(factor(data$last_letter, levels = c("A", "C", "D", "E", "F", "G","H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")))
+      
+#       # Combine the counts for first and last letters
+#       combined_counts <- merge(
+#         data.frame(letter = names(first_letter_counts), first_letter_count = as.numeric(first_letter_counts)),
+#         data.frame(letter = names(last_letter_counts), last_letter_count = as.numeric(last_letter_counts)),
+#         by = "letter", all = TRUE
+#       )
+#       combined_counts$combined_count <- rowSums(combined_counts[, c("first_letter_count", "last_letter_count")], na.rm = TRUE)
+      
+#       # Replace NA values with 0
+#       combined_counts[is.na(combined_counts)] <- 0
+      
+#       # Return the combined counts
+#       return(combined_counts)
+#     }
+    
+#     group_csv_files <- function(csv_directory) {
+#       # Get the list of CSV files in the directory
+#       csv_files <- list.files(path = csv_directory, pattern = "*.csv", full.names = TRUE)
+      
+#       # Create an empty list to store the grouped CSV files
+#       grouped_csv <- list()
+      
+#       # Loop through the CSV files and group them based on the second string
+#       for (i in 1:length(csv_files)) {
+#         # Get the filename without the directory path
+#         filename <- basename(csv_files[i])
+#         # Get the second string in the filename by splitting on "_"
+#         second_str <- strsplit(filename, "_")[[1]][2]
+#         # If the group already exists in the list, append the CSV file
+#         if (second_str %in% names(grouped_csv)) {
+#           grouped_csv[[second_str]] <- c(grouped_csv[[second_str]], csv_files[i])
+#         }
+#         # If the group doesn't exist in the list, create a new list element
+#         else {
+#           grouped_csv[[second_str]] <- list(csv_files[i])
+#         }
+#       }
+      
+#       # Return the list of grouped CSV files
+#       return(grouped_csv)
+#     }
+    
+#     # Load the necessary libraries
+#     library(dplyr)
+#     library(ggplot2)
+    
+#     # Group the CSV files
+#     csv <- group_csv_files(csv_directory)
+    
+#     # Initialize an empty dataframe to store the results
+#     dat <- data.frame()
+    
+#     # Iterate over each group of CSV files
+#     for (groups in csv) {
+      
+#       # Create an empty dataframe to store the results for the group
+#       group_results_df <- data.frame(
+#         Group = character(),
+#         Mean_First_Letter_Count = double(),
+#         SD_First_Letter_Count = double(),
+#         Mean_Last_Letter_Count = double(),
+#         SD_Last_Letter_Count = double(),
+#         Mean_Combined_Count = double(),
+#         Percentage = double(),
+#         SD_Combined_Count = double(),
+#         Letter_Percentage = double(),
+#         stringsAsFactors = FALSE
+#       )
+      
+#       # Iterate over each CSV file in the group
+#       for (i in groups) {
+#         print(i)
+        
+#         # Extract the first and last letters from the CSV file
+#         file_results <- extract_first_last_letters_from_csv(i)
+        
+#         # Get the filename without the directory path
+#         filename <- basename(i)
+        
+#         # Get the second string in the filename by splitting on "_"
+#         grp_str <- rep(strsplit(filename, "_")[[1]][2], nrow(file_results))
+        
+#         # Store the label for the group
+#         file_results$group <- data.frame(grp_str)
+        
+#         # Append the results to the dataframe
+#         dat <- rbind(dat, file_results)
+#       }
+#     }
+    
+    
+#     # Add a call to calculateLetterPercentages before the dplyr::summarize function
+#     calculateLetterPercentages(protein_seq)
+    
+#     # Then, use letter_percentages in your dplyr::summarize function
+#     agg_df <- dat %>%
+#       group_by(letter, group) %>%
+#       dplyr::summarize(
+#         mean_combined_count = mean(combined_count),
+#         sd_combined_count = sd(combined_count),
+#         se_combined_count = sd_combined_count / sqrt(n()),
+#         sum_combined_count = sum(combined_count),
+#         mean_first_letter_count = mean(first_letter_count),
+#         sd_first_letter_count = sd(first_letter_count),
+#         se_first_letter_count = sd_first_letter_count / sqrt(n()),
+#         sum_first_letter_count = sum(first_letter_count),
+#         mean_last_letter_count = mean(last_letter_count),
+#         sd_last_letter_count = sd(last_letter_count),
+#         se_last_letter_count = sd_last_letter_count / sqrt(n()),
+#         sum_last_letter_count = sum(last_letter_count),
+#         mean = mean(combined_count),
+#         sd = sd(combined_count),
+#         se = sd / sqrt(n()),
+#         sum = sum(combined_count),
+#         Letter_Percentage = letter_percentages[letter]
+#       )
+    
+    
+#     # Calculate percentage of mean_Last_letter_count and mean_first_letter_count with SE
+#     agg_df_sum <- agg_df %>%
+#       group_by(group) %>%
+#       dplyr::summarize(
+#         total_sum_combined_count = sum(sum_combined_count),
+#         total_sum_first_letter_count = sum(sum_first_letter_count),
+#         total_sum_last_letter_count = sum(sum_last_letter_count),
+#         total_sum = sum(sum)
+#       )
+    
+#     agg_df <- agg_df %>%
+#       left_join(agg_df_sum, by = "group") %>%
+#       dplyr::mutate(
+#         perc_mean_first_letter_count = mean_first_letter_count / total_sum_first_letter_count * 100,
+#         perc_mean_last_letter_count = mean_last_letter_count / total_sum_last_letter_count * 100,
+#         SE_perc_mean_first_letter_count = sqrt(perc_mean_first_letter_count / 100 * (100 - perc_mean_first_letter_count) / total_sum_first_letter_count),
+#         SE_perc_mean_last_letter_count = sqrt(perc_mean_last_letter_count / 100 * (100 - perc_mean_last_letter_count) / total_sum_last_letter_count),
+#         percentage = sum / total_sum * 100,
+#         SE_percentage = sqrt(percentage/100 * (100 - percentage)/sum),
+#         Normalized_Percentage_combined = percentage / Letter_Percentage,
+#         Normalized_SE_combined = sqrt(Normalized_Percentage_combined/100 * (100 - Normalized_Percentage_combined)/sum),
+#         Normalized_Percentage_Nter = perc_mean_first_letter_count / Letter_Percentage,
+#         Normalized_SE_Nter = sqrt(Normalized_Percentage_Nter/100 * (100 - Normalized_Percentage_Nter)/sum),
+#         Normalized_Percentage_Cter = perc_mean_last_letter_count / Letter_Percentage,
+#         Normalized_SE_Cter = sqrt(Normalized_Percentage_Cter/100 * (100 - Normalized_Percentage_Cter)/sum)
+#       )
+    
+#     # Convert the grouped dataframe to a regular dataframe
+#     agg_df <- data.frame(agg_df)
+    
+#     # Convert the group variable to a factor
+#     grp <- agg_df$group[[1]]
+#     grp <- as.factor(grp)
+#     agg_df$group <- grp
+    
+    
+#     # Create the appropriate density plot based on the PlotType argument
+    
+#     # Nter Percentage Plot
+#     if (PlotType == "Nter") {
+#       cutsiteplots <- ggplot(agg_df, aes(x = letter, y = perc_mean_first_letter_count, fill = group)) +
+#         geom_bar(position = "dodge", stat = "identity") +
+#         geom_errorbar(
+#           aes(ymin = perc_mean_first_letter_count - SE_perc_mean_first_letter_count,
+#               ymax = perc_mean_first_letter_count + SE_perc_mean_first_letter_count),
+#           position = position_dodge(width = 0.9), width = 0.25
+#         ) +
+#         labs(title = "N-terminal cleavage sites",
+#              x = "", y = "Percentage") +
+#         theme_grey(base_size = 12) +
+#         theme(
+#           axis.text.x = element_text(size = 14, face = "bold"),
+#           axis.text.y = element_text(size = 12, face = "bold"),
+#           title = element_text(size = 14, face = "bold")
+#         )
+#     }
+    
+#     # Cter Percentage Plot
+#     else if (PlotType == "Cter") {
+#       cutsiteplots <- ggplot(agg_df, aes(x = letter, y = perc_mean_last_letter_count, fill = group)) +
+#         geom_bar(position = "dodge", stat = "identity") +
+#         geom_errorbar(
+#           aes(ymin = perc_mean_last_letter_count - SE_perc_mean_last_letter_count,
+#               ymax = perc_mean_last_letter_count + SE_perc_mean_last_letter_count),
+#           position = position_dodge(width = 0.9), width = 0.25
+#         ) +
+#         labs(title = "C-terminal cleavage sites",
+#              x = "", y = "Percentage") +
+#         theme_grey(base_size = 12) +
+#         theme(
+#           axis.text.x = element_text(size = 14, face = "bold"),
+#           axis.text.y = element_text(size = 12, face = "bold"),
+#           title = element_text(size = 14, face = "bold")
+#         )
+#     }
+    
+#     # Cter Normalized Plot
+#     else if (PlotType == "Cter_normalized") {
+#       cutsiteplots <- ggplot(agg_df, aes(x = letter, y = Normalized_Percentage_Cter, fill = group)) +
+#         geom_bar(position = "dodge", stat = "identity") +
+#         geom_errorbar(
+#           aes(ymin = Normalized_Percentage_Cter - Normalized_SE_Cter,
+#               ymax = Normalized_Percentage_Cter + Normalized_SE_Cter),
+#           position = position_dodge(width = 0.9), width = 0.25
+#         ) +
+#         labs(title = "C-terminal cleavage sites normalized",
+#              x = "", y = "Percentage normalized to AA distribution in protein sequence") +
+#         theme_grey(base_size = 12) +
+#         theme(
+#           axis.text.x = element_text(size = 14, face = "bold"),
+#           axis.text.y = element_text(size = 12, face = "bold"),
+#           title = element_text(size = 14, face = "bold")
+#         )
+#     }
+    
+#     # nter Normalized Plot
+#     else if (PlotType == "Nter_normalized") {
+#       cutsiteplots <- ggplot(agg_df, aes(x = letter, y = Normalized_Percentage_Nter, fill = group)) +
+#         geom_bar(position = "dodge", stat = "identity") +
+#         geom_errorbar(
+#           aes(ymin = Normalized_Percentage_Nter - Normalized_SE_Nter,
+#               ymax = Normalized_Percentage_Nter + Normalized_SE_Nter),
+#           position = position_dodge(width = 0.9), width = 0.25
+#         ) +
+#         labs(title = "N-terminal cleavage sites normalized",
+#              x = "", y = "Percentage normalized to AA distribution in protein sequence") +
+#         theme_grey(base_size = 12) +
+#         theme(
+#           axis.text.x = element_text(size = 14, face = "bold"),
+#           axis.text.y = element_text(size = 12, face = "bold"),
+#           title = element_text(size = 14, face = "bold")
+#         )
+#     }
+    
+#     # Combined Normalized Plot
+#     else if (PlotType == "Combined_normalized") {
+#       cutsiteplots <- ggplot(agg_df, aes(x = letter, y = Normalized_Percentage_combined, fill = group)) +
+#         geom_bar(position = "dodge",stat = "identity") +
+#         geom_errorbar(aes(ymin = Normalized_Percentage_combined - Normalized_SE_combined,
+#                           ymax = Normalized_Percentage_combined + Normalized_SE_combined),
+#                       position = position_dodge(width = 0.9), width = 0.25) +
+#         labs(title = "Combined Normalized",
+#              x = "", y = "Percentage normalized to AA distribution in protein sequence") +
+#         theme_grey(base_size = 12) +
+#         theme(axis.text.x = element_text(size = 14, face = "bold"),
+#               axis.text.y = element_text(size = 12, face = "bold"),
+#               title = element_text( face = "bold")
+#         )
+#     } 
+    
+#     # If the PlotType argument is not valid
+#     else {
+#       stop("Error: Invalid PlotType argument. Valid options are 'Nter', 'Cter', 'Cter_normalized', 'Nter_normalized' and 'Combined_normalized'.")
+#     }
+    
+#     # Return the plot
+#     print(cutsiteplots)
+#   }
+  
+#   # Create the main window
+#   win <- tktoplevel()
+#   tkwm.title(win, "Cut sites distribution")
+  
+#   # Create and configure the CSV directory selection frame
+#   csvDirFrame <- ttkframe(win)
+#   tkgrid(csvDirFrame, padx = 20, pady = 20)
+  
+#   # Create and configure the CSV directory label
+#   csvDirLabel <- ttklabel(csvDirFrame, text = "CSV Directory:")
+#   tkgrid(csvDirLabel, column = 1, row = 1, sticky = "e")  # Center text to the right
+  
+#   # Create and configure the CSV directory entry
+#   csvDirEntry <- ttkentry(csvDirFrame, textvariable = csv_directory)
+#   tkgrid(csvDirEntry, column = 2, row = 1, sticky = "we")  # Center input box within column
+  
+#   # Create and configure the CSV directory browse button
+#   csvDirButton <- ttkbutton(csvDirFrame, text = "Browse", command = selectCSVDir)
+#   tkgrid(csvDirButton, column = 3, row = 1, padx = 5, sticky = "w")  # Center button to the left
+  
+#   # Create a frame for the protein sequence label, entry widget, and import sequence button
+#   seqFrame <- ttkframe(win)
+#   tkgrid(seqFrame, padx = 20, pady = 10, columnspan = 3, row = 2)
+  
+#   # Create and configure the protein sequence label
+#   seqLabel <- ttklabel(seqFrame, text = "Protein sequence:")
+#   tkgrid(seqLabel, column = 1, row = 1, sticky = "e")  # Center text to the right
+  
+#   # Create and configure the sequence entry widget
+#   seqEntry <- ttkentry(seqFrame)
+#   tkgrid(seqEntry, column = 2, row = 1, sticky = "we")  # Center input box within column
+  
+#   # Create and configure the calculate button
+#   calculateButton <- ttkbutton(seqFrame, text = "Import sequence", command = function(){
+#     input_text <-tkget(seqEntry)
+#     calculateLetterPercentages(input_text)
+#   })
+#   tkgrid(calculateButton, column = 3, row = 1, padx = 5, sticky = "w")  # Center button to the left
+  
+#   # Create and configure the plot type selection frame
+#   plotTypeFrame <- ttkframe(win)
+#   tkgrid(plotTypeFrame, padx = 10, pady = 10)
+  
+#   # Create and configure the plot type label
+#   plotTypeLabel <- ttklabel(plotTypeFrame, text = "Plot Type:")
+#   tkgrid(plotTypeLabel, column = 1, row = 1, sticky = "w")
+  
+#   # Create and configure the plot type radiobuttons
+#   plotTypeRadioFrame <- ttkframe(plotTypeFrame)
+#   tkgrid(plotTypeRadioFrame, column = 2, row = 1)
+  
+#   # Create and configure the Cter radiobutton
+#   CterRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Cter", variable = PlotType, value = "Cter")
+#   tkgrid(CterRadio, column = 1, row = 1, sticky = "w")
+  
+#   # Create and configure the Nter radiobutton
+#   NterRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Nter", variable = PlotType, value = "Nter")
+#   tkgrid(NterRadio, column = 1, row = 2, sticky = "w")
+  
+#   # Create and configure the Cter normalized radiobutton
+#   CternormalRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Cter normalized", variable = PlotType, value = "Cter_normalized")
+#   tkgrid(CternormalRadio, column = 1, row = 3, sticky = "w")
+  
+#   # Create and configure the Nter normalized radiobutton
+#   NternormalRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Nter normalized", variable = PlotType, value = "Nter_normalized")
+#   tkgrid(NternormalRadio, column = 1, row = 4, sticky = "w")
+  
+#   # Create and configure the Combined normalized radiobutton
+#   CombinedNormalRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Combined normalized", variable = PlotType, value = "Combined_normalized")
+#   tkgrid(CombinedNormalRadio, column = 1, row = 5, sticky = "w")
+  
+#   # Create and configure the create plot button
+#   createPlotButton <- ttkbutton(win, text = "Create Plot", command = function(){
+#     input_text <-tkget(seqEntry)
+#     print(input_text)
+#     createBarPlot(input_text, tclvalue(PlotType))
+#   }) 
+#   tkgrid(createPlotButton, pady = 10)
+#   tkwait.visibility(win)
+  
+# }
+
+# Call the function
+#cut_sites_distribution()
+
+################################################################################
+# Updated csd function with ggseqlogo
+################################################################################
+
+#' Cut Sites Distribution GUI
+#'
+#' This function creates a graphical user interface (GUI) for generating sequence logo plots based on specific positions within sequences from a CSV file. The GUI allows users to select a CSV file containing sequences and optionally provide a protein sequence for normalization. Users can generate either normalized or non-normalized sequence logo plots.
+#'
+#' @details The GUI includes the following features:
+#' \itemize{
+#'   \item A file input section to browse and select a CSV file containing sequences.
+#'   \item An input box for entering a protein sequence used for normalization.
+#'   \item Buttons to generate normalized and non-normalized sequence logo plots.
+#'   \item The function uses the \code{ggseqlogo} package to create sequence logo plots for specified positions within the sequences.
+#' }
+#'
+#' @return This function does not return a value. It opens a GUI window where users can interactively generate sequence logo plots.
+#'
+#' @importFrom tcltk tktoplevel tkwm.title tkconfigure tkframe tklabel tkgrid tkentry tclVar tkgetOpenFile tkbutton tkmessageBox tkbind
+#' @importFrom ggseqlogo ggseqlogo
+#' @importFrom dplyr table
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   # Launch the GUI
+#'   cut_sites_distribution()
+#' }
+
 cut_sites_distribution <- function() {
   # Load required libraries
-  library(dplyr)
-  library(ggplot2)
   library(tcltk)
-
-  # Define variables
-  csv_directory <- ""
-  PlotType <- ""
-  protein_seq <- ""
+  library(ggseqlogo)
+  library(dplyr)
   
-  # Function to select the CSV directory
-  selectCSVDir <- function() {
-    csv_directory <<- tclvalue(tcl("tk_chooseDirectory"))
-    csv_directory <- tclVar(csv_directory)  # Update the csv_directory variable
-    tkconfigure(csvDirEntry, text = csv_directory)  # Update the csvDirEntry widget
-  }
-  
-  # Function to set the selected plot type
-  setPlotType <- function(value) {
-    PlotType <<- value
-  }
-
-  
-  calculateLetterPercentages <- function(protein_seq) {
-
-    #protein_sequence <- tclvalue(protein_seq)
-    protein_seq <- as.character(protein_seq)
-    print(protein_seq)
-    letter_percentages <<- table(strsplit(protein_seq, "")[[1]]) / nchar(protein_seq) * 100
-  }
-  
-  
-  # Function to create the bar plot
-  createBarPlot <- function(protein_seq, PlotType) {
+  # Function to generate the GUI
+  generateGUI <- function() {
     
-    library(dplyr)
-    library(ggplot2)
-
-    valid_plot_types <- c("Nter", "Cter", "Cter_normalized", "Nter_normalized", "Combined_normalized")
-    if (!(PlotType %in% valid_plot_types)) {
-      stop("Error: Invalid PlotType argument. Valid options are 'Nter', 'Cter', 'Cter_normalized', 'Nter_normalized' and 'Combined_normalized'.")
+    # Create main window
+    tt <- tktoplevel()
+    tkwm.title(tt, "Sequence Logo Plot for Specific Positions")
+    tkconfigure(tt, background = "#f5f5f5")
+    
+    # Variables to store file path and protein sequence
+    file_var <- tclVar()
+    protein_seq_var <- tclVar("VDPENVFRKLL")
+    
+    # Frame for file input
+    file_frame <- tkframe(tt, background = "#f5f5f5")
+    tkgrid(tklabel(file_frame, text = "Choose CSV File", background = "#f5f5f5", font = "Helvetica 10 bold"), pady = 5)
+    file_entry <- tkentry(file_frame, textvariable = file_var, width = 50)
+    tkgrid(file_entry, pady = 5)
+    
+    # Define the command to be executed when the "Browse" button is clicked
+    file_button <- tkbutton(file_frame, text = "Browse", command = function() {
+      file_path <- tclvalue(tkgetOpenFile(filetypes = "{{CSV Files} {.csv}} {{All files} *}"))
+      if (file_path != "") {
+        tclvalue(file_var) <- file_path
+      }
+    })
+    tkgrid(file_button, pady = 5)
+    tkgrid(file_frame, padx = 20, pady = 10)
+    
+    # Frame for protein sequence input (only for normalization)
+    protein_frame <- tkframe(tt, background = "#f5f5f5")
+    
+    # Protein sequence label centered above the input box
+    protein_label <- tklabel(protein_frame, text = "Enter Protein Sequence for Normalization:", 
+                             background = "#f5f5f5", font = "Helvetica 10 bold")
+    tkgrid(protein_label, row = 0, column = 0, columnspan = 2, pady = 5)
+    
+    protein_entry <- tkentry(protein_frame, textvariable = protein_seq_var, width = 50)
+    tkgrid(protein_entry, row = 1, column = 0, columnspan = 2, pady = 5)
+    
+    # Define the command to display the sequence in the console
+    submit_sequence <- function() {
+      sequence <- tclvalue(protein_seq_var)
+      cat("Protein sequence:", sequence, "\n")
     }
     
-    extract_first_last_letters_from_csv <- function(file_path) {
-      # Read the CSV file skipping the first 3 lines (assuming headers are in line 4)
-      data <- read.csv(file_path, skip = 0, header = TRUE)
+    # Bind the Enter key to the protein_entry widget
+    tkbind(protein_entry, "<Return>", function() submit_sequence())
+    
+    enter_button <- tkbutton(protein_frame, text = "Enter", command = submit_sequence)
+    tkgrid(enter_button, row = 1, column = 2, padx = 5, pady = 5)
+    
+    tkgrid(protein_frame, padx = 20, pady = 10)
+    
+    # Function to process data and generate the sequence logo plot
+    generatePlot <- function(normalized) {
       
-      # Check if the 'pep_seq' column exists
-      if (!("pep_seq" %in% colnames(data))) {
-        stop("Error: 'pep_seq' column not found in the CSV file.")
+      file_path <- tclvalue(file_var)
+      protein_seq <- toupper(tclvalue(protein_seq_var))
+      
+      # Validate file selection
+      if (file_path == "") {
+        tkmessageBox(message = "Please choose a CSV file.", icon = "error")
+        return()
       }
       
-      # Extract the first and last letters from each sequence
-      data$first_letter <- substr(data$pep_seq, 1, 1)
-      data$last_letter <- substr(data$pep_seq, nchar(data$pep_seq), nchar(data$pep_seq))
+      # Read the CSV file
+      data <- tryCatch({
+        read.csv(file_path, stringsAsFactors = FALSE)
+      }, error = function(e) {
+        tkmessageBox(message = "Error reading the CSV file.", icon = "error")
+        return(NULL)
+      })
       
-      # Count the occurrences of each first letter
-      first_letter_counts <- table(factor(data$first_letter, levels = c("A", "C", "D", "E", "F", "G","H", "I" ,"K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")))
+      if (is.null(data)) return()
       
-      # Count the occurrences of each last letter
-      last_letter_counts <- table(factor(data$last_letter, levels = c("A", "C", "D", "E", "F", "G","H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")))
+      # Ensure 'pep_seq' column is present
+      if (!"pep_seq" %in% colnames(data)) {
+        tkmessageBox(message = "The uploaded file does not contain a 'pep_seq' column.", icon = "error")
+        return()
+      }
       
-      # Combine the counts for first and last letters
-      combined_counts <- merge(
-        data.frame(letter = names(first_letter_counts), first_letter_count = as.numeric(first_letter_counts)),
-        data.frame(letter = names(last_letter_counts), last_letter_count = as.numeric(last_letter_counts)),
-        by = "letter", all = TRUE
-      )
-      combined_counts$combined_count <- rowSums(combined_counts[, c("first_letter_count", "last_letter_count")], na.rm = TRUE)
+      # Extract sequences from the CSV file
+      sequences <- data$pep_seq
       
-      # Replace NA values with 0
-      combined_counts[is.na(combined_counts)] <- 0
+      # Define the positions to extract (assuming the 8 positions are at specific indices)
+      sequence_positions <- substr(sequences, start = 3, stop = 10)
       
-      # Return the combined counts
-      return(combined_counts)
-    }
-    
-    group_csv_files <- function(csv_directory) {
-      # Get the list of CSV files in the directory
-      csv_files <- list.files(path = csv_directory, pattern = "*.csv", full.names = TRUE)
+      # Convert the extracted positions to a matrix with each column representing a position
+      sequence_matrix <- do.call(rbind, strsplit(sequence_positions, ""))
       
-      # Create an empty list to store the grouped CSV files
-      grouped_csv <- list()
-      
-      # Loop through the CSV files and group them based on the second string
-      for (i in 1:length(csv_files)) {
-        # Get the filename without the directory path
-        filename <- basename(csv_files[i])
-        # Get the second string in the filename by splitting on "_"
-        second_str <- strsplit(filename, "_")[[1]][2]
-        # If the group already exists in the list, append the CSV file
-        if (second_str %in% names(grouped_csv)) {
-          grouped_csv[[second_str]] <- c(grouped_csv[[second_str]], csv_files[i])
+      if (normalized) {
+        # Calculate frequencies for each letter at each position
+        position_freq <- apply(sequence_matrix, 2, function(pos) {
+          table(factor(pos, levels = LETTERS)) / length(pos)
+        })
+        
+        # Ensure protein sequence covers the required 8 positions
+        if (nchar(protein_seq) < 10) {
+          tkmessageBox(message = "The protein sequence must be long enough to cover the required positions.", icon = "error")
+          return()
         }
-        # If the group doesn't exist in the list, create a new list element
-        else {
-          grouped_csv[[second_str]] <- list(csv_files[i])
-        }
+        
+        # Calculate the overall frequency of each letter in the protein sequence
+        protein_freq <- table(factor(unlist(strsplit(protein_seq, "")), levels = LETTERS)) / nchar(protein_seq)
+        
+        # Normalize the position frequencies by the protein sequence frequencies
+        normalized_freq <- sweep(position_freq, 1, protein_freq, "/")
+        
+        # Replace any non-finite or negative values with 0
+        normalized_freq[!is.finite(normalized_freq) | normalized_freq <= 0] <- 0
+        
+        # Generate the sequence logo plot using ggseqlogo
+        logo_plot <- ggseqlogo(normalized_freq, method = "prob")
+      } else {
+        # For non-normalized, simply use the sequences
+        selected_positions <- sapply(sequences, function(seq) {
+          n <- nchar(seq)
+          if (n >= 4) {
+            paste0(substr(seq, n - 3, n - 3),  # P4
+                   substr(seq, n - 2, n - 2),  # P3
+                   substr(seq, n - 1, n - 1),  # P2
+                   substr(seq, n, n),          # P1
+                   substr(seq, 1, 1),          # P1'
+                   substr(seq, 2, 2),          # P2'
+                   substr(seq, 3, 3),          # P3'
+                   substr(seq, 4, 4))          # P4'
+          } else {
+            paste0(rep("NA", 8), collapse = "")
+          }
+        }, USE.NAMES = FALSE)
+        
+        # Remove any positions that contain "NA"
+        selected_positions <- selected_positions[!grepl("NA", selected_positions)]
+        
+        # Create the sequence logo plot using ggseqlogo
+        logo_plot <- ggseqlogo(selected_positions, method = "prob")
       }
       
-      # Return the list of grouped CSV files
-      return(grouped_csv)
-    }
-    
-    # Load the necessary libraries
-    library(dplyr)
-    library(ggplot2)
-    
-    # Group the CSV files
-    csv <- group_csv_files(csv_directory)
-    
-    # Initialize an empty dataframe to store the results
-    dat <- data.frame()
-    
-    # Iterate over each group of CSV files
-    for (groups in csv) {
+      # Customize x-axis labels to "P4", "P3", "P2", "P1", "P1'", "P2'", "P3'", "P4'"
+      logo_plot <- logo_plot + scale_x_continuous(breaks = 1:8, 
+                                                  labels = c("P4", "P3", "P2", "P1", "P1'", "P2'", "P3'", "P4'"))
       
-      # Create an empty dataframe to store the results for the group
-      group_results_df <- data.frame(
-        Group = character(),
-        Mean_First_Letter_Count = double(),
-        SD_First_Letter_Count = double(),
-        Mean_Last_Letter_Count = double(),
-        SD_Last_Letter_Count = double(),
-        Mean_Combined_Count = double(),
-        Percentage = double(),
-        SD_Combined_Count = double(),
-        Letter_Percentage = double(),
-        stringsAsFactors = FALSE
-      )
-      
-      # Iterate over each CSV file in the group
-      for (i in groups) {
-        print(i)
-        
-        # Extract the first and last letters from the CSV file
-        file_results <- extract_first_last_letters_from_csv(i)
-        
-        # Get the filename without the directory path
-        filename <- basename(i)
-        
-        # Get the second string in the filename by splitting on "_"
-        grp_str <- rep(strsplit(filename, "_")[[1]][2], nrow(file_results))
-        
-        # Store the label for the group
-        file_results$group <- data.frame(grp_str)
-        
-        # Append the results to the dataframe
-        dat <- rbind(dat, file_results)
-      }
+      # Plot the sequence logo
+      print(logo_plot)
     }
     
+    # Buttons to generate plots
+    button_frame <- tkframe(tt, background = "#f5f5f5")
+    plot_normalized_button <- tkbutton(button_frame, text = "Generate Normalized Plot", command = function() generatePlot(TRUE))
+    tkgrid(plot_normalized_button, padx = 10, pady = 10)
     
-    # Add a call to calculateLetterPercentages before the dplyr::summarize function
-    calculateLetterPercentages(protein_seq)
+    plot_non_normalized_button <- tkbutton(button_frame, text = "Generate Non-normalized Plot", command = function() generatePlot(FALSE))
+    tkgrid(plot_non_normalized_button, padx = 10, pady = 10)
     
-    # Then, use letter_percentages in your dplyr::summarize function
-    agg_df <- dat %>%
-      group_by(letter, group) %>%
-      dplyr::summarize(
-        mean_combined_count = mean(combined_count),
-        sd_combined_count = sd(combined_count),
-        se_combined_count = sd_combined_count / sqrt(n()),
-        sum_combined_count = sum(combined_count),
-        mean_first_letter_count = mean(first_letter_count),
-        sd_first_letter_count = sd(first_letter_count),
-        se_first_letter_count = sd_first_letter_count / sqrt(n()),
-        sum_first_letter_count = sum(first_letter_count),
-        mean_last_letter_count = mean(last_letter_count),
-        sd_last_letter_count = sd(last_letter_count),
-        se_last_letter_count = sd_last_letter_count / sqrt(n()),
-        sum_last_letter_count = sum(last_letter_count),
-        mean = mean(combined_count),
-        sd = sd(combined_count),
-        se = sd / sqrt(n()),
-        sum = sum(combined_count),
-        Letter_Percentage = letter_percentages[letter]
-      )
-    
-    
-    # Calculate percentage of mean_Last_letter_count and mean_first_letter_count with SE
-    agg_df_sum <- agg_df %>%
-      group_by(group) %>%
-      dplyr::summarize(
-        total_sum_combined_count = sum(sum_combined_count),
-        total_sum_first_letter_count = sum(sum_first_letter_count),
-        total_sum_last_letter_count = sum(sum_last_letter_count),
-        total_sum = sum(sum)
-      )
-    
-    agg_df <- agg_df %>%
-      left_join(agg_df_sum, by = "group") %>%
-      dplyr::mutate(
-        perc_mean_first_letter_count = mean_first_letter_count / total_sum_first_letter_count * 100,
-        perc_mean_last_letter_count = mean_last_letter_count / total_sum_last_letter_count * 100,
-        SE_perc_mean_first_letter_count = sqrt(perc_mean_first_letter_count / 100 * (100 - perc_mean_first_letter_count) / total_sum_first_letter_count),
-        SE_perc_mean_last_letter_count = sqrt(perc_mean_last_letter_count / 100 * (100 - perc_mean_last_letter_count) / total_sum_last_letter_count),
-        percentage = sum / total_sum * 100,
-        SE_percentage = sqrt(percentage/100 * (100 - percentage)/sum),
-        Normalized_Percentage_combined = percentage / Letter_Percentage,
-        Normalized_SE_combined = sqrt(Normalized_Percentage_combined/100 * (100 - Normalized_Percentage_combined)/sum),
-        Normalized_Percentage_Nter = perc_mean_first_letter_count / Letter_Percentage,
-        Normalized_SE_Nter = sqrt(Normalized_Percentage_Nter/100 * (100 - Normalized_Percentage_Nter)/sum),
-        Normalized_Percentage_Cter = perc_mean_last_letter_count / Letter_Percentage,
-        Normalized_SE_Cter = sqrt(Normalized_Percentage_Cter/100 * (100 - Normalized_Percentage_Cter)/sum)
-      )
-    
-    # Convert the grouped dataframe to a regular dataframe
-    agg_df <- data.frame(agg_df)
-    
-    # Convert the group variable to a factor
-    grp <- agg_df$group[[1]]
-    grp <- as.factor(grp)
-    agg_df$group <- grp
-    
-    
-    # Create the appropriate density plot based on the PlotType argument
-    
-    # Nter Percentage Plot
-    if (PlotType == "Nter") {
-      cutsiteplots <- ggplot(agg_df, aes(x = letter, y = perc_mean_first_letter_count, fill = group)) +
-        geom_bar(position = "dodge", stat = "identity") +
-        geom_errorbar(
-          aes(ymin = perc_mean_first_letter_count - SE_perc_mean_first_letter_count,
-              ymax = perc_mean_first_letter_count + SE_perc_mean_first_letter_count),
-          position = position_dodge(width = 0.9), width = 0.25
-        ) +
-        labs(title = "N-terminal cleavage sites",
-             x = "", y = "Percentage") +
-        theme_grey(base_size = 12) +
-        theme(
-          axis.text.x = element_text(size = 14, face = "bold"),
-          axis.text.y = element_text(size = 12, face = "bold"),
-          title = element_text(size = 14, face = "bold")
-        )
-    }
-    
-    # Cter Percentage Plot
-    else if (PlotType == "Cter") {
-      cutsiteplots <- ggplot(agg_df, aes(x = letter, y = perc_mean_last_letter_count, fill = group)) +
-        geom_bar(position = "dodge", stat = "identity") +
-        geom_errorbar(
-          aes(ymin = perc_mean_last_letter_count - SE_perc_mean_last_letter_count,
-              ymax = perc_mean_last_letter_count + SE_perc_mean_last_letter_count),
-          position = position_dodge(width = 0.9), width = 0.25
-        ) +
-        labs(title = "C-terminal cleavage sites",
-             x = "", y = "Percentage") +
-        theme_grey(base_size = 12) +
-        theme(
-          axis.text.x = element_text(size = 14, face = "bold"),
-          axis.text.y = element_text(size = 12, face = "bold"),
-          title = element_text(size = 14, face = "bold")
-        )
-    }
-    
-    # Cter Normalized Plot
-    else if (PlotType == "Cter_normalized") {
-      cutsiteplots <- ggplot(agg_df, aes(x = letter, y = Normalized_Percentage_Cter, fill = group)) +
-        geom_bar(position = "dodge", stat = "identity") +
-        geom_errorbar(
-          aes(ymin = Normalized_Percentage_Cter - Normalized_SE_Cter,
-              ymax = Normalized_Percentage_Cter + Normalized_SE_Cter),
-          position = position_dodge(width = 0.9), width = 0.25
-        ) +
-        labs(title = "C-terminal cleavage sites normalized",
-             x = "", y = "Percentage normalized to AA distribution in protein sequence") +
-        theme_grey(base_size = 12) +
-        theme(
-          axis.text.x = element_text(size = 14, face = "bold"),
-          axis.text.y = element_text(size = 12, face = "bold"),
-          title = element_text(size = 14, face = "bold")
-        )
-    }
-    
-    # nter Normalized Plot
-    else if (PlotType == "Nter_normalized") {
-      cutsiteplots <- ggplot(agg_df, aes(x = letter, y = Normalized_Percentage_Nter, fill = group)) +
-        geom_bar(position = "dodge", stat = "identity") +
-        geom_errorbar(
-          aes(ymin = Normalized_Percentage_Nter - Normalized_SE_Nter,
-              ymax = Normalized_Percentage_Nter + Normalized_SE_Nter),
-          position = position_dodge(width = 0.9), width = 0.25
-        ) +
-        labs(title = "N-terminal cleavage sites normalized",
-             x = "", y = "Percentage normalized to AA distribution in protein sequence") +
-        theme_grey(base_size = 12) +
-        theme(
-          axis.text.x = element_text(size = 14, face = "bold"),
-          axis.text.y = element_text(size = 12, face = "bold"),
-          title = element_text(size = 14, face = "bold")
-        )
-    }
-    
-    # Combined Normalized Plot
-    else if (PlotType == "Combined_normalized") {
-      cutsiteplots <- ggplot(agg_df, aes(x = letter, y = Normalized_Percentage_combined, fill = group)) +
-        geom_bar(position = "dodge",stat = "identity") +
-        geom_errorbar(aes(ymin = Normalized_Percentage_combined - Normalized_SE_combined,
-                          ymax = Normalized_Percentage_combined + Normalized_SE_combined),
-                      position = position_dodge(width = 0.9), width = 0.25) +
-        labs(title = "Combined Normalized",
-             x = "", y = "Percentage normalized to AA distribution in protein sequence") +
-        theme_grey(base_size = 12) +
-        theme(axis.text.x = element_text(size = 14, face = "bold"),
-              axis.text.y = element_text(size = 12, face = "bold"),
-              title = element_text( face = "bold")
-        )
-    } 
-    
-    # If the PlotType argument is not valid
-    else {
-      stop("Error: Invalid PlotType argument. Valid options are 'Nter', 'Cter', 'Cter_normalized', 'Nter_normalized' and 'Combined_normalized'.")
-    }
-    
-    # Return the plot
-    print(cutsiteplots)
+    tkgrid(button_frame, padx = 20, pady = 10)
   }
   
-  # Create the main window
-  win <- tktoplevel()
-  tkwm.title(win, "Cut sites distribution")
-  
-  # Create and configure the CSV directory selection frame
-  csvDirFrame <- ttkframe(win)
-  tkgrid(csvDirFrame, padx = 20, pady = 20)
-  
-  # Create and configure the CSV directory label
-  csvDirLabel <- ttklabel(csvDirFrame, text = "CSV Directory:")
-  tkgrid(csvDirLabel, column = 1, row = 1, sticky = "e")  # Center text to the right
-  
-  # Create and configure the CSV directory entry
-  csvDirEntry <- ttkentry(csvDirFrame, textvariable = csv_directory)
-  tkgrid(csvDirEntry, column = 2, row = 1, sticky = "we")  # Center input box within column
-  
-  # Create and configure the CSV directory browse button
-  csvDirButton <- ttkbutton(csvDirFrame, text = "Browse", command = selectCSVDir)
-  tkgrid(csvDirButton, column = 3, row = 1, padx = 5, sticky = "w")  # Center button to the left
-  
-  # Create a frame for the protein sequence label, entry widget, and import sequence button
-  seqFrame <- ttkframe(win)
-  tkgrid(seqFrame, padx = 20, pady = 10, columnspan = 3, row = 2)
-  
-  # Create and configure the protein sequence label
-  seqLabel <- ttklabel(seqFrame, text = "Protein sequence:")
-  tkgrid(seqLabel, column = 1, row = 1, sticky = "e")  # Center text to the right
-  
-  # Create and configure the sequence entry widget
-  seqEntry <- ttkentry(seqFrame)
-  tkgrid(seqEntry, column = 2, row = 1, sticky = "we")  # Center input box within column
-  
-  # Create and configure the calculate button
-  calculateButton <- ttkbutton(seqFrame, text = "Import sequence", command = function(){
-    input_text <-tkget(seqEntry)
-    calculateLetterPercentages(input_text)
-  })
-  tkgrid(calculateButton, column = 3, row = 1, padx = 5, sticky = "w")  # Center button to the left
-  
-  # Create and configure the plot type selection frame
-  plotTypeFrame <- ttkframe(win)
-  tkgrid(plotTypeFrame, padx = 10, pady = 10)
-  
-  # Create and configure the plot type label
-  plotTypeLabel <- ttklabel(plotTypeFrame, text = "Plot Type:")
-  tkgrid(plotTypeLabel, column = 1, row = 1, sticky = "w")
-  
-  # Create and configure the plot type radiobuttons
-  plotTypeRadioFrame <- ttkframe(plotTypeFrame)
-  tkgrid(plotTypeRadioFrame, column = 2, row = 1)
-  
-  # Create and configure the Cter radiobutton
-  CterRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Cter", variable = PlotType, value = "Cter")
-  tkgrid(CterRadio, column = 1, row = 1, sticky = "w")
-  
-  # Create and configure the Nter radiobutton
-  NterRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Nter", variable = PlotType, value = "Nter")
-  tkgrid(NterRadio, column = 1, row = 2, sticky = "w")
-  
-  # Create and configure the Cter normalized radiobutton
-  CternormalRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Cter normalized", variable = PlotType, value = "Cter_normalized")
-  tkgrid(CternormalRadio, column = 1, row = 3, sticky = "w")
-  
-  # Create and configure the Nter normalized radiobutton
-  NternormalRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Nter normalized", variable = PlotType, value = "Nter_normalized")
-  tkgrid(NternormalRadio, column = 1, row = 4, sticky = "w")
-  
-  # Create and configure the Combined normalized radiobutton
-  CombinedNormalRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Combined normalized", variable = PlotType, value = "Combined_normalized")
-  tkgrid(CombinedNormalRadio, column = 1, row = 5, sticky = "w")
-  
-  # Create and configure the create plot button
-  createPlotButton <- ttkbutton(win, text = "Create Plot", command = function(){
-    input_text <-tkget(seqEntry)
-    print(input_text)
-    createBarPlot(input_text, tclvalue(PlotType))
-  }) 
-  tkgrid(createPlotButton, pady = 10)
-  tkwait.visibility(win)
-  
+  # Run the GUI
+  generateGUI()
 }
 
 # Call the function
