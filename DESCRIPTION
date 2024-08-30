@@ -29,7 +29,6 @@ Imports:
     remotes,
     AnnotationDbi,
     ggseqlogo
-    
 Suggests:
     testthat,
     knitr,
