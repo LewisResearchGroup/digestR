@@ -23230,6 +23230,7 @@ cut_sites_distribution <- function() {
   library(tcltk)
   library(ggseqlogo)
   library(dplyr)
+  library(ggplot2)  # Added for plotting the vertical dashed line
   
   # Function to generate the GUI
   generateGUI <- function() {
@@ -23315,19 +23316,37 @@ cut_sites_distribution <- function() {
       # Extract sequences from the CSV file
       sequences <- data$pep_seq
       
-      # Define the positions to extract (assuming the 8 positions are at specific indices)
-      sequence_positions <- substr(sequences, start = 3, stop = 10)
+      # Adjust position extraction to handle sequences shorter than 4 amino acids
+      sequence_matrix <- sapply(sequences, function(seq) {
+        n <- nchar(seq)  # Get the length of the sequence
+        if (n >= 4) {
+          # Extract the last 4 positions (P4 to P1) and the first 4 positions (P1' to P4')
+          p4_p1 <- c(substr(seq, n - 3, n - 3), 
+                     substr(seq, n - 2, n - 2), 
+                     substr(seq, n - 1, n - 1), 
+                     substr(seq, n, n))
+          p1p_p4p <- c(substr(seq, 1, 1), 
+                       substr(seq, 2, 2), 
+                       substr(seq, 3, 3), 
+                       substr(seq, 4, 4))
+          return(c(p4_p1, p1p_p4p))  # Combine both parts
+        } else {
+          # Handle sequences shorter than 4 AA by filling the missing positions with NA
+          available_part <- c(strsplit(seq, "")[[1]], rep(NA, 8 - n))
+          return(available_part)
+        }
+      }, USE.NAMES = FALSE)
       
-      # Convert the extracted positions to a matrix with each column representing a position
-      sequence_matrix <- do.call(rbind, strsplit(sequence_positions, ""))
+      # Transpose the matrix to have positions as columns
+      sequence_matrix <- t(sequence_matrix)
       
       if (normalized) {
-        # Calculate frequencies for each letter at each position
+        # Calculate frequencies for each letter at each position, ignoring NAs
         position_freq <- apply(sequence_matrix, 2, function(pos) {
-          table(factor(pos, levels = LETTERS)) / length(pos)
+          table(factor(pos, levels = LETTERS), useNA = "no") / sum(!is.na(pos))
         })
         
-        # Ensure protein sequence covers the required 8 positions
+        # Ensure protein sequence covers the required positions
         if (nchar(protein_seq) < 10) {
           tkmessageBox(message = "The protein sequence must be long enough to cover the required positions.", icon = "error")
           return()
@@ -23345,7 +23364,7 @@ cut_sites_distribution <- function() {
         # Generate the sequence logo plot using ggseqlogo
         logo_plot <- ggseqlogo(normalized_freq, method = "prob")
       } else {
-        # For non-normalized, simply use the sequences
+        # For non-normalized sequences
         selected_positions <- sapply(sequences, function(seq) {
           n <- nchar(seq)
           if (n >= 4) {
@@ -23369,9 +23388,11 @@ cut_sites_distribution <- function() {
         logo_plot <- ggseqlogo(selected_positions, method = "prob")
       }
       
-      # Customize x-axis labels to "P4", "P3", "P2", "P1", "P1'", "P2'", "P3'", "P4'"
-      logo_plot <- logo_plot + scale_x_continuous(breaks = 1:8, 
-                                                  labels = c("P4", "P3", "P2", "P1", "P1'", "P2'", "P3'", "P4'"))
+      # Customize x-axis labels to include "cs" and other positions
+      logo_plot <- logo_plot + 
+        scale_x_continuous(breaks = c(1:8, 9), 
+                           labels = c("P4", "P3", "P2", "P1", "P1'", "P2'", "P3'", "P4'", "cs")) +
+        geom_vline(xintercept = 4.5, linetype = "dashed", color = "black", size = 1)  # Cleavage site at "cs"
       
       # Plot the sequence logo
       print(logo_plot)
