@@ -13783,33 +13783,39 @@ fs <- function() {
   #   }
   # }
   # tkbind(dlg, '<Double-Button-1>', onDouble)
-# Switch spectra on left mouse double-click
-onDouble <- function() {
-  # Get the selected file index
-  usrSel <- as.numeric(tcl(tableList, 'curselection')) + 1
+		    
+  onDouble <- function(box) {
+  # Get the selected index from the tableList widget
+  usrSel <- 1 + as.integer(tkcurselection(box))
   
-  # Get the file corresponding to the selected index
-  usrFile <- names(fileFolder)[usrSel]
+  # Determine which file is selected based on the box ID
+  if (length(usrSel)) {
+    if (box$ID == '.fs.1.1.1.1') {
+      usrFile <- olFileNames[usrSel]
+    } else {
+      usrFile <- names(fileFolder)[usrSel]  # Use fileFolder in this case
+    }
+  } else {
+    usrFile <- NULL
+  }
   
   # If a valid file is selected and it's different from the current spectrum
-  if (!is.null(usrFile) && !is.na(usrFile) && currentSpectrum != usrFile) {
+  if (!is.null(usrFile) && currentSpectrum != usrFile) {
     # Update the current spectrum
-    currentSpectrum <- usrFile
-    myAssign('currentSpectrum', currentSpectrum)
+    myAssign('currentSpectrum', usrFile)
     
     # Refresh the plot window to display the selected file's spectrum
     refresh(multi.plot = FALSE)
     
+    # Additional GUI configuration (if needed)
+    olConfigGui()
+    
     # Ensure the plot window is brought to the foreground
     tkwm.deiconify(dlg)
-    tkfocus(tableList)
+    tkfocus(box)
   }
 }
 
-# Bind the double-click event to the tableList widget
-tkbind(tableList, '<Double-Button-1>', onDouble)
-
-  
   # Add widgets to tableFrame
   tkgrid(tableFrame, column = 1, row = 1, sticky = 'nswe', pady = 6, padx = 6)
   tkgrid(tableList, column = 1, row = 1, sticky = 'nswe')
