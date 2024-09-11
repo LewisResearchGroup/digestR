@@ -28,7 +28,13 @@ Imports:
     BiocManager,
     remotes,
     AnnotationDbi,
-    ggseqlogo
+    ggseqlogo,
+    viridis,
+    VennDiagram,
+    readr,
+    grid,
+    tkrplot
+    
 Suggests:
     testthat,
     knitr,
