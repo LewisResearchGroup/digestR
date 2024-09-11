@@ -1271,6 +1271,9 @@ splashScreen <- function(){
   text(0, -0.25, 'gp() - Generate New Proteome', col=colMain)
   text(0, -0.35, 'pm() - Process Mascot files', col=colMain)
   text(0, -0.45, 'fo() - Open *.dcf files', col=colMain)
+
+  # Force the graphics device to refresh
+  dev.flush()
 }
 
 about <- function(){
@@ -1283,7 +1286,7 @@ about <- function(){
   
   ##display digestR package info
   msg <- paste('digestR version', pkgVar$version, '\n',
-               'Copyright (C) 2023 Dimitri Desmonts de Lamache, Travis Bingeman, Raied Aburashed, Sören Wacker and Ian A. Lewis' )
+               'Copyright (C) 2024 Dimitri Desmonts de Lamache, Travis Bingeman, Raied Aburashed, Sören Wacker and Ian A. Lewis' )
   msgLabel <- ttklabel(dlg, text=msg)
   
   ##creates ok button
@@ -3747,7 +3750,7 @@ setWindow <- function( p.window = 'main', ...){
       par(mar=globalSettings$mar)
     }
     par(...)
-    devGui(p.window)
+    #devGui(p.window)
     popupGui(p.window)
   }else{
     dev.set(devNum)
@@ -6310,6 +6313,16 @@ file_open <- function(fileName, ...) {
   }
   
   return(invisible(usrList))
+
+  # Call the splash screen after loading the file
+  splashScreen()
+  
+  # Ensure the graphical device is updated immediately
+  dev.flush()  # Forces a redraw of the graphics device
+  
+  # If necessary, call refresh to update the main plot window
+  refresh(...)
+
 }
 
 handleFoErrors <- function(cond, fileName = NULL) {
