@@ -13362,7 +13362,7 @@ openStored <- function(inFolder, fileName='storedSpec'){
 #'
 #' @import tcltk2
 #'
-#' @export
+# ' @export
 # fs <- function(){
   
 #   ##call fo() if there are no open files
@@ -13796,7 +13796,38 @@ fs <- function() {
   tkgrid.columnconfigure(tableFrame, 1, weight = 1)
   tkgrid.rowconfigure(tableFrame, 1, weight = 1)
   
-  ## Additional buttons and functionality
+  ##updates fileFolder
+  updateFileFolder <- function(newOrder){
+    newFolder <- fileFolder[newOrder]
+    myAssign('fileFolder', newFolder)
+  }
+  
+  ##sort files when user clicks on column headers 
+  onSort <- function(tbl, col){
+    prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+    tcl('tablelist::sortByColumn', tbl, col)
+    newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+    updateFileFolder(match(newOrder, prevOrder))
+  }
+  
+  ##allow spectrum names to be edited
+  onEdit <- function(widget, rowNum, colNum, newVal){
+    rowNum <- as.numeric(rowNum) + 1
+    userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
+    if (newVal %in% userTitles){
+      myMsg(paste('A spectrum with that name is currently open.', 
+                  'Please enter a unique name.', sep='\n'), icon='error', 
+            parent=dlg)
+      tcl(tableList, 'cancelediting')
+    }else{
+      fileFolder[[rowNum]]$file.par$user_title <- newVal
+      myAssign('fileFolder', fileFolder)
+      refresh()
+    }
+    
+    return(tclVar(as.character(newVal)))
+  }
+  tkconfigure(tableList, editendcommand=function(...) onEdit(...))
   
   # Create the top button
   optionFrame <- ttkframe(dlg)
@@ -13866,6 +13897,50 @@ fs <- function() {
   tkgrid(upButton, column = 2, row = 1, pady = 2)
   tkgrid(downButton, column = 3, row = 1, padx = c(0, 4), pady = 2)
   tkgrid(bottomButton, column = 4, row = 1, pady = 2)
+   
+ ##create file open button
+  onOpen <- function(){
+    
+    ##open files
+    prevFiles <- NULL
+    if (length(fileFolder))
+      prevFiles <- names(fileFolder)
+    newFiles <- fo()
+    if (is.null(newFiles))
+      return(invisible())
+    fileMatches <- as.vector(na.omit(match(prevFiles, newFiles)))
+    if (length(fileMatches))
+      newFiles <- newFiles[-fileMatches]
+    if (!length(newFiles))
+      return(invisible())
+    
+    ##get file information for newly opened files
+    getFileInfo(newFiles)
+    
+    ##select newly opened files
+    tkselection.clear(tableList, 0, 'end')
+    tkselection.set(tableList, length(fileFolder) - length(newFiles), 'end')
+    tkyview.moveto(tableList, 1)
+  }
+  openButton <- ttkbutton(optionFrame, text='Open file', width=11, 
+                          command=onOpen)
+  
+  ##create file close button
+  onClose <- function(){
+    
+    ##get user selection
+    usrSel <- as.numeric(tcl(tableList, 'curselection'))
+    if (!length(usrSel))
+      return(invisible())
+    usrFiles <- names(fileFolder)[usrSel + 1]
+    
+    ##close selected files
+    fc(usrFiles)
+    tkdelete(tableList, usrSel)
+    tkselection.set(tableList, usrSel[1])
+  }
+  closeButton <- ttkbutton(optionFrame, text='Close file', width=11, 
+                           command=onClose)
   
   ## Additional configuration for resizing
   tkgrid(ttksizegrip(dlg), column = 2, row = 3, sticky = 'se')
