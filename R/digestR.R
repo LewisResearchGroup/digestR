@@ -6304,6 +6304,7 @@ file_open <- function(fileName, ...) {
   return(invisible(usrList))
 }
 
+
 handleFoErrors <- function(cond, fileName = NULL) {
   # Set errors flag to TRUE to indicate that an error occurred
   errors <<- TRUE
