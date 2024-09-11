@@ -13768,21 +13768,47 @@ fs <- function() {
   flush.console()
   
   # Switch spectra on left mouse double-click
-  onDouble <- function(W) {
-    if (W != '.fs.1.3.body') return(invisible())
+  # onDouble <- function(W) {
+  #   #if (W != '.fs.1.3.body') return(invisible())
     
-    usrSel <- as.numeric(tcl(tableList, 'curselection')) + 1
-    usrFile <- names(fileFolder)[usrSel]
+  #   usrSel <- as.numeric(tcl(tableList, 'curselection')) + 1
+  #   usrFile <- names(fileFolder)[usrSel]
     
-    if (!is.null(usrFile) && !is.na(usrFile) && currentSpectrum != usrFile) {
-      currentSpectrum <- usrFile
-      myAssign('currentSpectrum', currentSpectrum)
-      refresh(multi.plot = FALSE)
-      tkwm.deiconify(dlg)
-      tkfocus(tableList)
-    }
+  #   if (!is.null(usrFile) && !is.na(usrFile) && currentSpectrum != usrFile) {
+  #     currentSpectrum <- usrFile
+  #     myAssign('currentSpectrum', currentSpectrum)
+  #     refresh(multi.plot = FALSE)
+  #     tkwm.deiconify(dlg)
+  #     tkfocus(tableList)
+  #   }
+  # }
+  # tkbind(dlg, '<Double-Button-1>', onDouble)
+# Switch spectra on left mouse double-click
+onDouble <- function() {
+  # Get the selected file index
+  usrSel <- as.numeric(tcl(tableList, 'curselection')) + 1
+  
+  # Get the file corresponding to the selected index
+  usrFile <- names(fileFolder)[usrSel]
+  
+  # If a valid file is selected and it's different from the current spectrum
+  if (!is.null(usrFile) && !is.na(usrFile) && currentSpectrum != usrFile) {
+    # Update the current spectrum
+    currentSpectrum <- usrFile
+    myAssign('currentSpectrum', currentSpectrum)
+    
+    # Refresh the plot window to display the selected file's spectrum
+    refresh(multi.plot = FALSE)
+    
+    # Ensure the plot window is brought to the foreground
+    tkwm.deiconify(dlg)
+    tkfocus(tableList)
   }
-  tkbind(dlg, '<Double-Button-1>', onDouble)
+}
+
+# Bind the double-click event to the tableList widget
+tkbind(tableList, '<Double-Button-1>', onDouble)
+
   
   # Add widgets to tableFrame
   tkgrid(tableFrame, column = 1, row = 1, sticky = 'nswe', pady = 6, padx = 6)
