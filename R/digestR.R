@@ -13443,29 +13443,47 @@ openStored <- function(inFolder, fileName='storedSpec'){
     tkselection.set(tableList, 0, 'end'))
   
   ##get file information and add to tablelist
-  getFileInfo <- function(fileNames){
-    if (!length(fileNames) || !nzchar(fileNames))
-      return(invisible())
-    tmpFolder <- fileFolder[fileNames]
-    userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
+  # getFileInfo <- function(fileNames){
+  #   if (!length(fileNames) || !nzchar(fileNames))
+  #     return(invisible())
+  #   tmpFolder <- fileFolder[fileNames]
+  #   userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
     
-    sizes <- as.character(sapply(tmpFolder, function(x) 
-      x$file.par$file.size))
+  #   sizes <- as.character(sapply(tmpFolder, function(x) 
+  #     x$file.par$file.size))
     
-    mods <- sapply(tmpFolder, function(x) 
-      as.character(x$file.par$date.modified))
-    paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
-    #		fileData <- cbind(userTitles, dims, paths, sizes, mods, deparse.level=0)
-    fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
-    for (i in 1:nrow(fileData))
-      tkinsert(tableList, 'end', fileData[i, ])
+  #   mods <- sapply(tmpFolder, function(x) 
+  #     as.character(x$file.par$date.modified))
+  #   paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
+  #   #		fileData <- cbind(userTitles, dims, paths, sizes, mods, deparse.level=0)
+  #   fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
+  #   for (i in 1:nrow(fileData))
+  #     tkinsert(tableList, 'end', fileData[i, ])
+  # }
+getFileInfo <- function(fileNames) {
+  if (length(fileNames) == 0 || all(!nzchar(fileNames))) {
+    return(invisible())
+  }
+  tmpFolder <- fileFolder[fileNames]
+  userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
+  
+  sizes <- as.character(sapply(tmpFolder, function(x) 
+    x$file.par$file.size))
+  
+  mods <- sapply(tmpFolder, function(x) 
+    as.character(x$file.par$date.modified))
+  paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
+  
+  fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
+  for (i in 1:nrow(fileData)) {
+    tkinsert(tableList, 'end', fileData[i, ])
   }
   getFileInfo(names(fileFolder))
   if (!is.null(currentSpectrum)){
     tkselection.set(tableList, wc() - 1)
     tcl(tableList, 'see', wc() - 1)
+   }
   }
-  
   #	log_message('h')
   flush.console()	
   
