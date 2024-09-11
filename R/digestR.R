@@ -3750,7 +3750,7 @@ setWindow <- function( p.window = 'main', ...){
       par(mar=globalSettings$mar)
     }
     par(...)
-    #devGui(p.window)
+    gui(p.window)
     popupGui(p.window)
   }else{
     dev.set(devNum)
@@ -4186,7 +4186,7 @@ refresh <- function(main.plot = TRUE, overlay = TRUE, sub.plot = TRUE,
     ## Add menus if not present
     if (.Platform$OS == 'windows' && .Platform$GUI == 'Rgui' &&
         !length(grep('$Graph2', winMenuNames(), fixed=TRUE))){
-      #devGui('main')
+      gui('main')
       popupGui('main')
     }
   }
@@ -6290,7 +6290,7 @@ file_open <- function(fileName, ...) {
     }
     
     ## Tell user which files have been loaded
-    log_message(paste("File", basename(usrList[i]), "opened successfully."), quote = FALSE)
+    log_message(paste("File", basename(usrList[i]), "opened successfully."))
     flush.console()
   }
   
@@ -13347,6 +13347,10 @@ openStored <- function(inFolder, fileName='storedSpec'){
   return(fileName)
 }
 
+###################################################################################################
+# Old fs function
+###################################################################################################
+
 ## Displays an interactive GUI for sorting files
 #' Open and Manage Spectra Files using fs
 #'
@@ -13359,307 +13363,535 @@ openStored <- function(inFolder, fileName='storedSpec'){
 #' @import tcltk2
 #'
 #' @export
-fs <- function(){
+# fs <- function(){
   
-  ##call fo() if there are no open files
-  if (!exists("fileFolder") || is.null(fileFolder) || !exists("currentSpectrum") 
-      || is.null(currentSpectrum)){
+#   ##call fo() if there are no open files
+#   if (!exists("fileFolder") || is.null(fileFolder) || !exists("currentSpectrum") 
+#       || is.null(currentSpectrum)){
+#     usrSel <- fo()
+#     if (is.null(usrSel))
+#       return(invisible())
+#   }
+#   ##creates main window
+#   tclCheck()
+  
+#   dlg <- myToplevel('fs')
+#   if (is.null(dlg))
+#   {
+#     return(invisible())
+#   }
+#   tkwm.title(dlg, 'Files')
+#   tkfocus(dlg)
+#   tkwm.deiconify(dlg)
+  
+#   #	log_message('d')
+#   flush.console()
+  
+#   ##create tablelist widget
+#   tableFrame <- ttklabelframe(dlg, 
+#                               text='Double-click on a file path to switch spectra:')
+  
+#   xscr <- ttkscrollbar(tableFrame, orient='horizontal', command=function(...) 
+#     tkxview(tableList, ...))
+  
+#   yscr <- ttkscrollbar(tableFrame, orient='vertical', command=function(...) 
+#     tkyview(tableList, ...))
+  
+#   tableList <- tkwidget(tableFrame, 'tablelist::tablelist', bg='white',  
+#                         columns=c('0', 'Spectrum', '0', 'File Path', '0', 'Size', 'right', '0', 'Date Modified', 'center'), 
+#                         height=11, width=110, labelcommand=function(...) onSort(...), selectmode='extended', spacing=3, stretch='all', 
+#                         activestyle='underline', exportselection=FALSE, editselectedonly=TRUE, xscrollcommand=function(...) tkset(xscr, ...),
+#                         yscrollcommand=function(...) tkset(yscr, ...))
+  
+#   #	log_message('e')
+#   flush.console()
+  
+#   for (i in 0:3)
+#     tcl(tableList, 'columnconfigure', i, sortmode='dictionary')
+#   tcl(tableList, 'columnconfigure', 0, editable=TRUE)
+  
+#   #	log_message('f')
+#   flush.console()	
+  
+#   ##format the size column
+#   formatSize <- function(size)
+#   {
+#     if (length(grep('KB', size)))
+#       return(tclVar(size))
+#     size <- as.numeric(size)
+#     if (size < 2^20)
+#       return(tclVar(paste(signif(size / 2^10, 3), 'KB')))
+#     else
+#       return(tclVar(paste(signif(size / 2^20, 3), 'MB')))
+#   }
+#   tcl(tableList, 'columnconfigure', 2, formatcommand=function(...) 
+#     formatSize(...))
+  
+#   #	log_message('g')
+#   flush.console()	
+  
+#   ##selects all rows Ctrl+A is pressed
+#   tkbind(dlg, '<Control-a>', function(...) 
+#     tkselection.set(tableList, 0, 'end'))
+  
+#   ##get file information and add to tablelist
+#   getFileInfo <- function(fileNames){
+#     if (!length(fileNames) || !nzchar(fileNames))
+#       return(invisible())
+#     tmpFolder <- fileFolder[fileNames]
+#     userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
+    
+#     sizes <- as.character(sapply(tmpFolder, function(x) 
+#       x$file.par$file.size))
+    
+#     mods <- sapply(tmpFolder, function(x) 
+#       as.character(x$file.par$date.modified))
+#     paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
+#     #		fileData <- cbind(userTitles, dims, paths, sizes, mods, deparse.level=0)
+#     fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
+#     for (i in 1:nrow(fileData))
+#       tkinsert(tableList, 'end', fileData[i, ])
+#   }
+#   getFileInfo(names(fileFolder))
+#   if (!is.null(currentSpectrum)){
+#     tkselection.set(tableList, wc() - 1)
+#     tcl(tableList, 'see', wc() - 1)
+#   }
+  
+#   #	log_message('h')
+#   flush.console()	
+  
+#   ##switches spectra on left-mouse double-click
+#   onDouble <- function(W){
+#     if (W != '.fs.1.3.body')
+#       return(invisible())
+#     usrSel <- as.numeric(tcl(tableList, 'curselection')) + 1
+#     usrFile <- names(fileFolder)[usrSel]
+#     if (!is.null(usrFile) && !is.na(usrFile) && currentSpectrum != usrFile){
+#       currentSpectrum <- usrFile
+#       myAssign('currentSpectrum', currentSpectrum)
+#       refresh(multi.plot=FALSE)
+#       tkwm.deiconify(dlg)
+#       tkfocus(tableList)
+#     }
+#   }
+#   tkbind(dlg, '<Double-Button-1>', onDouble)
+  
+#   ##updates fileFolder
+#   updateFileFolder <- function(newOrder){
+#     newFolder <- fileFolder[newOrder]
+#     myAssign('fileFolder', newFolder)
+#   }
+  
+#   ##sort files when user clicks on column headers 
+#   onSort <- function(tbl, col){
+#     prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     tcl('tablelist::sortByColumn', tbl, col)
+#     newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     updateFileFolder(match(newOrder, prevOrder))
+#   }
+  
+#   ##allow spectrum names to be edited
+#   onEdit <- function(widget, rowNum, colNum, newVal){
+#     rowNum <- as.numeric(rowNum) + 1
+#     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
+#     if (newVal %in% userTitles){
+#       myMsg(paste('A spectrum with that name is currently open.', 
+#                   'Please enter a unique name.', sep='\n'), icon='error', 
+#             parent=dlg)
+#       tcl(tableList, 'cancelediting')
+#     }else{
+#       fileFolder[[rowNum]]$file.par$user_title <- newVal
+#       myAssign('fileFolder', fileFolder)
+#       refresh()
+#     }
+    
+#     return(tclVar(as.character(newVal)))
+#   }
+#   tkconfigure(tableList, editendcommand=function(...) onEdit(...))
+  
+#   ##create top button
+#   optionFrame <- ttkframe(dlg)
+#   onTop <- function(){
+#     usrSel <- as.numeric(tcl(tableList, 'curselection'))
+#     if (!length(usrSel) || usrSel == 0)
+#       return(invisible())
+#     prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     for (i in seq_along(usrSel))
+#       tkmove(tableList, usrSel[i], i - 1)
+#     tcl(tableList, 'see', 0)
+#     newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     updateFileFolder(match(newOrder, prevOrder))
+#   }
+#   topButton <- ttkbutton(optionFrame, text='Top', width=8, command=onTop)
+  
+#   ##create up button
+#   onUp <- function(){
+#     usrSel <- as.numeric(tcl(tableList, 'curselection'))
+#     if (!length(usrSel) || usrSel == 0)
+#       return(invisible())
+#     prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     for (selItem in usrSel)
+#       tkmove(tableList, selItem, selItem - 1)
+#     tcl(tableList, 'see', min(usrSel) - 1)
+#     newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     updateFileFolder(match(newOrder, prevOrder))
+#   }
+#   upButton <- ttkbutton(optionFrame, text='^', width=8, command=onUp)
+  
+#   ##create down button
+#   onDown <- function(){
+#     usrSel <- rev(as.numeric(tcl(tableList, 'curselection')))
+#     if (!length(usrSel) || usrSel == length(fileFolder) - 1)
+#       return(invisible())
+#     prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     for (selItem in usrSel)
+#       tkmove(tableList, selItem, selItem + 2)
+#     tcl(tableList, 'see', max(usrSel) + 1)
+#     newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     updateFileFolder(match(newOrder, prevOrder))
+#   }
+#   downButton <- ttkbutton(optionFrame, text='v', width=8, command=onDown)
+  
+#   ##create bottom button
+#   onBottom <- function(){
+#     usrSel <- rev(as.numeric(tcl(tableList, 'curselection')))
+#     if (!length(usrSel) || usrSel == length(fileFolder) - 1)
+#       return(invisible())
+#     prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     for (i in seq_along(usrSel))
+#       tkmove(tableList, usrSel[i], length(fileFolder) - i + 1)
+#     tcl(tableList, 'see', length(fileFolder) - 1)
+#     newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
+#     updateFileFolder(match(newOrder, prevOrder))
+#   }
+#   bottomButton <- ttkbutton(optionFrame, text='Bottom', width=8, 
+#                             command=onBottom)
+  
+#   ##create file open button
+#   onOpen <- function(){
+    
+#     ##open files
+#     prevFiles <- NULL
+#     if (length(fileFolder))
+#       prevFiles <- names(fileFolder)
+#     newFiles <- fo()
+#     if (is.null(newFiles))
+#       return(invisible())
+#     fileMatches <- as.vector(na.omit(match(prevFiles, newFiles)))
+#     if (length(fileMatches))
+#       newFiles <- newFiles[-fileMatches]
+#     if (!length(newFiles))
+#       return(invisible())
+    
+#     ##get file information for newly opened files
+#     getFileInfo(newFiles)
+    
+#     ##select newly opened files
+#     tkselection.clear(tableList, 0, 'end')
+#     tkselection.set(tableList, length(fileFolder) - length(newFiles), 'end')
+#     tkyview.moveto(tableList, 1)
+#   }
+#   openButton <- ttkbutton(optionFrame, text='Open file', width=11, 
+#                           command=onOpen)
+  
+#   ##create file close button
+#   onClose <- function(){
+    
+#     ##get user selection
+#     usrSel <- as.numeric(tcl(tableList, 'curselection'))
+#     if (!length(usrSel))
+#       return(invisible())
+#     usrFiles <- names(fileFolder)[usrSel + 1]
+    
+#     ##close selected files
+#     fc(usrFiles)
+#     tkdelete(tableList, usrSel)
+#     tkselection.set(tableList, usrSel[1])
+#   }
+#   closeButton <- ttkbutton(optionFrame, text='Close file', width=11, 
+#                            command=onClose)
+  
+#   ##create openStored label
+#   #	openStoredLabel <- ttklabel(dlg, text=paste('*Please type "?fs" in', 
+#   #					'the R console for more details on this feature.'))
+  
+#   ##add widgets to tableFrame
+#   tkgrid(tableFrame, column=1, row=1, sticky='nswe', pady=6, padx=6)
+#   tkgrid(tableList, column=1, row=1, sticky='nswe')
+#   tkgrid(xscr, column=1, row=2, sticky='we')
+#   tkgrid(yscr, column=2, row=1, sticky='ns')
+  
+#   ##make tableFrame stretch when window is resized
+#   tkgrid.columnconfigure(dlg, 1, weight=1)
+#   tkgrid.rowconfigure(dlg, 1, weight=1)
+#   tkgrid.columnconfigure(tableFrame, 1, weight=1)
+#   tkgrid.rowconfigure(tableFrame, 1, weight=1)
+  
+#   ##add widgets to optionFrame
+#   tkgrid(optionFrame, column=1, row=2, pady=c(6, 0))
+#   tkgrid(topButton, column=1, row=1, padx=c(0, 4), pady=2)
+#   tkgrid(upButton, column=2, row=1, pady=2)
+#   tkgrid(downButton, column=3, row=1, padx=c(0, 4), pady=2)
+#   tkgrid(bottomButton, column=4, row=1, pady=2)
+#   tkgrid(openButton, column=5, row=1, padx=c(30, 4), pady=2)
+#   #	tkgrid(openStoredButton, column=6, row=1, padx=4, pady=2)
+#   tkgrid(closeButton, column=7, row=1, pady=2)
+#   #	tkgrid(openStoredLabel, column=1, row=3, padx=c(10, 0), pady=c(10, 0), sticky='w')
+#   tkgrid(ttksizegrip(dlg), column=2, row=3, sticky='se')
+  
+#   ##allows users to press the 'Enter' key to make selections
+#   onEnter <- function(){
+#     focus <- as.character(tkfocus())
+#     if (focus == '.fs.1.3.body')
+#       onDouble('.fs.1.3.body')
+#     else
+#       tryCatch(tkinvoke(focus), error=function(er){})
+#   }
+#   tkbind(dlg, '<Return>', onEnter)
+  
+#   ##updates widgets whenever the mouse enters the GUI
+#   onMouse <- function()
+#   {
+#     if (!length(fileFolder))
+#     {
+#       tkdelete(tableList, '0', 'end')
+#       return(invisible())
+#     }
+#     filePaths <- as.character(tcl(tableList, 'getcolumns', 1))
+#     folderPaths <- as.vector(sapply(fileFolder, function(x) x$file.par$file.name))
+#     userTitles <- as.character(tcl(tableList, 'getcolumns', 0))
+#     folderTitles <- getTitles(names(fileFolder), FALSE)		
+#     if (identical(folderPaths, filePaths) && identical(folderTitles, userTitles))
+#       return(invisible())
+    
+#     tkdelete(tableList, '0', 'end')
+#     getFileInfo(names(fileFolder))
+#   }
+#   tkbind(dlg, '<Enter>', onMouse)
+#   tkbind(dlg, '<FocusIn>', onMouse)
+  
+#   invisible()
+# }
+#########################################################################################
+# New fs function:
+fs <- function() {
+  # Check if Tcl/Tk is available
+  if (!inherits(tclRequire("Tcl"), "tclObj")) {
+    stop("Tcl/Tk is not available.")
+  }
+  
+  # Ensure the tablelist package is available
+  tclRequire("tablelist")
+  
+  # Call fo() if there are no open files
+  if (!exists("fileFolder") || is.null(fileFolder) || !exists("currentSpectrum") || is.null(currentSpectrum)) {
     usrSel <- fo()
-    if (is.null(usrSel))
-      return(invisible())
+    if (is.null(usrSel)) return(invisible())
   }
-  ##creates main window
-  tclCheck()
   
-  dlg <- myToplevel('fs')
-  if (is.null(dlg))
-  {
-    return(invisible())
-  }
-  tkwm.title(dlg, 'Files')
+  # Create the main window
+  dlg <- tktoplevel()        # Use tktoplevel() directly
+  tkwm.title(dlg, 'Files')   # Set window title
   tkfocus(dlg)
   tkwm.deiconify(dlg)
   
-  #	log_message('d')
   flush.console()
   
-  ##create tablelist widget
-  tableFrame <- ttklabelframe(dlg, 
-                              text='Double-click on a file path to switch spectra:')
+  # Create the tablelist widget
+  tableFrame <- ttklabelframe(dlg, text = 'Double-click on a file path to switch spectra:')
   
-  xscr <- ttkscrollbar(tableFrame, orient='horizontal', command=function(...) 
-    tkxview(tableList, ...))
+  xscr <- ttkscrollbar(tableFrame, orient = 'horizontal', command = function(...) tkxview(tableList, ...))
+  yscr <- ttkscrollbar(tableFrame, orient = 'vertical', command = function(...) tkyview(tableList, ...))
   
-  yscr <- ttkscrollbar(tableFrame, orient='vertical', command=function(...) 
-    tkyview(tableList, ...))
+  tableList <- tkwidget(tableFrame, 'tablelist::tablelist', 
+                        bg = 'white',  
+                        columns = c('0', 'Spectrum', '0', 'File Path', '0', 'Size', 'right', '0', 'Date Modified', 'center'), 
+                        height = 11, width = 110, labelcommand = function(...) onSort(...), selectmode = 'extended', 
+                        spacing = 3, stretch = 'all', activestyle = 'underline', exportselection = FALSE, 
+                        editselectedonly = TRUE, xscrollcommand = function(...) tkset(xscr, ...),
+                        yscrollcommand = function(...) tkset(yscr, ...))
   
-  tableList <- tkwidget(tableFrame, 'tablelist::tablelist', bg='white',  
-                        columns=c('0', 'Spectrum', '0', 'File Path', '0', 'Size', 'right', '0', 'Date Modified', 'center'), 
-                        height=11, width=110, labelcommand=function(...) onSort(...), selectmode='extended', spacing=3, stretch='all', 
-                        activestyle='underline', exportselection=FALSE, editselectedonly=TRUE, xscrollcommand=function(...) tkset(xscr, ...),
-                        yscrollcommand=function(...) tkset(yscr, ...))
-  
-  #	log_message('e')
   flush.console()
   
-  for (i in 0:3)
-    tcl(tableList, 'columnconfigure', i, sortmode='dictionary')
-  tcl(tableList, 'columnconfigure', 0, editable=TRUE)
-  
-  #	log_message('f')
-  flush.console()	
-  
-  ##format the size column
-  formatSize <- function(size)
-  {
-    if (length(grep('KB', size)))
-      return(tclVar(size))
-    size <- as.numeric(size)
-    if (size < 2^20)
-      return(tclVar(paste(signif(size / 2^10, 3), 'KB')))
-    else
-      return(tclVar(paste(signif(size / 2^20, 3), 'MB')))
+  # Make columns sortable
+  for (i in 0:3) {
+    tcl(tableList, 'columnconfigure', i, sortmode = 'dictionary')
   }
-  tcl(tableList, 'columnconfigure', 2, formatcommand=function(...) 
-    formatSize(...))
+  tcl(tableList, 'columnconfigure', 0, editable = TRUE)
   
-  #	log_message('g')
-  flush.console()	
+  # Format the size column
+  formatSize <- function(size) {
+    if (grepl('KB', size)) return(tclVar(size))
+    size <- as.numeric(size)
+    if (size < 2^20) {
+      return(tclVar(paste(signif(size / 2^10, 3), 'KB')))
+    } else {
+      return(tclVar(paste(signif(size / 2^20, 3), 'MB')))
+    }
+  }
+  tcl(tableList, 'columnconfigure', 2, formatcommand = function(...) formatSize(...))
   
-  ##selects all rows Ctrl+A is pressed
-  tkbind(dlg, '<Control-a>', function(...) 
-    tkselection.set(tableList, 0, 'end'))
+  flush.console()
   
-  ##get file information and add to tablelist
-  getFileInfo <- function(fileNames){
-    if (!length(fileNames) || !nzchar(fileNames))
-      return(invisible())
+  # Select all rows when Ctrl+A is pressed
+  tkbind(dlg, '<Control-a>', function(...) tkselection.set(tableList, 0, 'end'))
+  
+  # Debugging: Add test entry to ensure table is populated
+  tkinsert(tableList, 'end', c("Test Spectrum", "Test Path", "123KB", "2024-09-11"))
+  
+  # Function to populate table with file info
+  getFileInfo <- function(fileNames) {
+    if (length(fileNames) == 0 || all(nzchar(fileNames) == FALSE)) return(invisible())
+    
     tmpFolder <- fileFolder[fileNames]
     userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
-    
-    sizes <- as.character(sapply(tmpFolder, function(x) 
-      x$file.par$file.size))
-    
-    mods <- sapply(tmpFolder, function(x) 
-      as.character(x$file.par$date.modified))
+    sizes <- as.character(sapply(tmpFolder, function(x) x$file.par$file.size))
+    mods <- sapply(tmpFolder, function(x) as.character(x$file.par$date.modified))
     paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
-    #		fileData <- cbind(userTitles, dims, paths, sizes, mods, deparse.level=0)
-    fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
-    for (i in 1:nrow(fileData))
+    
+    fileData <- cbind(userTitles, paths, sizes, mods, deparse.level = 0)
+    for (i in 1:nrow(fileData)) {
       tkinsert(tableList, 'end', fileData[i, ])
+    }
   }
+  
+  # Populate table with current file information
   getFileInfo(names(fileFolder))
-  if (!is.null(currentSpectrum)){
+  
+  # Make the current spectrum selected
+  if (!is.null(currentSpectrum)) {
     tkselection.set(tableList, wc() - 1)
     tcl(tableList, 'see', wc() - 1)
   }
   
-  #	log_message('h')
-  flush.console()	
+  flush.console()
   
-  ##switches spectra on left-mouse double-click
-  onDouble <- function(W){
-    if (W != '.fs.1.3.body')
-      return(invisible())
+  # Switch spectra on left mouse double-click
+  onDouble <- function(W) {
+    if (W != '.fs.1.3.body') return(invisible())
+    
     usrSel <- as.numeric(tcl(tableList, 'curselection')) + 1
     usrFile <- names(fileFolder)[usrSel]
-    if (!is.null(usrFile) && !is.na(usrFile) && currentSpectrum != usrFile){
+    
+    if (!is.null(usrFile) && !is.na(usrFile) && currentSpectrum != usrFile) {
       currentSpectrum <- usrFile
       myAssign('currentSpectrum', currentSpectrum)
-      refresh(multi.plot=FALSE)
+      refresh(multi.plot = FALSE)
       tkwm.deiconify(dlg)
       tkfocus(tableList)
     }
   }
   tkbind(dlg, '<Double-Button-1>', onDouble)
   
-  ##updates fileFolder
-  updateFileFolder <- function(newOrder){
-    newFolder <- fileFolder[newOrder]
-    myAssign('fileFolder', newFolder)
-  }
+  # Add widgets to tableFrame
+  tkgrid(tableFrame, column = 1, row = 1, sticky = 'nswe', pady = 6, padx = 6)
+  tkgrid(tableList, column = 1, row = 1, sticky = 'nswe')
+  tkgrid(xscr, column = 1, row = 2, sticky = 'we')
+  tkgrid(yscr, column = 2, row = 1, sticky = 'ns')
   
-  ##sort files when user clicks on column headers 
-  onSort <- function(tbl, col){
-    prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
-    tcl('tablelist::sortByColumn', tbl, col)
-    newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
-    updateFileFolder(match(newOrder, prevOrder))
-  }
+  # Make tableFrame stretch when the window is resized
+  tkgrid.columnconfigure(dlg, 1, weight = 1)
+  tkgrid.rowconfigure(dlg, 1, weight = 1)
+  tkgrid.columnconfigure(tableFrame, 1, weight = 1)
+  tkgrid.rowconfigure(tableFrame, 1, weight = 1)
   
-  ##allow spectrum names to be edited
-  onEdit <- function(widget, rowNum, colNum, newVal){
-    rowNum <- as.numeric(rowNum) + 1
-    userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
-    if (newVal %in% userTitles){
-      myMsg(paste('A spectrum with that name is currently open.', 
-                  'Please enter a unique name.', sep='\n'), icon='error', 
-            parent=dlg)
-      tcl(tableList, 'cancelediting')
-    }else{
-      fileFolder[[rowNum]]$file.par$user_title <- newVal
-      myAssign('fileFolder', fileFolder)
-      refresh()
-    }
-    
-    return(tclVar(as.character(newVal)))
-  }
-  tkconfigure(tableList, editendcommand=function(...) onEdit(...))
+  ## Additional buttons and functionality
   
-  ##create top button
+  # Create the top button
   optionFrame <- ttkframe(dlg)
-  onTop <- function(){
+  
+  onTop <- function() {
     usrSel <- as.numeric(tcl(tableList, 'curselection'))
-    if (!length(usrSel) || usrSel == 0)
-      return(invisible())
+    if (!length(usrSel) || usrSel == 0) return(invisible())
+    
     prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
-    for (i in seq_along(usrSel))
+    for (i in seq_along(usrSel)) {
       tkmove(tableList, usrSel[i], i - 1)
+    }
     tcl(tableList, 'see', 0)
     newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
     updateFileFolder(match(newOrder, prevOrder))
   }
-  topButton <- ttkbutton(optionFrame, text='Top', width=8, command=onTop)
+  topButton <- ttkbutton(optionFrame, text = 'Top', width = 8, command = onTop)
   
-  ##create up button
-  onUp <- function(){
+  # Create the up button
+  onUp <- function() {
     usrSel <- as.numeric(tcl(tableList, 'curselection'))
-    if (!length(usrSel) || usrSel == 0)
-      return(invisible())
+    if (!length(usrSel) || usrSel == 0) return(invisible())
+    
     prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
-    for (selItem in usrSel)
+    for (selItem in usrSel) {
       tkmove(tableList, selItem, selItem - 1)
+    }
     tcl(tableList, 'see', min(usrSel) - 1)
     newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
     updateFileFolder(match(newOrder, prevOrder))
   }
-  upButton <- ttkbutton(optionFrame, text='^', width=8, command=onUp)
+  upButton <- ttkbutton(optionFrame, text = '^', width = 8, command = onUp)
   
-  ##create down button
-  onDown <- function(){
+  # Create the down button
+  onDown <- function() {
     usrSel <- rev(as.numeric(tcl(tableList, 'curselection')))
-    if (!length(usrSel) || usrSel == length(fileFolder) - 1)
-      return(invisible())
+    if (!length(usrSel) || usrSel == length(fileFolder) - 1) return(invisible())
+    
     prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
-    for (selItem in usrSel)
+    for (selItem in usrSel) {
       tkmove(tableList, selItem, selItem + 2)
+    }
     tcl(tableList, 'see', max(usrSel) + 1)
     newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
     updateFileFolder(match(newOrder, prevOrder))
   }
-  downButton <- ttkbutton(optionFrame, text='v', width=8, command=onDown)
+  downButton <- ttkbutton(optionFrame, text = 'v', width = 8, command = onDown)
   
-  ##create bottom button
-  onBottom <- function(){
+  # Create the bottom button
+  onBottom <- function() {
     usrSel <- rev(as.numeric(tcl(tableList, 'curselection')))
-    if (!length(usrSel) || usrSel == length(fileFolder) - 1)
-      return(invisible())
+    if (!length(usrSel) || usrSel == length(fileFolder) - 1) return(invisible())
+    
     prevOrder <- as.character(tcl(tableList, 'getcolumns', 0))
-    for (i in seq_along(usrSel))
+    for (i in seq_along(usrSel)) {
       tkmove(tableList, usrSel[i], length(fileFolder) - i + 1)
+    }
     tcl(tableList, 'see', length(fileFolder) - 1)
     newOrder <- as.character(tcl(tableList, 'getcolumns', 0))
     updateFileFolder(match(newOrder, prevOrder))
   }
-  bottomButton <- ttkbutton(optionFrame, text='Bottom', width=8, 
-                            command=onBottom)
+  bottomButton <- ttkbutton(optionFrame, text = 'Bottom', width = 8, command = onBottom)
   
-  ##create file open button
-  onOpen <- function(){
-    
-    ##open files
-    prevFiles <- NULL
-    if (length(fileFolder))
-      prevFiles <- names(fileFolder)
-    newFiles <- fo()
-    if (is.null(newFiles))
-      return(invisible())
-    fileMatches <- as.vector(na.omit(match(prevFiles, newFiles)))
-    if (length(fileMatches))
-      newFiles <- newFiles[-fileMatches]
-    if (!length(newFiles))
-      return(invisible())
-    
-    ##get file information for newly opened files
-    getFileInfo(newFiles)
-    
-    ##select newly opened files
-    tkselection.clear(tableList, 0, 'end')
-    tkselection.set(tableList, length(fileFolder) - length(newFiles), 'end')
-    tkyview.moveto(tableList, 1)
-  }
-  openButton <- ttkbutton(optionFrame, text='Open file', width=11, 
-                          command=onOpen)
+  ## Add option buttons to the optionFrame
+  tkgrid(optionFrame, column = 1, row = 2, pady = c(6, 0))
+  tkgrid(topButton, column = 1, row = 1, padx = c(0, 4), pady = 2)
+  tkgrid(upButton, column = 2, row = 1, pady = 2)
+  tkgrid(downButton, column = 3, row = 1, padx = c(0, 4), pady = 2)
+  tkgrid(bottomButton, column = 4, row = 1, pady = 2)
   
-  ##create file close button
-  onClose <- function(){
-    
-    ##get user selection
-    usrSel <- as.numeric(tcl(tableList, 'curselection'))
-    if (!length(usrSel))
-      return(invisible())
-    usrFiles <- names(fileFolder)[usrSel + 1]
-    
-    ##close selected files
-    fc(usrFiles)
-    tkdelete(tableList, usrSel)
-    tkselection.set(tableList, usrSel[1])
-  }
-  closeButton <- ttkbutton(optionFrame, text='Close file', width=11, 
-                           command=onClose)
+  ## Additional configuration for resizing
+  tkgrid(ttksizegrip(dlg), column = 2, row = 3, sticky = 'se')
   
-  ##create openStored label
-  #	openStoredLabel <- ttklabel(dlg, text=paste('*Please type "?fs" in', 
-  #					'the R console for more details on this feature.'))
-  
-  ##add widgets to tableFrame
-  tkgrid(tableFrame, column=1, row=1, sticky='nswe', pady=6, padx=6)
-  tkgrid(tableList, column=1, row=1, sticky='nswe')
-  tkgrid(xscr, column=1, row=2, sticky='we')
-  tkgrid(yscr, column=2, row=1, sticky='ns')
-  
-  ##make tableFrame stretch when window is resized
-  tkgrid.columnconfigure(dlg, 1, weight=1)
-  tkgrid.rowconfigure(dlg, 1, weight=1)
-  tkgrid.columnconfigure(tableFrame, 1, weight=1)
-  tkgrid.rowconfigure(tableFrame, 1, weight=1)
-  
-  ##add widgets to optionFrame
-  tkgrid(optionFrame, column=1, row=2, pady=c(6, 0))
-  tkgrid(topButton, column=1, row=1, padx=c(0, 4), pady=2)
-  tkgrid(upButton, column=2, row=1, pady=2)
-  tkgrid(downButton, column=3, row=1, padx=c(0, 4), pady=2)
-  tkgrid(bottomButton, column=4, row=1, pady=2)
-  tkgrid(openButton, column=5, row=1, padx=c(30, 4), pady=2)
-  #	tkgrid(openStoredButton, column=6, row=1, padx=4, pady=2)
-  tkgrid(closeButton, column=7, row=1, pady=2)
-  #	tkgrid(openStoredLabel, column=1, row=3, padx=c(10, 0), pady=c(10, 0), sticky='w')
-  tkgrid(ttksizegrip(dlg), column=2, row=3, sticky='se')
-  
-  ##allows users to press the 'Enter' key to make selections
-  onEnter <- function(){
+  ## Bind Enter key to select or invoke commands
+  onEnter <- function() {
     focus <- as.character(tkfocus())
-    if (focus == '.fs.1.3.body')
+    if (focus == '.fs.1.3.body') {
       onDouble('.fs.1.3.body')
-    else
-      tryCatch(tkinvoke(focus), error=function(er){})
+    } else {
+      tryCatch(tkinvoke(focus), error = function(er) {})
+    }
   }
   tkbind(dlg, '<Return>', onEnter)
   
-  ##updates widgets whenever the mouse enters the GUI
-  onMouse <- function()
-  {
-    if (!length(fileFolder))
-    {
+  ## Updates the window when mouse enters the GUI
+  onMouse <- function() {
+    if (!length(fileFolder)) {
       tkdelete(tableList, '0', 'end')
       return(invisible())
     }
     filePaths <- as.character(tcl(tableList, 'getcolumns', 1))
     folderPaths <- as.vector(sapply(fileFolder, function(x) x$file.par$file.name))
     userTitles <- as.character(tcl(tableList, 'getcolumns', 0))
-    folderTitles <- getTitles(names(fileFolder), FALSE)		
-    if (identical(folderPaths, filePaths) && identical(folderTitles, userTitles))
-      return(invisible())
+    folderTitles <- getTitles(names(fileFolder), FALSE)
+    if (identical(folderPaths, filePaths) && identical(folderTitles, userTitles)) return(invisible())
     
     tkdelete(tableList, '0', 'end')
     getFileInfo(names(fileFolder))
@@ -13669,6 +13901,7 @@ fs <- function(){
   
   invisible()
 }
+#########################################################################################################
 
 ## Interactive GUI for editing tables
 ## data - data.frame; the table to edit
