@@ -1018,13 +1018,14 @@ gui <- function(top=NULL){
     winMenuAdd("  digestR -->  ")
     
     winMenuAdd("Manipulate csv")
-    winMenuAddItem("Manipulate csv", 'Remove Duplicates				prepare_mascot()/rd()', "rd()")
-    winMenuAddItem("Manipulate csv", 'Unique peptides				unique_peptides()/up()',"up()")
+    
+    #winMenuAddItem("Manipulate csv", 'Unique peptides				unique_peptides()/up()',"up()")
     winMenuAddItem("Manipulate csv", 'Process Mascot Files			process_mascot()/pm()', "pm()")
     winMenuAddItem("Manipulate csv", 'Generate New Proteome			generate_proteome()/gp()', "gp()")
     winMenuAddItem("Manipulate csv", 'Plot cut site distribution		cut_sites_distribution()/csd()', "csd()")
     winMenuAddItem("Manipulate csv", 'Plot peptide distribution			peptides_distribution()/pd()', "pd()")
-    winMenuAddItem("Manipulate csv", 'Import Maven Files			im()', "im()")
+    winMenuAddItem("Manipulate csv", 'Venn Diagram			        Venn Diagram()/vd()', "vd()")
+    #winMenuAddItem("Manipulate csv", 'Import Maven Files			im()', "im()")
     
     winMenuAdd("Manipulate dcf")
     winMenuAddItem("Manipulate dcf", 'Open/Close files		fs()', "fs()")
