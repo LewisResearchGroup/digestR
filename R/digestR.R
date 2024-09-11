@@ -4180,7 +4180,7 @@ refresh <- function(main.plot = TRUE, overlay = TRUE, sub.plot = TRUE,
     ## Add menus if not present
     if (.Platform$OS == 'windows' && .Platform$GUI == 'Rgui' &&
         !length(grep('$Graph2', winMenuNames(), fixed=TRUE))){
-      devGui('main')
+      #devGui('main')
       popupGui('main')
     }
   }
@@ -23466,7 +23466,7 @@ display_protease_cut_sites <- function() {
   mainWindow <- tktoplevel()
   tkwm.title(mainWindow, "Plot Cut Site")
 
-	# Create protease label and dropdown menu
+  # Create protease label and dropdown menu
   proteaseLabel <- tklabel(mainWindow, text = "Select Protease:")
   tkgrid(proteaseLabel, padx = 10, pady = 10)
   
@@ -23581,7 +23581,8 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
   }
   return(invisible(prot))
 }
-				       
+
+display_protease_cut_sites()				       
 ##############################################################################################
 
 #' Generate a graphical user interface for the DigestR BioMart Downloader.
