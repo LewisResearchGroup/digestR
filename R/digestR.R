@@ -925,7 +925,7 @@ closeGui <- function(guiName){
     for (i in ls(envir=.TkRoot$env, all.names=TRUE))
       tryCatch(tkdestroy(i), error=function(er){})
     guiList <- c('per', 'ps', 'co', 'ct', 'os', 'sr', 'pj', 'roi', 'zm', 'pp', 
-                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'rd', 'up', 'csd', 'pd', 'cs','gp') ### TSB -- added pm and gl
+                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'vd', 'up', 'csd', 'pd', 'cs','gp') ### TSB -- added pm and gl
     for (i in guiList)
       tryCatch(tkdestroy(paste('.', i, sep='')), error=function(er){})
   }else{
@@ -945,7 +945,7 @@ hideGui <- function(guiName){
     for (i in ls(envir=.TkRoot$env, all.names=TRUE))
       tryCatch(tkwm.iconify(i), error=function(er){})
     guiList <- c('per', 'ps', 'co', 'ct', 'os', 'sr', 'pj', 'roi', 'zm', 'pp', 
-                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'rd', 'up', 'csd', 'pd', 'cs', 'gp') ### TSB -- added pm and gl
+                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'vd', 'up', 'csd', 'pd', 'cs', 'gp') ### TSB -- added pm and gl
     for (i in guiList)
       tryCatch(tkwm.iconify(paste('.', i, sep='')), error=function(er){})
   }else{
@@ -964,7 +964,7 @@ showGui <- function(guiName){
     for (i in ls(envir=.TkRoot$env, all.names=TRUE))
       tryCatch(tkwm.deiconify(i), error=function(er){})
     guiList <- c('per', 'ps', 'co', 'ct', 'os', 'sr', 'pj', 'roi', 'zm', 'pp', 
-                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'rd', 'up', 'csd', 'pd', 'cs', 'gp') ### TSB -- added pm and gl
+                 'fs', 'ep', 'ca', 'cf', 'aa', 'pm', 'gl', 'vd', 'up', 'csd', 'pd', 'cs', 'gp') ### TSB -- added pm and gl
     for (i in guiList)
       tryCatch(tkwm.deiconify(paste('.', i, sep='')), error=function(er){})
   }else{
@@ -15360,7 +15360,7 @@ checkImage <- function(){
                'rsAll', 'rsf', 'rSum', 'rv', 'rvm', 'rvs', 'se', 'setGraphics', 
                'setWindow', 'shiftToROI', 'showGui', 'spin', 'sr', 'ss', 'tableEdit', 
                'tclCheck', 'ucsf1D', 'ucsf2D', 'ud', 'vp', 'vpd', 'vpu', 'vs', 'wc', 
-               'wl', 'writeUcsf', 'ws', 'zc', 'zf', 'zi', 'zm', 'zo', 'zp', 'zz', 'rd', 'up', 'csp', 'pd', 'cs')
+               'wl', 'writeUcsf', 'ws', 'zc', 'zf', 'zi', 'zm', 'zo', 'zp', 'zz', 'vd', 'up', 'csp', 'pd', 'cs')
   
   for (i in digestRfun)
     suppressPackageStartupMessages(autoload(i, 'digestR', warn.conflicts=FALSE))
