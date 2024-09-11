@@ -3750,7 +3750,7 @@ setWindow <- function( p.window = 'main', ...){
       par(mar=globalSettings$mar)
     }
     par(...)
-    gui(p.window)
+    #gui(p.window)
     popupGui(p.window)
   }else{
     dev.set(devNum)
@@ -4186,7 +4186,7 @@ refresh <- function(main.plot = TRUE, overlay = TRUE, sub.plot = TRUE,
     ## Add menus if not present
     if (.Platform$OS == 'windows' && .Platform$GUI == 'Rgui' &&
         !length(grep('$Graph2', winMenuNames(), fixed=TRUE))){
-      gui('main')
+      #gui('main')
       popupGui('main')
     }
   }
