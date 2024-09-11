@@ -6176,7 +6176,7 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #   return(NULL)
 # }
 #########################################################################################
-file_open <- function(fileName, verbose = FALSE, ...) {
+file_open <- function(fileName, ...) {
   
   ## Create any/all of the digestR objects that are missing
   createObj()
@@ -6184,7 +6184,7 @@ file_open <- function(fileName, verbose = FALSE, ...) {
   ## Have user select all files they wish to open
   if (missing(fileName)) {
     usrList <- sort(myOpen())
-    if (!length(usrList) || !nzchar(usrList))
+    if(!length(usrList) || !nzchar(usrList))
       return(invisible())
   } else {
     usrList <- fileName
@@ -6197,23 +6197,26 @@ file_open <- function(fileName, verbose = FALSE, ...) {
   if (!is.null(fileFolder))
     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
   
+  ## Temporarily suppress all warnings
+  old_warn <- options(warn = -1)
+  
   for (i in 1:length(usrList)) {
     
-    ## Suppress warnings related to "truncating string with embedded nuls"
-    new.file <- suppressWarnings(suppressMessages(tryCatch(
-      dianaHead(file.name = usrList[i], print.info = verbose), 
+    ## Try to read the file while suppressing warnings
+    new.file <- tryCatch(
+      dianaHead(file.name = usrList[i], print.info = TRUE), 
       error = function(cond) handleFoErrors(cond, usrList[i])
-    )))
+    )
     
     if (!is.list(new.file)) {
       # If not a list, the operation failed, log the error and skip to the next iteration
-      if (verbose) log_message(paste("file opened", basename(usrList[i]), ":", new.file))
+      log_message(paste("file opened", basename(usrList[i]), ":", new.file))
       next
     }
     
     ## Make sure input files are of the correct format
     if (length(new.file$file.par) == 0) {
-      if (verbose) log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
+      log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
       flush.console()
       next
     }
@@ -6284,9 +6287,12 @@ file_open <- function(fileName, verbose = FALSE, ...) {
     }
     
     ## Tell user which files have been loaded
-    if (verbose) log_message(paste("File", basename(usrList[i]), "opened successfully."), quote = FALSE)
+    log_message(paste("File", basename(usrList[i]), "opened successfully."), quote = FALSE)
     flush.console()
   }
+  
+  ## Restore warning options
+  options(old_warn)
   
   ## Assign the new objects to the global environment
   myAssign("fileFolder", fileFolder, save.backup = FALSE)
