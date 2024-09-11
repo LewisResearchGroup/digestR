@@ -114,18 +114,7 @@ By default, Mascot creates a header, this 3 line header is required for the .csv
 
 An example data file can be found here: https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Data_Example.csv
 
-#### 1. Prepare Mascot files: rd()
-Users can natively import in DigestR files generated from mascot (.csv). However, these files need to be pre-processed to be analyzed by DigestR. To prepare the mascot files for digestR, call the function rd() or click on ‘Prepare Mascot file’ under the ‘Manipulate csv’ section. Select the file(s) to be preprocessed. The software will automatically prepare and save the new file.
-
-![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/Remove%20Duplicate%20GUI.png)
-
-
-#### 2. Unique peptides: up()
-DigestR allows users to compare two mascot files and identify peptides that are unique to a specific experimental group. The up() function opens a main GUI window with options to select two CSV files (Query and Experimental) and find unique peptides in the Experimental file that are not present in the Query file. The function then writes the peptides unique to the experimental group to a CSV file named with the Experimental filename appended with "_Unique".
-
-![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/Unique%20Peptides%20GUI.png)
-
-#### 3. Generate Proteome: gp() 
+### Generating Proteome: gp() 
 The generate_proteome function streamlines the process of accessing and downloading protein data from Ensembl BioMart, facilitating the creation of proteomes for comparison against experimental peptides. To generate a new proteome, users begin by selecting their desired Biomart library, using the dropdown menu – options include "genes" or "ensembl," with "genes" being the default value.
 
 Following this, users input a search pattern to explore datasets within the BiomaRt database (e.g., "sapiens" or "taurus"). Upon clicking the "Search Datasets" button, the function connects to the BiomaRt servers and retrieves datasets matching the provided pattern. The outcomes are displayed in the "Dataset Results" listbox, showing the dataset names, descriptions, and versions. Double-clicking on a result selects the dataset for further processing.
@@ -134,15 +123,30 @@ Subsequently, users have the option to download data from specific chromosomes b
 
 ![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/generate%20proteome.png)
 
-Example proteome files can be found here: 
+Warning: Generating proteomes can take several minutes to several hours depending on the size of the data to be retrieved from Biomart. 
+For convernience, some proteomes have already been generated and can be found here: 
 https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Human_proteome.csv
 https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Pfal_3D7_proteome.csv
 
+### Manipulating .csv files
 
-#### 4. Process mascot files: pm() 
+#### 1. Process mascot files: pm() 
 To create "digestion" maps, peptides identified by Mascot or MaxQuant need to be mapped to their proteomic location. First, the user needs to select a proteome to align peptides against (see Generate Proteome). DigestR will automatically detect and utilize all proteomes located within the "data/proteomes" subfolder. Users can also import their own proteomes into this subfolder. After proteome selection, users can align Mascot identified peptides along the selected proteome from a single or multiple files. These alignments generate "coincidence" or "digestion" maps that users can interact with.
 
 ![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/Process%20Mascot%20GUI.png)
+
+#### 2. Cleavage site specificity: csd()
+The csd() function allows users to plot amino acid distributions at C-terminus or N-terminus to track changes in cut site representation/specificity between groups. This function allows users to select a file to generate either a logo plots of the P4-P4' positions or bar plots at the P1 (Nterminus) or P1' (Cterminus) position. To identify cleavage sites of biological significance, it is possible to normalize the distribution with a specific amino acid sequence. Users can directly import a protein sequence in the appropriate box. The function then calculates the representation frequency for amino acid within the protein sequence to normalize the experimental amino acid cut-site distributions. 
+
+![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/csd().png)
+
+#### 3. Peptide length distribution: pd()
+Defect in proteolytic activity might have an impact on digested peptide length. Therefore, DigestR was developed to calculate and plot peptide length distributions in amino acids using the pd() command. Users can select a folder or subfolder and process all CSV files in that directory.  Files can be selected directly in the loaded files box. If no files are selected, all files will be used to generate the density plots. At least two files need to be imported in order to generate Venn diagrams Files will be grouped depending on the second string of the filename. Three types of density plots from grouped CSV files can be chosen by the user: Overlay, Ridges, and Colored Ridges.
+
+![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/Density%20Plot%20GUI.png)
+
+#### 4. Venn Diagrams: vd()
+DigetR also allows for the creation of Venn diagrams in order to analyze peptide overlaps between groups. The vd function allows for users to import files contained in a specific folder and generate Venn diagram. Files can be selected directly in the loaded files box. If no files are selected, all files will be used to generate the Venn diagram . At least two files need to be imported in order to generate Venn diagrams
 
 
 ### Viewing and interacting with Digestion maps. 
@@ -204,21 +208,8 @@ The gl() function allows users to override the threshold at which proteins are l
 
 ![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/gl%20GUI.png)
 
-### Peptides analyses 
 
-Required files: .csv
 
-#### 1. Peptide length distribution: pd()
-Defect in proteolytic activity might have an impact on digested peptide length. Therefore, DigestR was developed to calculate and plot peptide length distributions in amino acids using the pd() command. Users can select a folder or subfolder and process all CSV files in that directory. Files will be grouped depending on the second string of the filename. Three types of density plots from grouped CSV files can be chosen by the user: Overlay, Ridges, and Colored Ridges.
-
-![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/Density%20Plot%20GUI.png)
-
-#### 2. Cleavage site specificity: csd()
-The csd() function allows users to plot amino acid distributions at C-terminus or N-terminus to track changes in cut site representation/specificity between groups. Similar to pd(), this function allows users to select a folder or subfolder and process all CSV files in that directory. File names will be grouped depending on the second string of the filename. The user can select to plot either C-terminus or N-terminus peptide distributions. To identify cleavage sites of biological significance, it is possible to normalize the distribution by comparing it to a specific amino acid sequence. The function uses the imported sequence to calculate how often each amino acid appears in the protein sequence to normalize the experimental amino acid cut-site distributions. 
-
-If the normalized value is greater than 1, it means that a specific amino acid is over-represented in the cleavage sites, indicating a cleavage hot spot. If the value is less than 1, it means that this specific amino acid is not a hot spot for cleavage.
-
-![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/csd().png)
 
 
 
