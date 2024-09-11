@@ -22549,7 +22549,14 @@ venn_diagram_generator <- function() {
   generateButton <- ttkbutton(win, text = "Generate Venn Diagram", command = generate_venn)
   tkgrid(generateButton, pady = 10)
   
-  tkmessageBox(title = "Instructions", message = "Upload at least two CSV files with a 'pep_seq' column.\n\nFor plotting purposes, if no files are selected, all files in the directory will be plotted.")
+  # Create and configure the instruction box
+  response <- tclvalue(tkmessageBox(title = "Instructions", message = "Upload at least two CSV files with a 'pep_seq' column.\n\nFor plotting purposes, if no files are selected, all files in the directory will be plotted."))
+    # Check the response
+  if (response == "ok") {
+    print("Roger, Roger")
+  } else {
+    print("Other action taken.")
+  }
 }
 
 # Run the updated Venn Diagram Generator
@@ -23129,8 +23136,15 @@ peptides_distribution <- function() {
   # Create and configure the create plot button
   createPlotButton <- ttkbutton(win, text = "Generate Plot", command = createDensityPlot)
   tkgrid(createPlotButton, pady = 10)
-  
-  tkmessageBox(title = "Instructions", message = "Upload CSV files with a 'pep_seq' column.\n\nFor plotting purposes, if no files are selected, all files in the directory will be plotted.")
+
+  # Create and configure the instruction box
+  response <- tclvalue(tkmessageBox(title = "Instructions", message = "Upload CSV files with a 'pep_seq' column.\n\nFor plotting purposes, if no files are selected, all files in the directory will be plotted."))
+    # Check the response
+  if (response == "ok") {
+    print("Roger, Roger")
+  } else {
+    print("Other action taken.")
+  }
 }
 
 # Call the function
@@ -24471,6 +24485,28 @@ generate_proteome <- function() {
   # Configure grid layout to make it expandable
   tkgrid.columnconfigure(main_window, 0, weight = 1)
   tkgrid.rowconfigure(main_window, 3, weight = 1)
+
+ response <- tclvalue(tkmessageBox(
+    title = "Instructions and Warnings", 
+    message = paste(
+      "Instructions:",
+      "1- Enter a search pattern and double-click on a data set to select it.",
+      "2- Enter specific chromosomes in the Chromosome box, or leave the field blank to download the full proteome.",
+      "",
+      "Warnings:",
+      "This step is long and may take several minutes to several hours.",
+      "Proteomes including H. sapiens, M. musculus, B. taurus, and D. melanogaster, E.coli, P. aeruginosa, P.falciparum can be found on our GitHub page.",
+      
+      sep = "\n"
+    )
+  ))
+  
+  # Check the response
+  if (response == "ok") {
+    print("Roger, Roger")
+  } else {
+    print("Other action taken.")
+  }
 }
 
 
