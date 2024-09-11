@@ -22405,6 +22405,7 @@ library(dplyr)
 #' }
 #'
 #' @export
+# Function to launch the Tcl/Tk Venn Diagram Generator with file selection logic
 venn_diagram_generator <- function() {
   
   # Load required libraries
@@ -22469,8 +22470,8 @@ venn_diagram_generator <- function() {
     }
     
     peptide_sets <- lapply(selected_files, function(file) {
-      # Skip the first three rows when reading the CSV
-      data <- read_csv(file, skip = 3)
+      # Suppress messages and hide column types
+      data <- suppressMessages(read_csv(file, skip = 3, show_col_types = FALSE))
       if (!"pep_seq" %in% colnames(data)) {
         tkmessageBox(title = "Error", message = paste("Column 'pep_seq' not found in", file), icon = "error")
         return(NULL)
@@ -22501,10 +22502,13 @@ venn_diagram_generator <- function() {
       )
       grid.draw(venn.plot)
       dev.off()  # Close the PDF device
-      tkmessageBox(title = "Success", message = paste("Venn diagram saved as", saveFile))
+      tkmessageBox(title = "Success", message = "Venn diagram saved as PDF")
+      
+      # Print custom message to the console
+      print("Venn Diagram generated and saved")
     }
   }
-  
+     
   # Main Tk window
   win <- tktoplevel()
   tkwm.title(win, "Venn Diagram Generator for Peptides")
@@ -22549,15 +22553,22 @@ venn_diagram_generator <- function() {
   generateButton <- ttkbutton(win, text = "Generate Venn Diagram", command = generate_venn)
   tkgrid(generateButton, pady = 10)
   
-  # Create and configure the instruction box
-  response <- tclvalue(tkmessageBox(title = "Instructions", message = "Upload at least two CSV files with a 'pep_seq' column.\n\nFor plotting purposes, if no files are selected, all files in the directory will be plotted."))
-    # Check the response
+  #tkmessageBox(title = "Instructions", message = "Upload at least two CSV files with a 'pep_seq' column.\n\nFor plotting purposes, if no files are selected, all files in the directory will be plotted.")
+  response <- tclvalue(tkmessageBox(
+    title = "Instructions", 
+    message = paste(message = "Upload at least two CSV files with a 'pep_seq' column.\n\nFor plotting purposes, if no files are selected, all files in the directory will be plotted.")
+  ))
+  
+  # Check the response
   if (response == "ok") {
     print("Roger, Roger")
   } else {
     print("Other action taken.")
   }
 }
+
+# Run the updated Venn Diagram Generator
+venn_diagram_generator()
 
 # Run the updated Venn Diagram Generator
 # venn_diagram_generator()
