@@ -23441,57 +23441,137 @@ cut_sites_distribution <- function() {
 #   Example usage:
 #   plotCutSite("Trypsin", "black")
 #   """
+# display_protease_cut_sites <- function() {
+#   tclCheck()
+#   dlg <- myToplevel('cs')
+#   if (is.null(dlg))
+#     return(invisible())
+  
+#   # Open a file dialog to choose the protease data CSV file
+#   file_path <- tclvalue(tcltk::tkgetOpenFile())
+  
+#   if (identical(file_path, "")) {
+#     tkmessageBox(
+#       title = "Error",
+#       message = "No file selected. Please choose a CSV file.",
+#       icon = "error"
+#     )
+#     return(invisible())
+#   }
+  
+#   # Read protease data from the chosen CSV file
+#   protCutSites <- read.csv(file_path)
+  
+#   # Create the main window
+#   mainWindow <- tktoplevel()
+#   tkwm.title(mainWindow, "Plot Cut Site")
+
+#   # Create protease label and dropdown menu
+#   proteaseLabel <- tklabel(mainWindow, text = "Select Protease:")
+#   tkgrid(proteaseLabel, padx = 10, pady = 10)
+  
+#   proteaseDropdown <- tklistbox(mainWindow)
+#   tkgrid(proteaseDropdown, padx = 10, pady = 10)
+  
+#   # Populate protease dropdown menu with protease names
+#   proteaseList <- unique(protCutSites$protease)
+#   for (prot in proteaseList) {
+#     tkinsert(proteaseDropdown, "end", prot)
+#   }
+  
+#   # Create color label and entry field
+#   colorLabel <- tklabel(mainWindow, text = "Enter Color for Lines:")
+#   tkgrid(colorLabel, padx = 10, pady = 10)
+  
+#   colorEntry <- tkentry(mainWindow)
+#   tkgrid(colorEntry, padx = 10, pady = 10)
+  
+#   # Create plot button
+#   plotButton <- tkbutton(mainWindow, text = "Plot", command = function() {
+#     # Get the selected protease and color
+#     selectedProteaseIndex <- tclvalue(tkcurselection(proteaseDropdown))
+#     selectedProtease <- tkget(proteaseDropdown, selectedProteaseIndex)
+#     selectedColor <- tkget(colorEntry)
+    
+#     # Call the plotCutSite function with the selected protease and color
+#     plotCutSite(selectedProtease, selectedColor, protCutSites, colorEntry)
+    
+#     # Close the GUI window
+#     tkdestroy(mainWindow)
+#   })
+#   tkgrid(plotButton, padx = 10, pady = 10)
+# }
+
 display_protease_cut_sites <- function() {
   tclCheck()
-  dlg <- myToplevel('cs')
-  if (is.null(dlg))
-    return(invisible())
-  
-  # Open a file dialog to choose the protease data CSV file
-  file_path <- tclvalue(tcltk::tkgetOpenFile())
-  
-  if (identical(file_path, "")) {
-    tkmessageBox(
-      title = "Error",
-      message = "No file selected. Please choose a CSV file.",
-      icon = "error"
-    )
-    return(invisible())
-  }
-  
-  # Read protease data from the chosen CSV file
-  protCutSites <- read.csv(file_path)
-  
+
   # Create the main window
   mainWindow <- tktoplevel()
-  tkwm.title(mainWindow, "Plot Cut Site")
+  tkwm.title(mainWindow, "Protease Cut Site Plotter")
+  
+  # File selection label and entry
+  fileLabel <- tklabel(mainWindow, text = "Select CSV File:")
+  tkgrid(fileLabel, padx = 10, pady = 10)
+  
+  fileEntry <- tkentry(mainWindow, width = 40)
+  tkgrid(fileEntry, padx = 10, pady = 10)
+  
+  # File selection button
+  browseButton <- tkbutton(mainWindow, text = "Browse", command = function() {
+    file_path <- tclvalue(tkgetOpenFile())
+    tkdelete(fileEntry, 0, "end")
+    tkinsert(fileEntry, 0, file_path)
+  })
+  tkgrid(browseButton, padx = 10, pady = 10)
 
-  # Create protease label and dropdown menu
+  # Listbox for protease selection
   proteaseLabel <- tklabel(mainWindow, text = "Select Protease:")
   tkgrid(proteaseLabel, padx = 10, pady = 10)
-  
-  proteaseDropdown <- tklistbox(mainWindow)
+
+  proteaseDropdown <- tklistbox(mainWindow, selectmode = "single", height = 5, width = 40)
   tkgrid(proteaseDropdown, padx = 10, pady = 10)
-  
-  # Populate protease dropdown menu with protease names
-  proteaseList <- unique(protCutSites$protease)
-  for (prot in proteaseList) {
-    tkinsert(proteaseDropdown, "end", prot)
-  }
-  
+
   # Create color label and entry field
   colorLabel <- tklabel(mainWindow, text = "Enter Color for Lines:")
   tkgrid(colorLabel, padx = 10, pady = 10)
-  
-  colorEntry <- tkentry(mainWindow)
+
+  colorEntry <- tkentry(mainWindow, width = 20)
   tkgrid(colorEntry, padx = 10, pady = 10)
-  
-  # Create plot button
+
+  # Plot button
   plotButton <- tkbutton(mainWindow, text = "Plot", command = function() {
+    # Get file path from the file entry
+    file_path <- tclvalue(tkget(fileEntry))
+    
+    if (identical(file_path, "")) {
+      tkmessageBox(
+        title = "Error",
+        message = "No file selected. Please choose a CSV file.",
+        icon = "error"
+      )
+      return(invisible())
+    }
+    
+    # Read CSV file and populate listbox
+    protCutSites <- read.csv(file_path)
+    tkdelete(proteaseDropdown, 0, "end")
+    proteaseList <- unique(protCutSites$protease)
+    for (prot in proteaseList) {
+      tkinsert(proteaseDropdown, "end", prot)
+    }
+    
     # Get the selected protease and color
     selectedProteaseIndex <- tclvalue(tkcurselection(proteaseDropdown))
+    if (selectedProteaseIndex == "") {
+      tkmessageBox(
+        title = "Error",
+        message = "No protease selected.",
+        icon = "error"
+      )
+      return(invisible())
+    }
     selectedProtease <- tkget(proteaseDropdown, selectedProteaseIndex)
-    selectedColor <- tkget(colorEntry)
+    selectedColor <- tclvalue(tkget(colorEntry))
     
     # Call the plotCutSite function with the selected protease and color
     plotCutSite(selectedProtease, selectedColor, protCutSites, colorEntry)
@@ -23500,6 +23580,10 @@ display_protease_cut_sites <- function() {
     tkdestroy(mainWindow)
   })
   tkgrid(plotButton, padx = 10, pady = 10)
+
+  # Start the main window loop
+  tkfocus(mainWindow)
+  tkwait.window(mainWindow)
 }
 
 # Function to plot cut sites
@@ -23582,7 +23666,7 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
   return(invisible(prot))
 }
 
-display_protease_cut_sites()				       
+#display_protease_cut_sites()				       
 ##############################################################################################
 
 #' Generate a graphical user interface for the DigestR BioMart Downloader.
