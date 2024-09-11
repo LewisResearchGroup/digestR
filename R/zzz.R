@@ -156,35 +156,59 @@ pd <- peptides_distribution
 #' @export
 up <- unique_peptides
 
-#' rd()
-#' Remove Duplicate Entries from a CSV File
+#' vd()
 #'
-#' This function prompts the user to select an input CSV file, reads its content,
-#' removes duplicate entries based on a specified column, and writes the unique
-#' data to a destination CSV file.
+#' This function provides a graphical user interface (GUI) for generating Venn diagrams 
+#' from peptide sequences stored in CSV files. Users can select multiple CSV files from 
+#' a directory, and the Venn diagram will display common and unique peptides across the 
+#' selected files. The resulting Venn diagram can be saved as a PDF file.
 #'
-#' @return A character string indicating the path of the destination CSV file
+#' @return A graphical user interface that allows users to upload CSV files, select files 
+#' for analysis, and generate a Venn diagram of peptide sequences.
 #'
-#' @details The function performs the following steps:
+#' @details
+#' The function offers the following main features:
 #' \itemize{
-#'   \item The user is prompted to select a directory, which becomes the working directory.
-#'   \item The user is prompted to select the input CSV file.
-#'   \item The CSV file is read, skipping the first 3 rows, and the header is assumed to be present.
-#'   \item The function checks if the 'pep_seq' column exists in the data. If not, an error is raised.
-#'   \item Duplicate values in the 'pep_seq' column are removed, and the resulting data frame is stored.
-#'   \item The user is prompted to select a destination CSV file.
-#'   \item The unique data is written to the destination CSV file, excluding row names.
+#'   \item \strong{File Upload:} Users can select a directory containing CSV files and 
+#'   choose specific files for Venn diagram generation.
+#'   \item \strong{Venn Diagram Creation:} The function generates a Venn diagram based 
+#'   on the unique peptide sequences found in each selected CSV file. The diagram displays 
+#'   intersections between groups of peptides.
+#'   \item \strong{Saving Output:} The resulting Venn diagram is saved as a PDF file. 
+#'   The user can choose the file name and location for the saved output.
+#' }
+#'
+#' @section CSV File Format:
+#' Each CSV file must contain a column named \code{pep_seq}, which includes the peptide 
+#' sequences. Only the unique peptide sequences in each file will be used for generating 
+#' the Venn diagram.
+#'
+#' @section Instructions:
+#' \itemize{
+#'   \item Upload CSV files from a directory using the "Browse" button.
+#'   \item If no files are selected, the function will use all the CSV files in the chosen directory.
+#'   \item After selecting the files, click the "Generate Venn Diagram" button to create the plot.
+#'   \item The Venn diagram will be saved as a PDF at the location specified by the user.
+#' }
+#'
+#' @section Dependencies:
+#' The function depends on the following R packages:
+#' \itemize{
+#'   \item \code{tcltk}: For creating the graphical user interface.
+#'   \item \code{VennDiagram}: For generating Venn diagrams.
+#'   \item \code{readr}: For reading CSV files.
+#'   \item \code{grid}: For displaying the generated Venn diagram.
+#'   \item \code{tkrplot}: For interactive plotting.
 #' }
 #'
 #' @examples
 #' \dontrun{
-#'   # Call the function
-#'   RemoveDuplicate()
+#' venn_diagram_generator()
 #' }
 #'
-#' @importFrom utils read.csv write.csv
-#' @export	 
-rd <- prepare_mascot
+#' @export
+
+vd <- venn_diagram_generator
 
 #' pm()
 #'
