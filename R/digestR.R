@@ -24237,46 +24237,203 @@ cut_sites_distribution <- function() {
 #   })
 #   tkgrid(plotButton, padx = 10, pady = 10)
 # }
+# Function to plot cut sites
+# plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
+#   # Retrieve current gene information
+#   currGene <- globalSettings$geneDisp
+  
+#   # Find the index of the current gene in the species data
+#   idx <- which(species$genes$name == currGene)
+  
+#   if (length(idx) > 0) {
+#     # Retrieve the corresponding sequence based on the gene index
+#     start <- species$genes$seqStartIdx[idx]
+#     end <- start + species$genes$seqLength[idx]
+#     currSeq <- substr(species$seq, start, end)
+#   } else {
+#     stop("No current gene information found. Function doesn't work with proteome-wide view. Call a specific protein.")
+#   }
+  
+#   # Set gene sequence and colour variables
+#   gene <- globalSettings$geneDisp
+#   seq <- currSeq
+#   colour <- tclvalue(tkget(colorEntry))
+  
+#   # Find the index of the protease in the protCutSites data
+#   protIndex <- which(as.character(protCutSites$protease) == as.character(prot))
+#   col_num <- ncol(protCutSites)
+  
+#   # Get the cut sites for the protease
+#   protase_cutsite <- protCutSites[protIndex, 3:col_num]
+#   loc <- 0
+  
+#   # Iterate through the cut sites
+#   for (j in protase_cutsite) {
+#     if (j == "") {
+#       break
+#     }
+#     log_message('################################################################')
+#     log_message(j)
+#     log_message('################################################################')
+    
+#     prev_index <- 0
+#     protcuts <- strsplit(seq, j)
+    
+#     # Iterate through the sequence segments
+#     for (k in protcuts[[1]]) {
+#       k <- paste(k, j, sep = '')
+#       log_message(k)
+      
+#       # Find the location of the segment in the sequence
+#       loc <- gregexpr(k, seq, fixed = TRUE)
+#       start <- loc[[1]][1]
+#       len <- nchar(k)
+      
+#       # Check if the position is greater than 0 and the segment length is greater than 0
+#       if (start > 0 && len > 0) {
+#         # Calculate the plot site
+#         plot_site <- start + len - 1
+        
+#         if (k == "K") {
+#           # Check if it is the last character in the sequence
+#           if (plot_site == nchar(seq)) {
+#             plot_site <- prev_index
+#           } else {
+#             plot_site <- prev_index + 1
+#           }
+#           log_message('IS IT HERE?')
+#         }
+        
+#         log_message(plot_site)
+        
+#         # Assuming you have initialized a plot or set up the plotting device
+#         abline(v = plot_site, col = colour, lty = 2)
+        
+        
+#         prev_index <- plot_site
+#       }
+#     }
+#   }
+#   return(invisible(prot))
+# }
 
+#display_protease_cut_sites()	
+##############################################################################################
+#' Protease Cut Site Plotter
+#'
+#' This function provides a graphical user interface (GUI) for visualizing protease cut sites 
+#' within a gene sequence. Users can select a CSV file containing protease cut site data, 
+#' choose specific proteases, input a color for plotting, and generate cleavage site plots for 
+#' selected proteases.
+#'
+#' @return A GUI that allows users to upload a CSV file, select proteases, specify a color, and plot 
+#' protease cleavage sites within the gene sequence.
+#'
+#' @details
+#' The function provides the following features:
+#' \itemize{
+#'   \item \strong{File Upload:} Users can select a CSV file that contains protease cut site data.
+#'   \item \strong{Protease Selection:} A listbox is populated with proteases from the uploaded CSV file. 
+#'   Users can select one or more proteases to plot.
+#'   \item \strong{Color Selection:} Users can input a color for the plotted cleavage sites.
+#'   \item \strong{Cleavage Site Plotting:} The function generates cleavage site plots for the selected 
+#'   proteases, displaying the locations of the cuts on the gene sequence.
+#' }
+#'
+#' @section CSV File Format:
+#' The CSV file must contain a column named \code{protease} and columns that represent the cut site positions. 
+#' Each row should correspond to a protease, and the columns from the third column onward should represent 
+#' cleavage site locations.
+#'
+#' @section Instructions:
+#' \itemize{
+#'   \item Upload a CSV file using the "Browse" button.
+#'   \item Select one or more proteases from the populated listbox.
+#'   \item Input a color for the cleavage site lines in the plot.
+#'   \item Click the "Plot cleavage sites" button to generate the cleavage site plots.
+#' }
+#'
+#' @section Dependencies:
+#' The function depends on the following R packages:
+#' \itemize{
+#'   \item \code{tcltk}: For creating the graphical user interface.
+#'   \item \code{tkrplot}: For handling interactive plotting.
+#'   \item \code{utils}: For reading the CSV file containing protease cut sites.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' display_protease_cut_sites()
+#' }
+#'
+#' @export
 display_protease_cut_sites <- function() {
-  tclCheck()
-
-  # Create the main window
+  # Load required libraries
+  library(tcltk)
+  library(tkrplot)
+  
+  # Create an environment to store global variables like protCutSites
+  data_env <- new.env()
+  
+  # Main Tk window
   mainWindow <- tktoplevel()
   tkwm.title(mainWindow, "Protease Cut Site Plotter")
   
-  # File selection label and entry
-  fileLabel <- tklabel(mainWindow, text = "Select CSV File:")
-  tkgrid(fileLabel, padx = 10, pady = 10)
+  # Create a labeled frame for file selection
+  fileSelectionFrame <- ttklabelframe(mainWindow, text = "File Selection", padding = 10)
+  tkgrid(fileSelectionFrame, padx = 20, pady = 10)
   
-  fileEntry <- tkentry(mainWindow, width = 40)
-  tkgrid(fileEntry, padx = 10, pady = 10)
-  
-  # File selection button
-  browseButton <- tkbutton(mainWindow, text = "Browse", command = function() {
+  # CSV File Selection label, entry, and button
+  fileEntry <- ttkentry(fileSelectionFrame, width = 50)
+  browseButton <- ttkbutton(fileSelectionFrame, text = "Browse", command = function() {
     file_path <- tclvalue(tkgetOpenFile())
-    tkdelete(fileEntry, 0, "end")
-    tkinsert(fileEntry, 0, file_path)
+    
+    # Check if a file was selected
+    if (file_path != "") {
+      tkdelete(fileEntry, 0, "end")
+      tkinsert(fileEntry, 0, file_path)
+      
+      # Read the CSV file and store it in the environment
+      data_env$protCutSites <- read.csv(file_path)
+      
+      # Populate the protease listbox
+      tkdelete(proteaseDropdown, 0, "end")
+      proteaseList <- unique(data_env$protCutSites$protease)
+      for (prot in proteaseList) {
+        tkinsert(proteaseDropdown, "end", prot)
+      }
+    }
   })
-  tkgrid(browseButton, padx = 10, pady = 10)
-
-  # Listbox for protease selection
-  proteaseLabel <- tklabel(mainWindow, text = "Select Protease:")
-  tkgrid(proteaseLabel, padx = 10, pady = 10)
-
-  proteaseDropdown <- tklistbox(mainWindow, selectmode = "single", height = 5, width = 40)
-  tkgrid(proteaseDropdown, padx = 10, pady = 10)
-
+  
+  tkgrid(fileEntry, row = 1, column = 0, padx = 10)
+  tkgrid(browseButton, row = 1, column = 1, padx = 5)
+  
+  # Protease Selection Frame
+  proteaseFrame <- ttklabelframe(mainWindow, text = "Protease Selection", padding = 10)
+  tkgrid(proteaseFrame, padx = 20, pady = 10)
+  
+  # Add a listbox with both scrollbars and set the background to white
+  yscroll <- tkscrollbar(proteaseFrame, orient = "vertical", command = function(...) tkyview(proteaseDropdown, ...))
+  xscroll <- tkscrollbar(proteaseFrame, orient = "horizontal", command = function(...) tkxview(proteaseDropdown, ...))
+  
+  proteaseDropdown <- tklistbox(proteaseFrame, height = 10, width = 40, selectmode = "multiple", 
+                                yscrollcommand = function(...) tkset(yscroll, ...),
+                                xscrollcommand = function(...) tkset(xscroll, ...),
+                                background = "white", font = "Helvetica 12 bold")
+  
+  tkgrid(proteaseDropdown, row = 1, column = 0, pady = 10)
+  tkgrid(yscroll, row = 1, column = 1, sticky = "ns")
+  tkgrid(xscroll, row = 2, column = 0, sticky = "ew")
+  
   # Create color label and entry field
-  colorLabel <- tklabel(mainWindow, text = "Enter Color for Lines:")
-  tkgrid(colorLabel, padx = 10, pady = 10)
-
-  colorEntry <- tkentry(mainWindow, width = 20)
-  tkgrid(colorEntry, padx = 10, pady = 10)
-
-  # Plot button
-  plotButton <- tkbutton(mainWindow, text = "Plot", command = function() {
-    # Get file path from the file entry
+  colorFrame <- ttklabelframe(mainWindow, text = "Color Selection", padding = 10)
+  tkgrid(colorFrame, padx = 20, pady = 10)
+  
+  colorEntry <- ttkentry(colorFrame, width = 20, textvariable = tclVar("black"))
+  tkgrid(colorEntry, row = 1, column = 0, padx = 10)
+  
+  # Plot button styled similarly to the other buttons
+  plotButton <- ttkbutton(mainWindow, text = "Plot cleavage sites", command = function() {
     file_path <- tclvalue(tkget(fileEntry))
     
     if (identical(file_path, "")) {
@@ -24288,17 +24445,10 @@ display_protease_cut_sites <- function() {
       return(invisible())
     }
     
-    # Read CSV file and populate listbox
-    protCutSites <- read.csv(file_path)
-    tkdelete(proteaseDropdown, 0, "end")
-    proteaseList <- unique(protCutSites$protease)
-    for (prot in proteaseList) {
-      tkinsert(proteaseDropdown, "end", prot)
-    }
+    # Get all selected protease indices
+    selectedProteaseIndices <- as.integer(tkcurselection(proteaseDropdown))
     
-    # Get the selected protease and color
-    selectedProteaseIndex <- tclvalue(tkcurselection(proteaseDropdown))
-    if (selectedProteaseIndex == "") {
+    if (length(selectedProteaseIndices) == 0) {
       tkmessageBox(
         title = "Error",
         message = "No protease selected.",
@@ -24306,23 +24456,44 @@ display_protease_cut_sites <- function() {
       )
       return(invisible())
     }
-    selectedProtease <- tkget(proteaseDropdown, selectedProteaseIndex)
+    
+    # Get all selected proteases
+    selectedProteases <- sapply(selectedProteaseIndices, function(i) tclvalue(tkget(proteaseDropdown, i)))
     selectedColor <- tclvalue(tkget(colorEntry))
     
-    # Call the plotCutSite function with the selected protease and color
-    plotCutSite(selectedProtease, selectedColor, protCutSites, colorEntry)
-    
-    # Close the GUI window
-    tkdestroy(mainWindow)
+    # Call the plotCutSite function for each selected protease
+    for (protease in selectedProteases) {
+      plotCutSite(protease, selectedColor, data_env$protCutSites, colorEntry)
+    }
   })
-  tkgrid(plotButton, padx = 10, pady = 10)
-
-  # Start the main window loop
+  tkgrid(plotButton, pady = 20)
+  
+  # Start the main window loop without blocking the R console
   tkfocus(mainWindow)
-  tkwait.window(mainWindow)
+  
+  response <- tclvalue(tkmessageBox(
+    title = "Instructions", 
+    message = paste(
+      "1- Upload a CSV file containing proteases cleavage sites", 
+      "An example file can be downloaded at:",
+      "https://github.com/LewisResearchGroup/digestR",
+      "",
+      "2- Select one or multiple from the listbox.",
+      "",
+      "3- Type a color in the entry box",
+      sep = "\n"
+    )
+  ))
+  
+  # Check the response
+  if (response == "ok") {
+    print("Roger, Roger")
+  } else {
+    print("Other action taken.")
+  }
 }
 
-# Function to plot cut sites
+# Updated plotCutSite function
 plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
   # Retrieve current gene information
   currGene <- globalSettings$geneDisp
@@ -24357,9 +24528,6 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
     if (j == "") {
       break
     }
-    log_message('################################################################')
-    log_message(j)
-    log_message('################################################################')
     
     prev_index <- 0
     protcuts <- strsplit(seq, j)
@@ -24367,7 +24535,6 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
     # Iterate through the sequence segments
     for (k in protcuts[[1]]) {
       k <- paste(k, j, sep = '')
-      log_message(k)
       
       # Find the location of the segment in the sequence
       loc <- gregexpr(k, seq, fixed = TRUE)
@@ -24386,23 +24553,26 @@ plotCutSite <- function(prot, colour, protCutSites, colorEntry) {
           } else {
             plot_site <- prev_index + 1
           }
-          log_message('IS IT HERE?')
         }
-        
-        log_message(plot_site)
         
         # Assuming you have initialized a plot or set up the plotting device
         abline(v = plot_site, col = colour, lty = 2)
-        
         
         prev_index <- plot_site
       }
     }
   }
+  
+  # Print message to the console
+  #cat("Cleavage sites plotted for", prot, "\n")
+  cat(prot,"cleavage sites plotted", "\n")
+  
   return(invisible(prot))
 }
 
-#display_protease_cut_sites()				       
+# Call the display_protease_cut_sites function to display the GUI
+#display_protease_cut_sites()
+			       
 ##############################################################################################
 
 #' Generate a graphical user interface for the DigestR BioMart Downloader.
