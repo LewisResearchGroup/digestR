@@ -1020,18 +1020,20 @@ gui <- function(top=NULL){
     winMenuAdd("Manipulate csv")
     
     #winMenuAddItem("Manipulate csv", 'Unique peptides				unique_peptides()/up()',"up()")
-    winMenuAddItem("Manipulate csv", 'Process Mascot Files			process_mascot()/pm()', "pm()")
-    winMenuAddItem("Manipulate csv", 'Generate New Proteome			generate_proteome()/gp()', "gp()")
-    winMenuAddItem("Manipulate csv", 'Plot cut site distribution		cut_sites_distribution()/csd()', "csd()")
-    winMenuAddItem("Manipulate csv", 'Plot peptide distribution			peptides_distribution()/pd()', "pd()")
-    winMenuAddItem("Manipulate csv", 'Venn Diagram			        Venn Diagram()/vd()', "vd()")
+    winMenuAddItem("Manipulate csv", 'Process Mascot Files			pm()', "pm()")
+    winMenuAddItem("Manipulate csv", 'Generate New Proteome			gp()', "gp()")
+    winMenuAddItem("Manipulate csv", 'Plot cut site distribution		csd()', "csd()")
+    winMenuAddItem("Manipulate csv", 'Plot peptide distribution			pd()', "pd()")
+    winMenuAddItem("Manipulate csv", 'Venn Diagram			        vd()', "vd()")
     #winMenuAddItem("Manipulate csv", 'Import Maven Files			im()', "im()")
     
     winMenuAdd("Manipulate dcf")
     winMenuAddItem("Manipulate dcf", 'Open/Close files		fs()', "fs()")
     winMenuAddItem("Manipulate dcf", 'Save as			sa()', "sa()")
-    winMenuAddItem('Manipulate dcf', 'Manipulate Files		manipulate_files/mf()', "mf()")
-        
+    winMenuAddItem('Manipulate dcf', 'Manipulate Files		mf()', "mf()")
+    winMenuAddItem('Manipulate dcf', 'Plot settings	        ct()', "ct()")
+    winMenuAddItem('Manipulate dcf', 'Overlays			ol()', "ol()")    
+    
     winMenuAdd("Edit")
     winMenuAddItem("Edit", 'Undo                 undo/ud()', "undo/ud()")
     #winMenuAddItem("Edit", 'Redo                  redo/rd()', "redo/rd()") 
@@ -1041,13 +1043,13 @@ gui <- function(top=NULL){
     winMenuAddItem("Edit", 'Preferences       ep()', "ep()")
     
     winMenuAdd("Graphics")
-    winMenuAddItem("Graphics", 'Plot colors			plot_colors/co()', "co()")
-    winMenuAddItem("Graphics", 'Plot settings			plot_settings/ct()', "ct()")
+    winMenuAddItem("Graphics", 'Plot colors			co()', "co()")
+    #winMenuAddItem("Graphics", 'Plot settings			ct()', "ct()")
     
     winMenuAdd("View")
     winMenuAddItem("View", 'Zoom					zm()', "zm()")
-    winMenuAddItem("View", 'Overlays					overlay/ol()', "ol()")
-    winMenuAddItem("View", 'Display protease cut site			display_protease_cut_sites()/cs()', "cs()")
+    #winMenuAddItem("View", 'Overlays					overlay/ol()', "ol()")
+    winMenuAddItem("View", 'Display protease cut site			cs()', "cs()")
     winMenuAddItem("View", 'Gene labeling				gene_labeling/glab()', "glab()")		
     winMenuAddItem("View", 'Redraw spectrum				redraw/dd()', "dd()")
     
@@ -6174,7 +6176,7 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #   return(NULL)
 # }
 #########################################################################################
-file_open <- function(fileName, ...) {
+file_open <- function(fileName, verbose = FALSE, ...) {
   
   ## Create any/all of the digestR objects that are missing
   createObj()
@@ -6182,7 +6184,7 @@ file_open <- function(fileName, ...) {
   ## Have user select all files they wish to open
   if (missing(fileName)) {
     usrList <- sort(myOpen())
-    if(!length(usrList) || !nzchar(usrList))
+    if (!length(usrList) || !nzchar(usrList))
       return(invisible())
   } else {
     usrList <- fileName
@@ -6198,20 +6200,20 @@ file_open <- function(fileName, ...) {
   for (i in 1:length(usrList)) {
     
     ## Suppress warnings related to "truncating string with embedded nuls"
-    new.file <- suppressWarnings(tryCatch(
-      dianaHead(file.name = usrList[i], print.info = TRUE), 
+    new.file <- suppressWarnings(suppressMessages(tryCatch(
+      dianaHead(file.name = usrList[i], print.info = verbose), 
       error = function(cond) handleFoErrors(cond, usrList[i])
-    ))
+    )))
     
     if (!is.list(new.file)) {
       # If not a list, the operation failed, log the error and skip to the next iteration
-      log_message(paste("file opened", basename(usrList[i]), ":", new.file))
+      if (verbose) log_message(paste("file opened", basename(usrList[i]), ":", new.file))
       next
     }
     
     ## Make sure input files are of the correct format
     if (length(new.file$file.par) == 0) {
-      log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
+      if (verbose) log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
       flush.console()
       next
     }
@@ -6282,7 +6284,7 @@ file_open <- function(fileName, ...) {
     }
     
     ## Tell user which files have been loaded
-    log_message(paste("File", basename(usrList[i]), "opened successfully."), quote = FALSE)
+    if (verbose) log_message(paste("File", basename(usrList[i]), "opened successfully."), quote = FALSE)
     flush.console()
   }
   
@@ -6303,7 +6305,6 @@ file_open <- function(fileName, ...) {
   
   return(invisible(usrList))
 }
-
 
 handleFoErrors <- function(cond, fileName = NULL) {
   # Set errors flag to TRUE to indicate that an error occurred
