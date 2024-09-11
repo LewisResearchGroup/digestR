@@ -22733,9 +22733,6 @@ venn_diagram_generator <- function() {
 }
 
 # Run the updated Venn Diagram Generator
-venn_diagram_generator()
-
-# Run the updated Venn Diagram Generator
 # venn_diagram_generator()
 
 ################################################################################
