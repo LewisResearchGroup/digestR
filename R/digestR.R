@@ -6195,25 +6195,13 @@ file_open <- function(fileName, ...) {
   if (!is.null(fileFolder))
     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
   
-  ## Temporarily suppress warnings
-  old_warn <- options(warn = -1)
-  
   for (i in 1:length(usrList)) {
     
-    ## Read Sparky Header and file info from binary
-    if (length(usrList) == 1) {
-      new.file <- tryCatch(
-        dianaHead(file.name = usrList[i], print.info = TRUE), 
-        error = function(cond) handleFoErrors(cond, usrList[i])
-      )
-      if (errors) 
-        err(new.file)
-    } else {
-      new.file <- tryCatch(
-        dianaHead(file.name = usrList[i], print.info = FALSE), 
-        error = function(cond) handleFoErrors(cond, usrList[i])
-      )
-    }
+    ## Suppress warnings related to "truncating string with embedded nuls"
+    new.file <- suppressWarnings(tryCatch(
+      dianaHead(file.name = usrList[i], print.info = TRUE), 
+      error = function(cond) handleFoErrors(cond, usrList[i])
+    ))
     
     if (!is.list(new.file)) {
       # If not a list, the operation failed, log the error and skip to the next iteration
@@ -6298,9 +6286,6 @@ file_open <- function(fileName, ...) {
     flush.console()
   }
   
-  ## Restore warnings setting to its original state
-  options(old_warn)
-  
   ## Assign the new objects to the global environment
   myAssign("fileFolder", fileFolder, save.backup = FALSE)
   myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
@@ -6327,14 +6312,22 @@ handleFoErrors <- function(cond, fileName = NULL) {
   if (grepl("unused argument \\(cond\\)", cond$message)) {
     log_message <- "An unused argument error occurred in the function. Please check the function arguments."
   } else if (grepl("truncating string with embedded nuls", cond$message)) {
-    log_message <- "A string truncation error occurred due to embedded null characters in the file."
+    # Specific handling for "truncating string with embedded nuls" warnings/errors
+    log_message <- paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
+                         if (!is.null(fileName)) basename(fileName) else "", sep = " ")
   } else {
+    # Generic error handling for other types of errors
     log_message <- paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message)
   }
   
-  # Log the error message or suppress it as needed
+  # Log the error message to a log file or suppress the output
   # write(log_message, file = "fo_error_log.txt", append = TRUE)
-  return(NULL) # Suppress error output by returning NULL
+  
+  # Optionally print the message for debugging purposes (comment out to suppress completely)
+  # cat(log_message, "\n")
+  
+  # Return NULL or an appropriate value to allow the function to continue
+  return(NULL)
 }
 
 #######################################################################################
