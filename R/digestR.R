@@ -6174,8 +6174,6 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #   return(NULL)
 # }
 #########################################################################################
-#
-#
 file_open <- function(fileName, ...) {
   
   ## Create any/all of the digestR objects that are missing
@@ -6197,21 +6195,24 @@ file_open <- function(fileName, ...) {
   if (!is.null(fileFolder))
     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
   
+  ## Temporarily suppress warnings
+  old_warn <- options(warn = -1)
+  
   for (i in 1:length(usrList)) {
     
     ## Read Sparky Header and file info from binary
     if (length(usrList) == 1) {
-      new.file <- suppressWarnings(tryCatch(
+      new.file <- tryCatch(
         dianaHead(file.name = usrList[i], print.info = TRUE), 
         error = function(cond) handleFoErrors(cond, usrList[i])
-      ))
+      )
       if (errors) 
         err(new.file)
     } else {
-      new.file <- suppressWarnings(tryCatch(
+      new.file <- tryCatch(
         dianaHead(file.name = usrList[i], print.info = FALSE), 
         error = function(cond) handleFoErrors(cond, usrList[i])
-      ))
+      )
     }
     
     if (!is.list(new.file)) {
@@ -6296,6 +6297,9 @@ file_open <- function(fileName, ...) {
     log_message(paste("File", basename(usrList[i]), "opened successfully."), quote = FALSE)
     flush.console()
   }
+  
+  ## Restore warnings setting to its original state
+  options(old_warn)
   
   ## Assign the new objects to the global environment
   myAssign("fileFolder", fileFolder, save.backup = FALSE)
