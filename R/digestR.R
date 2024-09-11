@@ -19648,11 +19648,11 @@ parseMascot <- function(sMascotFileName = "")
   if (sMascotFileName == "")
   {
     sMascotFileName <- myOpen("csv", list(csv = "Comma Separated Values File, xls = Excel File"), multiple = FALSE)
-    dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 0)
-    #dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 3)
+    #dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 0)
+    dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 3)
   }else
-    dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 0)
-    #dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 3)
+    #dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 0)
+    dfMascot <- read.csv( sMascotFileName, head = TRUE, stringsAsFactors = FALSE, skip = 3)
   
   
   if(length(dfMascot$pep_seq) == 0)
