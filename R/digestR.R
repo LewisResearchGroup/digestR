@@ -22353,93 +22353,206 @@ library(ggridges)
 library(dplyr)
 #
 ################################################################################
-#Remove duplicates GUI.
-#Modify the code to allow for the selection of one or multiple files => check pm function by Travis
-#Add close when clicked on the button. 
-	 
-#' Prepare Mascot files function
-#' Remove Duplicate Entries from a CSV File
+#' Venn Diagram Generator for Peptides
 #'
-#' This function prompts the user to select an input CSV file, reads its content,
-#' removes duplicate entries based on a specified column, and writes the unique
-#' data to a destination CSV file.
+#' This function provides a graphical user interface (GUI) for generating Venn diagrams 
+#' from peptide sequences stored in CSV files. Users can select multiple CSV files from 
+#' a directory, and the Venn diagram will display common and unique peptides across the 
+#' selected files. The resulting Venn diagram can be saved as a PDF file.
 #'
-#' @return A character string indicating the path of the destination CSV file
+#' @return A graphical user interface that allows users to upload CSV files, select files 
+#' for analysis, and generate a Venn diagram of peptide sequences.
 #'
-#' @details The function performs the following steps:
+#' @details
+#' The function offers the following main features:
 #' \itemize{
-#'   \item The user is prompted to select a directory, which becomes the working directory.
-#'   \item The user is prompted to select the input CSV file.
-#'   \item The CSV file is read, skipping the first 3 rows, and the header is assumed to be present.
-#'   \item The function checks if the 'pep_seq' column exists in the data. If not, an error is raised.
-#'   \item Duplicate values in the 'pep_seq' column are removed, and the resulting data frame is stored.
-#'   \item The user is prompted to select a destination CSV file.
-#'   \item The unique data is written to the destination CSV file, excluding row names.
+#'   \item \strong{File Upload:} Users can select a directory containing CSV files and 
+#'   choose specific files for Venn diagram generation.
+#'   \item \strong{Venn Diagram Creation:} The function generates a Venn diagram based 
+#'   on the unique peptide sequences found in each selected CSV file. The diagram displays 
+#'   intersections between groups of peptides.
+#'   \item \strong{Saving Output:} The resulting Venn diagram is saved as a PDF file. 
+#'   The user can choose the file name and location for the saved output.
+#' }
+#'
+#' @section CSV File Format:
+#' Each CSV file must contain a column named \code{pep_seq}, which includes the peptide 
+#' sequences. Only the unique peptide sequences in each file will be used for generating 
+#' the Venn diagram.
+#'
+#' @section Instructions:
+#' \itemize{
+#'   \item Upload CSV files from a directory using the "Browse" button.
+#'   \item If no files are selected, the function will use all the CSV files in the chosen directory.
+#'   \item After selecting the files, click the "Generate Venn Diagram" button to create the plot.
+#'   \item The Venn diagram will be saved as a PDF at the location specified by the user.
+#' }
+#'
+#' @section Dependencies:
+#' The function depends on the following R packages:
+#' \itemize{
+#'   \item \code{tcltk}: For creating the graphical user interface.
+#'   \item \code{VennDiagram}: For generating Venn diagrams.
+#'   \item \code{readr}: For reading CSV files.
+#'   \item \code{grid}: For displaying the generated Venn diagram.
+#'   \item \code{tkrplot}: For interactive plotting.
 #' }
 #'
 #' @examples
 #' \dontrun{
-#'   # Call the function
-#'   RemoveDuplicate()
+#' venn_diagram_generator()
 #' }
 #'
-#' @importFrom utils read.csv write.csv
-#' @export	 
-prepare_mascot <- function() {
-  ## creates main window
-  tclCheck()
-  dlg <- tktoplevel()
-  if (is.null(dlg))
-    return(invisible())
+#' @export
+venn_diagram_generator <- function() {
   
-  tkwm.title(dlg, 'Prepare Mascot file for digestR')
-  tkwm.geometry(dlg, "400x50")  # Set the window size
-  tkfocus(dlg)
-  tkwm.deiconify(dlg)
+  # Load required libraries
+  library(tcltk)
+  library(VennDiagram)
+  library(readr)
+  library(grid)
+  library(tkrplot)
   
-  ## create Remove Duplicates button
-  onRemoveDuplicates <- function() {
-    source_file <- tclvalue(tcl("tk_getOpenFile", "-initialdir", ".", "-filetypes", "{{CSV Files} {.csv}}"))
-    # Call the RemoveDuplicate() function passing the selected file
-    result_file <- removeDuplicates(source_file)
-    # Perform actions with the result_file, such as displaying or opening it
-  }
-  removeDuplicatesButton <- ttkbutton(dlg, text='Remove Duplicates', width=15, command=onRemoveDuplicates)
+  # Internal variables for the function
+  csv_dir <- tclVar("")  # Initialize the directory variable
+  selected_files <- character()  # Initialize a vector to hold selected files
+  file_list <- tclVar("")  # Initialize file list variable for the listbox
   
-  ## add button to the main window
-  tkgrid(removeDuplicatesButton, column=1, row=1, padx=5, pady=5)
+  venn.plot <- NULL  # Store the generated Venn plot
   
-  ## make main window stretch when resized
-  tkgrid.columnconfigure(dlg, 1, weight=1)
-  tkgrid.rowconfigure(dlg, 1, weight=1)
-  
-  tkwait.window(dlg)
-}
-
-removeDuplicates <- function(input_file) {
-  # Read the input CSV file
-  data <- read.csv(input_file, skip = 3, header = TRUE)
-  
-  # Check if 'pep_seq' column exists
-  if (!("pep_seq" %in% colnames(data))) {
-    stop("Error: 'pep_seq' column not found in the input file.")
+  # Function to open the file dialog for selecting the CSV directory
+  selectCSVDir1 <- function() {
+    csv_dir_value <- tclvalue(tcl("tk_chooseDirectory"))  # Get the selected directory
+    tclvalue(csv_dir) <- csv_dir_value  # Update the tclVar with the selected directory
+    tkconfigure(csvDirEntry, text = csv_dir_value)  # Update the text of the CSV directory entry
+    updateFileList(csv_dir_value)  # Update the file list in the listbox
   }
   
-  # Remove duplicate values in the pep_seq column
-  rd_data <- data[!duplicated(data$pep_seq), ]
+  # Function to update the file list in the listbox
+  updateFileList <- function(dir) {
+    csv_files <- list.files(path = dir, pattern = "*.csv", full.names = FALSE)  # List CSV files in the directory
+    if (length(csv_files) == 0) {
+      csv_files <- "No CSV files found"  # Show message if no files found
+    }
+    tclvalue(file_list) <- csv_files  # Update the file list variable
+    tkdelete(listbox, 0, "end")  # Clear the listbox
+    for (file in csv_files) {
+      tkinsert(listbox, "end", file)  # Insert files into the listbox
+    }
+  }
   
-  # Prompt the user to select the destination CSV file
-  dest_file <- tclvalue(tcl("tk_getSaveFile", "-initialdir", ".", "-defaultextension", ".csv", "-filetypes", "{{CSV Files} {.csv}}"))
+  # Function to handle multiple file selection from the listbox
+  selectFile <- function() {
+    selected_indices <- tkcurselection(listbox)  # Get the selected indices from the listbox
+    if (length(selected_indices) == 0) {
+      selected_files <<- character()  # No files selected, clear the selection
+    } else {
+      selected_indices <- as.integer(selected_indices)
+      selected_files <<- sapply(selected_indices, function(index) {
+        tclvalue(tkget(listbox, index))
+      })  # Store the selected files
+      selected_files <<- file.path(tclvalue(csv_dir), selected_files)  # Get full paths for the selected files
+    }
+  }
   
-  # Write the unique data to the destination CSV file
-  write.csv(rd_data, file = dest_file, row.names = FALSE)
+  # Function to generate the Venn diagram and save it as a PDF
+  generate_venn <- function() {
+    if (length(selected_files) == 0) {
+      # Use all files if no files are selected
+      selected_files <<- list.files(path = tclvalue(csv_dir), pattern = "*.csv", full.names = TRUE)
+    }
+    
+    if (length(selected_files) == 0) {
+      tkmessageBox(title = "Error", message = "No files available for plotting!", icon = "error")
+      return()
+    }
+    
+    peptide_sets <- lapply(selected_files, function(file) {
+      # Skip the first three rows when reading the CSV
+      data <- read_csv(file, skip = 3)
+      if (!"pep_seq" %in% colnames(data)) {
+        tkmessageBox(title = "Error", message = paste("Column 'pep_seq' not found in", file), icon = "error")
+        return(NULL)
+      }
+      unique(data[["pep_seq"]])
+    })
+    
+    if (any(sapply(peptide_sets, is.null))) {
+      return()  # Return if any file was invalid
+    }
+    
+    category_names <- basename(selected_files)
+    
+    # Allow the user to choose the file name and location for saving the PDF
+    saveFile <- tclvalue(tkgetSaveFile(defaultextension = ".pdf", filetypes = "{{PDF Files} {.pdf}}", initialfile = "venn_diagram.pdf"))
+    
+    if (saveFile != "") {
+      pdf(file = saveFile, width = 8, height = 8)  # Create the PDF file
+      venn.plot <<- venn.diagram(
+        x = peptide_sets,
+        category.names = category_names,
+        fill = c("red", "blue", "green", "yellow")[1:length(selected_files)],
+        alpha = 0.5,  # Keep transparency
+        cex = 1.5,
+        cat.cex = 1.5,
+        cat.col = c("red", "blue", "green", "yellow")[1:length(selected_files)],
+        filename = NULL
+      )
+      grid.draw(venn.plot)
+      dev.off()  # Close the PDF device
+      tkmessageBox(title = "Success", message = paste("Venn diagram saved as", saveFile))
+    }
+  }
   
-  # Return the path of the destination CSV file
-  return(dest_file)
+  # Main Tk window
+  win <- tktoplevel()
+  tkwm.title(win, "Venn Diagram Generator for Peptides")
+  
+  # Create and configure the CSV directory selection frame with a border and label
+  fileSelectionFrame <- ttklabelframe(win, text = "File Selection", padding = 10)
+  tkgrid(fileSelectionFrame, padx = 20, pady = 10)
+  
+  # CSV Directory Selection section inside the bordered frame
+  csvDirLabel <- ttklabel(fileSelectionFrame, text = "Choose CSV Directory:", font = "Helvetica 12 bold")
+  csvDirEntry <- ttkentry(fileSelectionFrame, textvariable = csv_dir, width = 50)  # Increased the width to 60
+  csvDirButton <- ttkbutton(fileSelectionFrame, text = "Browse", command = selectCSVDir1)
+  
+  tkgrid(csvDirLabel, row = 0, column = 0, sticky = "w", pady = 5)
+  tkgrid(csvDirEntry, row = 1, column = 0, padx = 10)
+  tkgrid(csvDirButton, row = 1, column = 1, padx = 5)
+  
+  # Listbox Frame setup inside a labelframe with a label
+  listboxFrame <- ttklabelframe(win, text = "Loaded files", padding = 10)
+  tkgrid(listboxFrame, padx = 20, pady = 10)
+  
+  # Adding scrollbars to the listbox
+  yscroll <- tkscrollbar(listboxFrame, orient = "vertical", command = function(...) tkyview(listbox, ...))
+  xscroll <- tkscrollbar(listboxFrame, orient = "horizontal", command = function(...) tkxview(listbox, ...))
+  
+  # Configure the listbox for file selection
+  listbox <- tklistbox(listboxFrame, height = 10, width = 40, selectmode = "multiple", 
+                       yscrollcommand = function(...) tkset(yscroll, ...), 
+                       xscrollcommand = function(...) tkset(xscroll, ...), 
+                       font = "Helvetica 12 bold",  # Increased font size and made bold
+                       bg = "white", fg = "black", selectbackground = "lightblue")
+  
+  # Grid the listbox and scrollbars inside the labeled frame
+  tkgrid(listbox, row = 0, column = 0)
+  tkgrid(yscroll, row = 0, column = 1, sticky = "ns")
+  tkgrid(xscroll, row = 1, column = 0, sticky = "ew")
+  
+  # Bind the listbox to the selectFile function to handle file selection
+  tkbind(listbox, "<<ListboxSelect>>", selectFile)
+  
+  # Generate Venn Diagram button styled similarly to the browse button
+  generateButton <- ttkbutton(win, text = "Generate Venn Diagram", command = generate_venn)
+  tkgrid(generateButton, pady = 10)
+  
+  tkmessageBox(title = "Instructions", message = "Upload at least two CSV files with a 'pep_seq' column.\n\nFor plotting purposes, if no files are selected, all files in the directory will be plotted.")
 }
 
-# Test the RemoveDuplicate() function
-# prepare_mascot()
+# Run the updated Venn Diagram Generator
+# venn_diagram_generator()
 
 ################################################################################
 ## Change code so that it uses the current directory to export the file to.
@@ -22587,45 +22700,298 @@ unique_peptides <- function() {
 #' @importFrom ggridges geom_density_ridges2 geom_density_ridges_gradient
 #' @importFrom dplyr group_by summarise
 #' @export
+# peptides_distribution <- function() {
+#   # Define variables
+#   csv_dir <- ""
+#   plot_type <- ""
+  
+#   # Function to select the CSV directory
+#   selectCSVDir1 <- function() {
+#     csv_dir <<- tclvalue(tcl("tk_chooseDirectory"))
+#     csv_dir <- tclVar(csv_dir)  # Update the csv_dir variable
+#     tkconfigure(csvDirEntry, text = csv_dir)  # Update the csvDirEntry widget
+#   }
+  
+#   # Function to set the selected plot type
+#   setPlotType <- function(value) {
+#     plot_type <<- value
+#   }
+  
+#   group_csv_files <- function(csv_dir) {
+#     # Get the list of CSV files in the directory
+#     csv_files <- list.files(path = csv_dir, pattern = "*.csv", full.names = TRUE)
+    
+#     # Create an empty list to store the grouped dataframes
+#     grouped_df <- list()
+    
+#     # Loop through the CSV files and group them based on the second string
+#     for (i in 1:length(csv_files)) {
+#       # Get the filename without the directory path
+#       filename <- basename(csv_files[i])
+#       # Get the second string in the filename by splitting on "_"
+#       second_str <- strsplit(filename, "_")[[1]][2]
+#       # Read the CSV file and extract the pep_seq column
+#       csv_data <- read.csv(csv_files[i], skip = 0, header = TRUE)
+#       # Check if the 'pep_seq' column exists
+#       if (!("pep_seq" %in% colnames(csv_data))) {
+#         stop("Error: 'pep_seq' column not found in the CSV file.")
+#       }
+#       pep_seq_col <- csv_data$pep_seq
+#       # Create a new dataframe with the pep_seq column and the group name
+#       pep_seq_df <- data.frame(group_name = second_str, pep_seq = pep_seq_col)
+#       # If the group already exists in the list, append the dataframe
+#       if (second_str %in% names(grouped_df)) {
+#         grouped_df[[second_str]] <- rbind(grouped_df[[second_str]], pep_seq_df)
+#       }
+#       # If the group doesn't exist in the list, create a new list element
+#       else {
+#         grouped_df[[second_str]] <- pep_seq_df
+#       }
+#     }
+    
+#     # Return the list of grouped dataframes
+#     return(grouped_df)
+#   }
+  
+#   # Function to create the density plot
+#   createDensityPlot <- function() {
+#     grouped_df <- group_csv_files(csv_dir)
+    
+#     # Create an empty data frame to store the nchar values for all groups
+#     nchar_df <- data.frame(group_name = character(), nchar = integer())
+    
+#     for (i in 1:length(grouped_df)) {
+#       group_name <- names(grouped_df)[i]
+#       pep_seq_col <- grouped_df[[i]]$pep_seq
+#       group_nchar_df <- data.frame(group_name = group_name, nchar = nchar(pep_seq_col))
+#       nchar_df <- rbind(nchar_df, group_nchar_df)
+#     }
+    
+#     nchar_mean_df <- nchar_df %>%
+#       group_by(group_name) %>%
+#       summarise(mean_nchar = mean(nchar))
+    
+#      # Create the appropriate density plot based on the plot_type argument
+#   if (plot_type == "overlay") {
+#     plot <- ggplot(nchar_df, aes(x = nchar, group = group_name, fill = group_name, color = group_name)) +
+#       geom_density(alpha = 0.5) +
+#       labs(title = "Peptide Length Distribution", 
+#            x = "Peptide length in AA", y = "Density", fill = "Groups") +
+#       theme_bw() +
+#       geom_vline(data = nchar_mean_df, aes(xintercept = mean_nchar, color = group_name),
+#                  size = 1) +
+#       labs(color = "Means") +
+#       geom_text_repel(data = nchar_mean_df, aes(x = mean_nchar, y = 0, label = round(mean_nchar, 2)), 
+#                       color = 'black', size = 4, nudge_x = 5)  
+#   } else if (plot_type == "ridges") {
+#     plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = group_name)) +
+#       geom_density_ridges2(alpha = 0.5, rel_min_height = 0.01, scale = 7, quantile_lines = TRUE, quantile_fun = function(x,...)mean(x)) +
+#       labs(title = "Peptide Length Distribution", 
+#            x = "Peptide length in AA", y = "", fill = "Group") +
+#       theme_bw()  +
+#       geom_text(data = nchar_mean_df, aes(x = mean_nchar, y = group_name, label = round(mean_nchar, 2)),
+#                 color = 'black', size = 3.5, hjust = 0.5, vjust = - 0.05)
+#   } else if (plot_type == "colored_ridges") {
+#     plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = stat(x))) +
+#       geom_density_ridges_gradient(alpha = 0.5, rel_min_height = 0.02, scale = 3, quantile_lines = TRUE, quantile_fun = function(x,...)mean(x)) +
+#       labs(title = "Peptide Length Distribution", 
+#            x = "Peptide length in AA", y = "", fill = "Group") +
+#       scale_fill_viridis_c(name = "Petide length", option = "H") +
+#       geom_text(data = nchar_mean_df, aes(x = mean_nchar, y = group_name, label = round(mean_nchar, 2)),
+#                 color = 'black', size = 3.5, hjust = - 0.5, vjust = -1) # Adjust hjust for label positioning
+#     } else {
+#       stop("Invalid plot_type argument. Please choose either 'Overlay', 'Ridges', or 'Colored Ridges'.")
+#     }
+    
+#     print(plot)
+#   }
+  
+#   # Create the main window
+#   win <- tktoplevel()
+#   tkwm.title(win, "Density Plot Creator")
+  
+#   # Create and configure the CSV directory selection frame
+#   csvDirFrame <- ttkframe(win)
+#   tkgrid(csvDirFrame, padx = 20, pady = 20)
+  
+#   # Create and configure the CSV directory label
+#   csvDirLabel <- ttklabel(csvDirFrame, text = "CSV Directory:")
+#   tkgrid(csvDirLabel, column = 1, row = 1, sticky = "w")
+  
+#   # Create and configure the CSV directory entry
+#   csvDirEntry <- ttkentry(csvDirFrame, textvariable = csv_dir)
+#   tkgrid(csvDirEntry, column = 2, row = 1)
+  
+#   # Create and configure the CSV directory browse button
+#   csvDirButton <- ttkbutton(csvDirFrame, text = "Browse", command = selectCSVDir1)
+#   tkgrid(csvDirButton, column = 3, row = 1, padx = 5)
+  
+#   # Create and configure the plot type selection frame
+#   plotTypeFrame <- ttkframe(win)
+#   tkgrid(plotTypeFrame, padx = 10, pady = 10)
+  
+#   # Create and configure the plot type label
+#   plotTypeLabel <- ttklabel(plotTypeFrame, text = "Plot Type:")
+#   tkgrid(plotTypeLabel, column = 1, row = 1, sticky = "w")
+  
+#   # Create and configure the plot type radiobuttons
+#   plotTypeRadioFrame <- ttkframe(plotTypeFrame)
+#   tkgrid(plotTypeRadioFrame, column = 2, row = 1)
+  
+#   # Create and configure the Overlay radiobutton
+#   overlayRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Overlay", variable = plot_type, value = "overlay", command = function() setPlotType("overlay"))
+#   tkgrid(overlayRadio, column = 1, row = 1, sticky = "w")
+  
+#   # Create and configure the Ridges radiobutton
+#   ridgesRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Ridges", variable = plot_type, value = "ridges", command = function() setPlotType("ridges"))
+#   tkgrid(ridgesRadio, column = 1, row = 2, sticky = "w")
+  
+#   # Create and configure theColored Ridges radiobutton
+#   coloredRidgesRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Colored Ridges", variable = plot_type, value = "colored_ridges", command = function() setPlotType("colored_ridges"))
+#   tkgrid(coloredRidgesRadio, column = 1, row = 3, sticky = "w")
+  
+#   # Create and configure the create plot button
+#   createPlotButton <- ttkbutton(win, text = "Create Plot", command = createDensityPlot)
+#   tkgrid(createPlotButton, pady = 10)
+  
+#   # Start the event loop
+#   tkwait.visibility(win)
+# }
+# # call the function
+# # peptides_distribution()
+##########################################################################################################################################
+
+#' Peptide Distribution Plot Generator
+#'
+#' This function creates a graphical user interface (GUI) for generating peptide length distribution plots 
+#' from CSV files. The function allows users to upload multiple CSV files, select a plot type, and visualize 
+#' peptide length distributions across different groups based on file naming conventions. The available plot 
+#' types include overlay density plots, ridge plots, and colored ridge plots.
+#'
+#' @return A GUI that lets users upload CSV files, select files for analysis, and generate various peptide 
+#' length distribution plots.
+#' 
+#' @details
+#' The function provides the following main features:
+#' \itemize{
+#'   \item \strong{File Upload:} Users can select a directory containing CSV files and choose specific files for plotting.
+#'   \item \strong{Plot Types:} Three types of plots are available: overlay density plots, ridge plots, and colored ridge plots.
+#'   \item \strong{Grouping by File Name:} Files are grouped based on the second string in their filenames (e.g., for file \emph{group_sample.csv}, the group is \emph{sample}).
+#' }
+#'
+#' @section CSV File Format:
+#' Each CSV file should include a column named \code{pep_seq}, which contains peptide sequences. The function uses this column to calculate peptide lengths for plotting.
+#'
+#' @section Plot Types:
+#' \itemize{
+#'   \item \strong{Overlay Plot:} Displays density curves of peptide lengths for each group on the same axes.
+#'   \item \strong{Ridge Plot:} Displays density curves of peptide lengths for each group as individual ridges.
+#'   \item \strong{Colored Ridge Plot:} Displays ridges with colors representing peptide lengths.
+#' }
+#'
+#' @section Dependencies:
+#' This function depends on the following R packages:
+#' \itemize{
+#'   \item \code{tcltk}: For creating the graphical user interface.
+#'   \item \code{ggplot2}, \code{ggridges}: For creating the plots.
+#'   \item \code{dplyr}: For data manipulation.
+#'   \item \code{ggrepel}: For adding labels to the plot.
+#'   \item \code{viridis}: For applying color gradients in colored ridge plots.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' peptides_distribution()
+#' }
+#'
+#' @export
+
 peptides_distribution <- function() {
+  # Load required libraries
+  library(tcltk)
+  library(ggplot2)
+  library(ggridges)
+  library(dplyr)
+  library(ggrepel)
+  library(viridis)
+  
   # Define variables
-  csv_dir <- ""
-  plot_type <- ""
+  csv_dir <- tclVar("")  # Initialize csv_dir as tclVar
+  plot_type <- tclVar("Overlay")  # Initialize plot_type as tclVar with a default value
+  selected_files <- character()  # Initialize a vector to hold selected files
+  file_list <- tclVar("")  # Initialize file list variable for the listbox
   
   # Function to select the CSV directory
   selectCSVDir1 <- function() {
-    csv_dir <<- tclvalue(tcl("tk_chooseDirectory"))
-    csv_dir <- tclVar(csv_dir)  # Update the csv_dir variable
-    tkconfigure(csvDirEntry, text = csv_dir)  # Update the csvDirEntry widget
+    csv_dir_value <- tclvalue(tcl("tk_chooseDirectory"))  # Get the selected directory
+    tclvalue(csv_dir) <- csv_dir_value  # Update the tclVar with the selected directory
+    tkconfigure(csvDirEntry, text = csv_dir_value)  # Update the text of the CSV directory entry
+    updateFileList(csv_dir_value)  # Update the file list in the listbox
   }
   
-  # Function to set the selected plot type
-  setPlotType <- function(value) {
-    plot_type <<- value
+  # Function to update the file list in the listbox
+  updateFileList <- function(dir) {
+    csv_files <- list.files(path = dir, pattern = "*.csv", full.names = FALSE)  # List CSV files in the directory
+    if (length(csv_files) == 0) {
+      csv_files <- "No CSV files found"  # Show message if no files found
+    }
+    tclvalue(file_list) <- csv_files  # Update the file list variable
+    tkdelete(listbox, 0, "end")  # Clear the listbox
+    for (file in csv_files) {
+      tkinsert(listbox, "end", file)  # Insert files into the listbox
+    }
   }
   
-  group_csv_files <- function(csv_dir) {
-    # Get the list of CSV files in the directory
-    csv_files <- list.files(path = csv_dir, pattern = "*.csv", full.names = TRUE)
+  # Function to handle multiple file selection from the listbox
+  selectFile <- function() {
+    selected_indices <- tkcurselection(listbox)  # Get the selected indices from the listbox
+    if (length(selected_indices) == 0) {
+      selected_files <<- character()  # No files selected
+    } else {
+      selected_indices <- as.integer(selected_indices)
+      selected_files <<- sapply(selected_indices, function(index) {
+        tclvalue(tkget(listbox, index))
+      })  # Store the selected files
+      selected_files <<- file.path(tclvalue(csv_dir), selected_files)  # Get full paths for the selected files
+    }
+  }
+  
+  # Function to group the selected CSV file(s)
+  group_csv_files <- function() {
+    # Use all files if no files are selected
+    if (length(selected_files) == 0) {
+      selected_files <<- list.files(path = tclvalue(csv_dir), pattern = "*.csv", full.names = TRUE)
+    }
+    
+    if (length(selected_files) == 0) {
+      stop("No files available for plotting!")
+    }
     
     # Create an empty list to store the grouped dataframes
     grouped_df <- list()
     
-    # Loop through the CSV files and group them based on the second string
-    for (i in 1:length(csv_files)) {
+    # Loop through the selected files and group them based on the second string
+    for (i in 1:length(selected_files)) {
       # Get the filename without the directory path
-      filename <- basename(csv_files[i])
+      filename <- basename(selected_files[i])
       # Get the second string in the filename by splitting on "_"
       second_str <- strsplit(filename, "_")[[1]][2]
       # Read the CSV file and extract the pep_seq column
-      csv_data <- read.csv(csv_files[i], skip = 0, header = TRUE)
+      csv_data <- read.csv(selected_files[i], skip = 3, header = TRUE)
+      
       # Check if the 'pep_seq' column exists
       if (!("pep_seq" %in% colnames(csv_data))) {
         stop("Error: 'pep_seq' column not found in the CSV file.")
       }
+      
+      # Remove duplicates from the 'pep_seq' column
+      csv_data <- csv_data[!duplicated(csv_data$pep_seq), ]
+      
       pep_seq_col <- csv_data$pep_seq
+      
       # Create a new dataframe with the pep_seq column and the group name
       pep_seq_df <- data.frame(group_name = second_str, pep_seq = pep_seq_col)
+      
       # If the group already exists in the list, append the dataframe
       if (second_str %in% names(grouped_df)) {
         grouped_df[[second_str]] <- rbind(grouped_df[[second_str]], pep_seq_df)
@@ -22642,7 +23008,7 @@ peptides_distribution <- function() {
   
   # Function to create the density plot
   createDensityPlot <- function() {
-    grouped_df <- group_csv_files(csv_dir)
+    grouped_df <- group_csv_files()  # Call the function to group selected files
     
     # Create an empty data frame to store the nchar values for all groups
     nchar_df <- data.frame(group_name = character(), nchar = integer())
@@ -22658,34 +23024,42 @@ peptides_distribution <- function() {
       group_by(group_name) %>%
       summarise(mean_nchar = mean(nchar))
     
-     # Create the appropriate density plot based on the plot_type argument
-  if (plot_type == "overlay") {
-    plot <- ggplot(nchar_df, aes(x = nchar, group = group_name, fill = group_name, color = group_name)) +
-      geom_density(alpha = 0.5) +
-      labs(title = "Peptide Length Distribution", 
-           x = "Peptide length in AA", y = "Density", fill = "Groups") +
-      theme_bw() +
-      geom_vline(data = nchar_mean_df, aes(xintercept = mean_nchar, color = group_name),
-                 size = 1) +
-      labs(color = "Means") +
-      geom_text_repel(data = nchar_mean_df, aes(x = mean_nchar, y = 0, label = round(mean_nchar, 2)), 
-                      color = 'black', size = 4, nudge_x = 5)  
-  } else if (plot_type == "ridges") {
-    plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = group_name)) +
-      geom_density_ridges2(alpha = 0.5, rel_min_height = 0.01, scale = 7, quantile_lines = TRUE, quantile_fun = function(x,...)mean(x)) +
-      labs(title = "Peptide Length Distribution", 
-           x = "Peptide length in AA", y = "", fill = "Group") +
-      theme_bw()  +
-      geom_text(data = nchar_mean_df, aes(x = mean_nchar, y = group_name, label = round(mean_nchar, 2)),
-                color = 'black', size = 3.5, hjust = 0.5, vjust = - 0.05)
-  } else if (plot_type == "colored_ridges") {
-    plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = stat(x))) +
-      geom_density_ridges_gradient(alpha = 0.5, rel_min_height = 0.02, scale = 3, quantile_lines = TRUE, quantile_fun = function(x,...)mean(x)) +
-      labs(title = "Peptide Length Distribution", 
-           x = "Peptide length in AA", y = "", fill = "Group") +
-      scale_fill_viridis_c(name = "Petide length", option = "H") +
-      geom_text(data = nchar_mean_df, aes(x = mean_nchar, y = group_name, label = round(mean_nchar, 2)),
-                color = 'black', size = 3.5, hjust = - 0.5, vjust = -1) # Adjust hjust for label positioning
+    plot_type_value <- tclvalue(plot_type)  # Get the selected plot type
+    
+    # Convert to lowercase for consistency and ensure valid input
+    plot_type_value <- tolower(plot_type_value)
+    
+    # Create the appropriate density plot based on the plot_type argument
+    if (plot_type_value == "overlay") {
+      plot <- ggplot(nchar_df, aes(x = nchar, group = group_name, fill = group_name, color = group_name)) +
+        geom_density(alpha = 0.5) +
+        labs(title = "Peptide Length Distribution", 
+             x = "Peptide length in AA", y = "Density", fill = "Groups") +
+        theme_bw() +
+        geom_vline(data = nchar_mean_df, aes(xintercept = mean_nchar, color = group_name),
+                   size = 1) +
+        labs(color = "Means") +
+        geom_text_repel(data = nchar_mean_df, aes(x = mean_nchar, y = 0, label = round(mean_nchar, 2)), 
+                        color = 'black', size = 4, nudge_x = 5, box.padding = 0.5, 
+                        segment.color = 'grey50')  # Prevents overlap
+    } else if (plot_type_value == "ridges") {
+      plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = group_name)) +
+        geom_density_ridges2(alpha = 0.5, rel_min_height = 0.01, scale = 7, quantile_lines = TRUE, quantile_fun = function(x,...)mean(x)) +
+        labs(title = "Peptide Length Distribution", 
+             x = "Peptide length in AA", y = "", fill = "Group") +
+        theme_bw() +
+        geom_text_repel(data = nchar_mean_df, aes(x = mean_nchar, y = group_name, label = round(mean_nchar, 2)),
+                        color = 'black', size = 3.5, hjust = 0.5, vjust = -0.05, 
+                        box.padding = 0.5, segment.color = 'grey50')  # Prevents overlap
+    } else if (plot_type_value == "colored ridges") {
+      plot <- ggplot(nchar_df, aes(x = nchar, y = group_name, fill = stat(x))) +
+        geom_density_ridges_gradient(alpha = 0.5, rel_min_height = 0.02, scale = 3, quantile_lines = TRUE, quantile_fun = function(x,...)mean(x)) +
+        labs(title = "Peptide Length Distribution", 
+             x = "Peptide length in AA", y = "", fill = "Group") +
+        scale_fill_viridis_c(name = "Peptide length", option = "H") +
+        geom_text_repel(data = nchar_mean_df, aes(x = mean_nchar, y = group_name, label = round(mean_nchar, 2)),
+                        color = 'black', size = 3.5, hjust = -0.5, vjust = -1, 
+                        box.padding = 0.5, segment.color = 'grey50')  # Prevents overlap
     } else {
       stop("Invalid plot_type argument. Please choose either 'Overlay', 'Ridges', or 'Colored Ridges'.")
     }
@@ -22693,58 +23067,72 @@ peptides_distribution <- function() {
     print(plot)
   }
   
+  # Function to handle window closing event
+  on_closing <- function() {
+    tkdestroy(win)  # Destroy the window to avoid errors
+  }
+  
   # Create the main window
   win <- tktoplevel()
-  tkwm.title(win, "Density Plot Creator")
+  tkwm.title(win, "Density Plot Generator")
   
-  # Create and configure the CSV directory selection frame
-  csvDirFrame <- ttkframe(win)
-  tkgrid(csvDirFrame, padx = 20, pady = 20)
+  # Bind the close event handler to the window
+  tkwm.protocol(win, "WM_DELETE_WINDOW", on_closing)  # Handle window close event
   
-  # Create and configure the CSV directory label
-  csvDirLabel <- ttklabel(csvDirFrame, text = "CSV Directory:")
-  tkgrid(csvDirLabel, column = 1, row = 1, sticky = "w")
+  # Create and configure the CSV directory selection frame with a border and label
+  fileSelectionFrame <- ttklabelframe(win, text = "File Selection", padding = 10)
+  tkgrid(fileSelectionFrame, padx = 20, pady = 10)
   
-  # Create and configure the CSV directory entry
-  csvDirEntry <- ttkentry(csvDirFrame, textvariable = csv_dir)
-  tkgrid(csvDirEntry, column = 2, row = 1)
+  # Create and configure the CSV directory label and entry
+  csvDirLabel <- ttklabel(fileSelectionFrame, text = "Choose CSV Directory:", font = "Helvetica 12 bold")
+  csvDirEntry <- ttkentry(fileSelectionFrame, textvariable = csv_dir, width = 50)
+  csvDirButton <- ttkbutton(fileSelectionFrame, text = "Browse", command = selectCSVDir1)
   
-  # Create and configure the CSV directory browse button
-  csvDirButton <- ttkbutton(csvDirFrame, text = "Browse", command = selectCSVDir1)
-  tkgrid(csvDirButton, column = 3, row = 1, padx = 5)
+  tkgrid(csvDirLabel, row = 0, column = 0, sticky = "w", pady = 5)
+  tkgrid(csvDirEntry, row = 1, column = 0, padx = 10)
+  tkgrid(csvDirButton, row = 1, column = 1, padx = 5)
+  
+  # Listbox Frame setup inside a labelframe with a label
+  listboxFrame <- ttklabelframe(win, text = "Loaded files", padding = 10)
+  tkgrid(listboxFrame, padx = 20, pady = 10)
+  
+  # Adding Scrollbars
+  yscroll <- tkscrollbar(listboxFrame, orient = "vertical", command = function(...) tkyview(listbox, ...))
+  xscroll <- tkscrollbar(listboxFrame, orient = "horizontal", command = function(...) tkxview(listbox, ...))
+  
+  # Configure the listbox
+  listbox <- tklistbox(listboxFrame, height = 10, width = 40, selectmode = "multiple", 
+                       yscrollcommand = function(...) tkset(yscroll, ...), 
+                       xscrollcommand = function(...) tkset(xscroll, ...), 
+                       font = "Helvetica 12 bold", bg = "white", fg = "black", selectbackground = "lightblue")  # Increased font size and made bold
+  
+  # Grid the listbox and scrollbars
+  tkgrid(listbox, row = 0, column = 0)
+  tkgrid(yscroll, row = 0, column = 1, sticky = "ns")
+  tkgrid(xscroll, row = 1, column = 0, sticky = "ew")
+  
+  # Bind the listbox to the selectFile function (to handle file selection)
+  tkbind(listbox, "<<ListboxSelect>>", selectFile)
   
   # Create and configure the plot type selection frame
   plotTypeFrame <- ttkframe(win)
-  tkgrid(plotTypeFrame, padx = 10, pady = 10)
+  tkgrid(plotTypeFrame, padx = 20, pady = 10)
   
-  # Create and configure the plot type label
-  plotTypeLabel <- ttklabel(plotTypeFrame, text = "Plot Type:")
-  tkgrid(plotTypeLabel, column = 1, row = 1, sticky = "w")
+  # Create and configure the plot type label and combobox
+  plotTypeLabel <- ttklabel(plotTypeFrame, text = "Select Plot Type:", font = "Helvetica 12 bold")
+  plotTypeCombo <- ttkcombobox(plotTypeFrame, values = c("Overlay", "Ridges", "Colored Ridges"), textvariable = plot_type, state = "readonly")
   
-  # Create and configure the plot type radiobuttons
-  plotTypeRadioFrame <- ttkframe(plotTypeFrame)
-  tkgrid(plotTypeRadioFrame, column = 2, row = 1)
-  
-  # Create and configure the Overlay radiobutton
-  overlayRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Overlay", variable = plot_type, value = "overlay", command = function() setPlotType("overlay"))
-  tkgrid(overlayRadio, column = 1, row = 1, sticky = "w")
-  
-  # Create and configure the Ridges radiobutton
-  ridgesRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Ridges", variable = plot_type, value = "ridges", command = function() setPlotType("ridges"))
-  tkgrid(ridgesRadio, column = 1, row = 2, sticky = "w")
-  
-  # Create and configure theColored Ridges radiobutton
-  coloredRidgesRadio <- ttkradiobutton(plotTypeRadioFrame, text = "Colored Ridges", variable = plot_type, value = "colored_ridges", command = function() setPlotType("colored_ridges"))
-  tkgrid(coloredRidgesRadio, column = 1, row = 3, sticky = "w")
+  tkgrid(plotTypeLabel, row = 0, column = 0, pady = 5, sticky = "w")
+  tkgrid(plotTypeCombo, row = 1, column = 0, padx = 10)
   
   # Create and configure the create plot button
-  createPlotButton <- ttkbutton(win, text = "Create Plot", command = createDensityPlot)
+  createPlotButton <- ttkbutton(win, text = "Generate Plot", command = createDensityPlot)
   tkgrid(createPlotButton, pady = 10)
   
-  # Start the event loop
-  tkwait.visibility(win)
+  tkmessageBox(title = "Instructions", message = "Upload CSV files with a 'pep_seq' column.\n\nFor plotting purposes, if no files are selected, all files in the directory will be plotted.")
 }
-# call the function
+
+# Call the function
 # peptides_distribution()
 
 ################################################################################
@@ -23225,196 +23613,518 @@ peptides_distribution <- function() {
 #'   cut_sites_distribution()
 #' }
 
+# cut_sites_distribution <- function() {
+#   # Load required libraries
+#   library(tcltk)
+#   library(ggseqlogo)
+#   library(dplyr)
+#   library(ggplot2)  # Added for plotting the vertical dashed line
+  
+#   # Function to generate the GUI
+#   generateGUI <- function() {
+    
+#     # Create main window
+#     tt <- tktoplevel()
+#     tkwm.title(tt, "Sequence Logo Plot for Specific Positions")
+#     tkconfigure(tt, background = "#f5f5f5")
+    
+#     # Variables to store file path and protein sequence
+#     file_var <- tclVar()
+#     protein_seq_var <- tclVar("VDPENVFRKLL")
+    
+#     # Frame for file input
+#     file_frame <- tkframe(tt, background = "#f5f5f5")
+#     tkgrid(tklabel(file_frame, text = "Choose CSV File", background = "#f5f5f5", font = "Helvetica 10 bold"), pady = 5)
+#     file_entry <- tkentry(file_frame, textvariable = file_var, width = 50)
+#     tkgrid(file_entry, pady = 5)
+    
+#     # Define the command to be executed when the "Browse" button is clicked
+#     file_button <- tkbutton(file_frame, text = "Browse", command = function() {
+#       file_path <- tclvalue(tkgetOpenFile(filetypes = "{{CSV Files} {.csv}} {{All files} *}"))
+#       if (file_path != "") {
+#         tclvalue(file_var) <- file_path
+#       }
+#     })
+#     tkgrid(file_button, pady = 5)
+#     tkgrid(file_frame, padx = 20, pady = 10)
+    
+#     # Frame for protein sequence input (only for normalization)
+#     protein_frame <- tkframe(tt, background = "#f5f5f5")
+    
+#     # Protein sequence label centered above the input box
+#     protein_label <- tklabel(protein_frame, text = "Enter Protein Sequence for Normalization:", 
+#                              background = "#f5f5f5", font = "Helvetica 10 bold")
+#     tkgrid(protein_label, row = 0, column = 0, columnspan = 2, pady = 5)
+    
+#     protein_entry <- tkentry(protein_frame, textvariable = protein_seq_var, width = 50)
+#     tkgrid(protein_entry, row = 1, column = 0, columnspan = 2, pady = 5)
+    
+#     # Define the command to display the sequence in the console
+#     submit_sequence <- function() {
+#       sequence <- tclvalue(protein_seq_var)
+#       cat("Protein sequence:", sequence, "\n")
+#     }
+    
+#     # Bind the Enter key to the protein_entry widget
+#     tkbind(protein_entry, "<Return>", function() submit_sequence())
+    
+#     enter_button <- tkbutton(protein_frame, text = "Enter", command = submit_sequence)
+#     tkgrid(enter_button, row = 1, column = 2, padx = 5, pady = 5)
+    
+#     tkgrid(protein_frame, padx = 20, pady = 10)
+    
+#     # Function to process data and generate the sequence logo plot
+#     generatePlot <- function(normalized) {
+      
+#       file_path <- tclvalue(file_var)
+#       protein_seq <- toupper(tclvalue(protein_seq_var))
+      
+#       # Validate file selection
+#       if (file_path == "") {
+#         tkmessageBox(message = "Please choose a CSV file.", icon = "error")
+#         return()
+#       }
+      
+#       # Read the CSV file
+#       data <- tryCatch({
+#         read.csv(file_path, stringsAsFactors = FALSE)
+#       }, error = function(e) {
+#         tkmessageBox(message = "Error reading the CSV file.", icon = "error")
+#         return(NULL)
+#       })
+      
+#       if (is.null(data)) return()
+      
+#       # Ensure 'pep_seq' column is present
+#       if (!"pep_seq" %in% colnames(data)) {
+#         tkmessageBox(message = "The uploaded file does not contain a 'pep_seq' column.", icon = "error")
+#         return()
+#       }
+      
+#       # Extract sequences from the CSV file
+#       sequences <- data$pep_seq
+      
+#       # Adjust position extraction to handle sequences shorter than 4 amino acids
+#       sequence_matrix <- sapply(sequences, function(seq) {
+#         n <- nchar(seq)  # Get the length of the sequence
+#         if (n >= 4) {
+#           # Extract the last 4 positions (P4 to P1) and the first 4 positions (P1' to P4')
+#           p4_p1 <- c(substr(seq, n - 3, n - 3), 
+#                      substr(seq, n - 2, n - 2), 
+#                      substr(seq, n - 1, n - 1), 
+#                      substr(seq, n, n))
+#           p1p_p4p <- c(substr(seq, 1, 1), 
+#                        substr(seq, 2, 2), 
+#                        substr(seq, 3, 3), 
+#                        substr(seq, 4, 4))
+#           return(c(p4_p1, p1p_p4p))  # Combine both parts
+#         } else {
+#           # Handle sequences shorter than 4 AA by filling the missing positions with NA
+#           available_part <- c(strsplit(seq, "")[[1]], rep(NA, 8 - n))
+#           return(available_part)
+#         }
+#       }, USE.NAMES = FALSE)
+      
+#       # Transpose the matrix to have positions as columns
+#       sequence_matrix <- t(sequence_matrix)
+      
+#       if (normalized) {
+#         # Calculate frequencies for each letter at each position, ignoring NAs
+#         position_freq <- apply(sequence_matrix, 2, function(pos) {
+#           table(factor(pos, levels = LETTERS), useNA = "no") / sum(!is.na(pos))
+#         })
+        
+#         # Ensure protein sequence covers the required positions
+#         if (nchar(protein_seq) < 10) {
+#           tkmessageBox(message = "The protein sequence must be long enough to cover the required positions.", icon = "error")
+#           return()
+#         }
+        
+#         # Calculate the overall frequency of each letter in the protein sequence
+#         protein_freq <- table(factor(unlist(strsplit(protein_seq, "")), levels = LETTERS)) / nchar(protein_seq)
+        
+#         # Normalize the position frequencies by the protein sequence frequencies
+#         normalized_freq <- sweep(position_freq, 1, protein_freq, "/")
+        
+#         # Replace any non-finite or negative values with 0
+#         normalized_freq[!is.finite(normalized_freq) | normalized_freq <= 0] <- 0
+        
+#         # Generate the sequence logo plot using ggseqlogo
+#         logo_plot <- ggseqlogo(normalized_freq, method = "prob")
+#       } else {
+#         # For non-normalized sequences
+#         selected_positions <- sapply(sequences, function(seq) {
+#           n <- nchar(seq)
+#           if (n >= 4) {
+#             paste0(substr(seq, n - 3, n - 3),  # P4
+#                    substr(seq, n - 2, n - 2),  # P3
+#                    substr(seq, n - 1, n - 1),  # P2
+#                    substr(seq, n, n),          # P1
+#                    substr(seq, 1, 1),          # P1'
+#                    substr(seq, 2, 2),          # P2'
+#                    substr(seq, 3, 3),          # P3'
+#                    substr(seq, 4, 4))          # P4'
+#           } else {
+#             paste0(rep("NA", 8), collapse = "")
+#           }
+#         }, USE.NAMES = FALSE)
+        
+#         # Remove any positions that contain "NA"
+#         selected_positions <- selected_positions[!grepl("NA", selected_positions)]
+        
+#         # Create the sequence logo plot using ggseqlogo
+#         logo_plot <- ggseqlogo(selected_positions, method = "prob")
+#       }
+      
+#       # Customize x-axis labels to include "cs" and other positions
+#       logo_plot <- logo_plot + 
+#         scale_x_continuous(breaks = c(1:8, 9), 
+#                            labels = c("P4", "P3", "P2", "P1", "P1'", "P2'", "P3'", "P4'", "cs")) +
+#         geom_vline(xintercept = 4.5, linetype = "dashed", color = "black", size = 1)  # Cleavage site at "cs"
+      
+#       # Plot the sequence logo
+#       print(logo_plot)
+#     }
+    
+#     # Buttons to generate plots
+#     button_frame <- tkframe(tt, background = "#f5f5f5")
+#     plot_normalized_button <- tkbutton(button_frame, text = "Generate Normalized Plot", command = function() generatePlot(TRUE))
+#     tkgrid(plot_normalized_button, padx = 10, pady = 10)
+    
+#     plot_non_normalized_button <- tkbutton(button_frame, text = "Generate Non-normalized Plot", command = function() generatePlot(FALSE))
+#     tkgrid(plot_non_normalized_button, padx = 10, pady = 10)
+    
+#     tkgrid(button_frame, padx = 20, pady = 10)
+#   }
+  
+#   # Run the GUI
+#   generateGUI()
+# }
+
+# # Call the function
+# #cut_sites_distribution()
+
+################################################################################
+#' Peptide Distribution Plot Generator
+#'
+#' This function creates a graphical user interface (GUI) for generating peptide length distribution plots 
+#' from CSV files. The function allows users to upload multiple CSV files, select a plot type, and visualize 
+#' peptide length distributions across different groups based on file naming conventions. The available plot 
+#' types include overlay density plots, ridge plots, and colored ridge plots.
+#'
+#' @return A GUI that lets users upload CSV files, select files for analysis, and generate various peptide 
+#' length distribution plots.
+#' 
+#' @details
+#' The function provides the following main features:
+#' \itemize{
+#'   \item \strong{File Upload:} Users can select a directory containing CSV files and choose specific files for plotting.
+#'   \item \strong{Plot Types:} Three types of plots are available: overlay density plots, ridge plots, and colored ridge plots.
+#'   \item \strong{Grouping by File Name:} Files are grouped based on the second string in their filenames (e.g., for file \emph{group_sample.csv}, the group is \emph{sample}).
+#' }
+#'
+#' @section CSV File Format:
+#' Each CSV file should include a column named \code{pep_seq}, which contains peptide sequences. The function uses this column to calculate peptide lengths for plotting.
+#'
+#' @section Plot Types:
+#' \itemize{
+#'   \item \strong{Overlay Plot:} Displays density curves of peptide lengths for each group on the same axes.
+#'   \item \strong{Ridge Plot:} Displays density curves of peptide lengths for each group as individual ridges.
+#'   \item \strong{Colored Ridge Plot:} Displays ridges with colors representing peptide lengths.
+#' }
+#'
+#' @section Dependencies:
+#' This function depends on the following R packages:
+#' \itemize{
+#'   \item \code{tcltk}: For creating the graphical user interface.
+#'   \item \code{ggplot2}, \code{ggridges}: For creating the plots.
+#'   \item \code{dplyr}: For data manipulation.
+#'   \item \code{ggrepel}: For adding labels to the plot.
+#'   \item \code{viridis}: For applying color gradients in colored ridge plots.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' peptides_distribution()
+#' }
+#'
+#' @export
 cut_sites_distribution <- function() {
   # Load required libraries
   library(tcltk)
   library(ggseqlogo)
   library(dplyr)
-  library(ggplot2)  # Added for plotting the vertical dashed line
+  library(ggplot2)
   
   # Function to generate the GUI
   generateGUI <- function() {
     
     # Create main window
     tt <- tktoplevel()
-    tkwm.title(tt, "Sequence Logo Plot for Specific Positions")
-    tkconfigure(tt, background = "#f5f5f5")
+    tkwm.title(tt, "P4-P4' Analysis")
     
-    # Variables to store file path and protein sequence
+    # Variables to store file path, protein sequence, plot type, normalization option, and position for bar plot
     file_var <- tclVar()
     protein_seq_var <- tclVar("VDPENVFRKLL")
+    plot_type_var <- tclVar("Logo Plot")  # Default selection for the plot type
+    normalization_var <- tclVar("Non-Normalized")  # Default selection for logo plot normalization
+    position_var <- tclVar("P1")  # Default selection for bar plot (P1)
     
-    # Frame for file input
-    file_frame <- tkframe(tt, background = "#f5f5f5")
-    tkgrid(tklabel(file_frame, text = "Choose CSV File", background = "#f5f5f5", font = "Helvetica 10 bold"), pady = 5)
-    file_entry <- tkentry(file_frame, textvariable = file_var, width = 50)
-    tkgrid(file_entry, pady = 5)
+    # Frame for file input and protein sequence input (above plot type selection)
+    input_frame <- ttkframe(tt, padding = 10)
+    tkgrid(input_frame, padx = 20, pady = 10)
     
-    # Define the command to be executed when the "Browse" button is clicked
-    file_button <- tkbutton(file_frame, text = "Browse", command = function() {
+    # File Selection Section
+    file_frame <- ttklabelframe(input_frame, text = "File Selection", padding = 10)
+    tkgrid(file_frame, row = 0, column = 0, padx = 10, pady = 5, sticky = "ew")
+    
+    file_label <- ttklabel(file_frame, text = "Choose CSV File:", font = "Helvetica 12 bold")
+    file_entry <- ttkentry(file_frame, textvariable = file_var, width = 50)
+    file_button <- ttkbutton(file_frame, text = "Browse", command = function() {
       file_path <- tclvalue(tkgetOpenFile(filetypes = "{{CSV Files} {.csv}} {{All files} *}"))
       if (file_path != "") {
         tclvalue(file_var) <- file_path
       }
     })
-    tkgrid(file_button, pady = 5)
-    tkgrid(file_frame, padx = 20, pady = 10)
     
-    # Frame for protein sequence input (only for normalization)
-    protein_frame <- tkframe(tt, background = "#f5f5f5")
+    tkgrid(file_label, row = 0, column = 0, pady = 5, sticky = "w")
+    tkgrid(file_entry, row = 1, column = 0, padx = 10)
+    tkgrid(file_button, row = 1, column = 1, padx = 5)
     
-    # Protein sequence label centered above the input box
-    protein_label <- tklabel(protein_frame, text = "Enter Protein Sequence for Normalization:", 
-                             background = "#f5f5f5", font = "Helvetica 10 bold")
-    tkgrid(protein_label, row = 0, column = 0, columnspan = 2, pady = 5)
+    # Protein Sequence Input Section
+    protein_frame <- ttklabelframe(input_frame, text = "Normalization", padding = 10)
+    tkgrid(protein_frame, row = 1, column = 0, padx = 10, pady = 5, sticky = "ew")
     
-    protein_entry <- tkentry(protein_frame, textvariable = protein_seq_var, width = 50)
-    tkgrid(protein_entry, row = 1, column = 0, columnspan = 2, pady = 5)
-    
-    # Define the command to display the sequence in the console
-    submit_sequence <- function() {
+    protein_label <- ttklabel(protein_frame, text = "Enter Protein Sequence for Normalization:", font = "Helvetica 12 bold")
+    protein_entry <- ttkentry(protein_frame, textvariable = protein_seq_var, width = 50)
+    enter_button <- ttkbutton(protein_frame, text = "Enter", command = function() {
       sequence <- tclvalue(protein_seq_var)
       cat("Protein sequence:", sequence, "\n")
+    })
+    
+    tkgrid(protein_label, row = 0, column = 0, pady = 5, sticky = "w")
+    tkgrid(protein_entry, row = 1, column = 0, padx = 10, pady = 5)
+    tkgrid(enter_button, row = 1, column = 1, padx = 5)
+    
+    # Frame for plot type, position, and normalization selection (below file and protein input)
+    selection_frame <- ttkframe(tt, padding = 10)
+    tkgrid(selection_frame, padx = 20, pady = 10)
+    
+    # Plot Type Selection Section
+    plot_type_label <- ttklabel(selection_frame, text = "Select Plot Type:", font = "Helvetica 12 bold")
+    plot_type_combo <- ttkcombobox(selection_frame, values = c("Logo Plot", "Bar Plot"), textvariable = plot_type_var, state = "readonly")
+    
+    tkgrid(plot_type_label, row = 0, column = 0, pady = 5, sticky = "w")
+    tkgrid(plot_type_combo, row = 1, column = 0, padx = 10, pady = 5)
+    
+    # Position Selection Section (disabled initially)
+    position_label <- ttklabel(selection_frame, text = "Select Position for Bar Plot:", font = "Helvetica 12 bold")
+    position_menu <- ttkcombobox(selection_frame, values = c("P1", "P1'"), textvariable = position_var, state = "disabled")
+    
+    tkgrid(position_label, row = 2, column = 0, pady = 5, sticky = "w")
+    tkgrid(position_menu, row = 3, column = 0, padx = 10, pady = 5)
+    
+    # Normalization Selection Section
+    normalization_label <- ttklabel(selection_frame, text = "Select Normalization Option:", font = "Helvetica 12 bold")
+    normalization_combo <- ttkcombobox(selection_frame, values = c("Non-Normalized", "Normalized"), textvariable = normalization_var, state = "readonly")
+    
+    tkgrid(normalization_label, row = 4, column = 0, pady = 5, sticky = "w")
+    tkgrid(normalization_combo, row = 5, column = 0, padx = 10, pady = 5)
+    
+    # Generate Plot Button
+    generate_plot_button <- ttkbutton(tt, text = "Generate Plot", command = function() {
+      plot_type <- tclvalue(plot_type_var)
+      if (plot_type == "Logo Plot") {
+        normalized <- ifelse(tclvalue(normalization_var) == "Normalized", TRUE, FALSE)
+        generateLogoPlot(normalized, tclvalue(file_var), tclvalue(protein_seq_var))
+      } else {
+        generateBarPlot(tclvalue(position_var), tclvalue(file_var))
+      }
+    })
+    tkgrid(generate_plot_button, padx = 20, pady = 10)
+    
+    # Function to toggle the state of the position drop-down (enabled/disabled based on plot type)
+    togglePositionMenu <- function() {
+      if (tclvalue(plot_type_var) == "Bar Plot") {
+        tkconfigure(position_menu, state = "readonly")  # Enable position menu for bar plot
+      } else {
+        tkconfigure(position_menu, state = "disabled")  # Disable position menu for logo plot
+      }
     }
     
-    # Bind the Enter key to the protein_entry widget
-    tkbind(protein_entry, "<Return>", function() submit_sequence())
+    # Bind the drop-down menu selection to toggle position menu state
+    tkbind(plot_type_combo, "<<ComboboxSelected>>", function() togglePositionMenu())
+  }
+  
+  # Function to generate the bar plot for P1 or P1'
+  generateBarPlot <- function(position, file_path) {
+    # Validate file selection
+    if (file_path == "") {
+      tkmessageBox(message = "Please choose a CSV file.", icon = "error")
+      return()
+    }
     
-    enter_button <- tkbutton(protein_frame, text = "Enter", command = submit_sequence)
-    tkgrid(enter_button, row = 1, column = 2, padx = 5, pady = 5)
+    # Read the CSV file
+    data <- tryCatch({
+      read.csv(file_path, skip = 3, stringsAsFactors = FALSE)
+    }, error = function(e) {
+      tkmessageBox(message = "Error reading the CSV file.", icon = "error")
+      return(NULL)
+    })
     
-    tkgrid(protein_frame, padx = 20, pady = 10)
+    if (is.null(data)) return()
     
-    # Function to process data and generate the sequence logo plot
-    generatePlot <- function(normalized) {
-      
-      file_path <- tclvalue(file_var)
-      protein_seq <- toupper(tclvalue(protein_seq_var))
-      
-      # Validate file selection
-      if (file_path == "") {
-        tkmessageBox(message = "Please choose a CSV file.", icon = "error")
-        return()
+    # Ensure 'pep_seq' column is present
+    if (!"pep_seq" %in% colnames(data)) {
+      tkmessageBox(message = "The uploaded file does not contain a 'pep_seq' column.", icon = "error")
+      return()
+    }
+    
+    # Remove duplicates from 'pep_seq'
+    data <- data[!duplicated(data$pep_seq), ]
+    
+    # Extract P1 or P1' positions
+    sequences <- data$pep_seq
+    position_letters <- sapply(sequences, function(seq) {
+      n <- nchar(seq)
+      if (n >= 4) {
+        if (position == "P1") {
+          return(substr(seq, n, n))  # Last position (P1)
+        } else {
+          return(substr(seq, 1, 1))  # First position (P1')
+        }
+      } else {
+        return(NA)  # Handle sequences shorter than 4 AA
       }
-      
-      # Read the CSV file
-      data <- tryCatch({
-        read.csv(file_path, stringsAsFactors = FALSE)
-      }, error = function(e) {
-        tkmessageBox(message = "Error reading the CSV file.", icon = "error")
-        return(NULL)
+    })
+    
+    position_letters <- na.omit(position_letters)
+    position_freq <- table(position_letters) / length(position_letters)
+    
+    # Generate bar plot
+    bar_plot <- ggplot(data = as.data.frame(position_freq), aes(x = position_letters, y = Freq)) +
+      geom_bar(stat = "identity", fill = "skyblue") +
+      labs(title = paste0("Bar Plot for ", position), x = position, y = "Frequency") +
+      theme_minimal()
+    
+    print(bar_plot)
+  }
+  
+  # Function to generate the sequence logo plot (normalized or non-normalized)
+  generateLogoPlot <- function(normalized, file_path, protein_seq) {
+    # Validate file selection
+    if (file_path == "") {
+      tkmessageBox(message = "Please choose a CSV file.", icon = "error")
+      return()
+    }
+    
+    # Read the CSV file
+    data <- tryCatch({
+      read.csv(file_path, skip = 3, stringsAsFactors = FALSE)
+    }, error = function(e) {
+      tkmessageBox(message = "Error reading the CSV file.", icon = "error")
+      return(NULL)
+    })
+    
+    if (is.null(data)) return()
+    
+    # Ensure 'pep_seq' column is present
+    if (!"pep_seq" %in% colnames(data)) {
+      tkmessageBox(message = "The uploaded file does not contain a 'pep_seq' column.", icon = "error")
+      return()
+    }
+    
+    # Remove duplicates from 'pep_seq'
+    data <- data[!duplicated(data$pep_seq), ]
+    
+    # Extract sequences from the CSV file
+    sequences <- data$pep_seq
+    
+    # Process sequences and generate sequence logo plot
+    sequence_matrix <- sapply(sequences, function(seq) {
+      n <- nchar(seq)
+      if (n >= 4) {
+        p4_p1 <- c(substr(seq, n - 3, n - 3), 
+                   substr(seq, n - 2, n - 2), 
+                   substr(seq, n - 1, n - 1), 
+                   substr(seq, n, n))
+        p1p_p4p <- c(substr(seq, 1, 1), 
+                     substr(seq, 2, 2), 
+                     substr(seq, 3, 3), 
+                     substr(seq, 4, 4))
+        return(c(p4_p1, p1p_p4p))
+      } else {
+        available_part <- c(strsplit(seq, "")[[1]], rep(NA, 8 - n))
+        return(available_part)
+      }
+    }, USE.NAMES = FALSE)
+    
+    sequence_matrix <- t(sequence_matrix)
+    
+    if (normalized) {
+      # Calculate frequencies for each letter at each position, ignoring NAs
+      position_freq <- apply(sequence_matrix, 2, function(pos) {
+        table(factor(pos, levels = LETTERS), useNA = "no") / sum(!is.na(pos))
       })
       
-      if (is.null(data)) return()
-      
-      # Ensure 'pep_seq' column is present
-      if (!"pep_seq" %in% colnames(data)) {
-        tkmessageBox(message = "The uploaded file does not contain a 'pep_seq' column.", icon = "error")
+      # Ensure protein sequence covers the required positions
+      if (nchar(protein_seq) < 10) {
+        tkmessageBox(message = "The protein sequence must be long enough to cover the required positions.", icon = "error")
         return()
       }
       
-      # Extract sequences from the CSV file
-      sequences <- data$pep_seq
+      # Calculate the overall frequency of each letter in the protein sequence
+      protein_freq <- table(factor(unlist(strsplit(protein_seq, "")), levels = LETTERS)) / nchar(protein_seq)
       
-      # Adjust position extraction to handle sequences shorter than 4 amino acids
-      sequence_matrix <- sapply(sequences, function(seq) {
-        n <- nchar(seq)  # Get the length of the sequence
+      # Normalize the position frequencies by the protein sequence frequencies
+      normalized_freq <- sweep(position_freq, 1, protein_freq, "/")
+      
+      # Replace any non-finite or negative values with 0
+      normalized_freq[!is.finite(normalized_freq) | normalized_freq <= 0] <- 0
+      
+      # Generate the sequence logo plot using ggseqlogo
+      logo_plot <- ggseqlogo(normalized_freq, method = "prob")
+    } else {
+      # For non-normalized sequences
+      selected_positions <- sapply(sequences, function(seq) {
+        n <- nchar(seq)
         if (n >= 4) {
-          # Extract the last 4 positions (P4 to P1) and the first 4 positions (P1' to P4')
-          p4_p1 <- c(substr(seq, n - 3, n - 3), 
-                     substr(seq, n - 2, n - 2), 
-                     substr(seq, n - 1, n - 1), 
-                     substr(seq, n, n))
-          p1p_p4p <- c(substr(seq, 1, 1), 
-                       substr(seq, 2, 2), 
-                       substr(seq, 3, 3), 
-                       substr(seq, 4, 4))
-          return(c(p4_p1, p1p_p4p))  # Combine both parts
+          paste0(substr(seq, n - 3, n - 3),  # P4
+                 substr(seq, n - 2, n - 2),  # P3
+                 substr(seq, n - 1, n - 1),  # P2
+                 substr(seq, n, n),          # P1
+                 substr(seq, 1, 1),          # P1'
+                 substr(seq, 2, 2),          # P2'
+                 substr(seq, 3, 3),          # P3'
+                 substr(seq, 4, 4))          # P4'
         } else {
-          # Handle sequences shorter than 4 AA by filling the missing positions with NA
-          available_part <- c(strsplit(seq, "")[[1]], rep(NA, 8 - n))
-          return(available_part)
+          paste0(rep("NA", 8), collapse = "")
         }
       }, USE.NAMES = FALSE)
       
-      # Transpose the matrix to have positions as columns
-      sequence_matrix <- t(sequence_matrix)
+      # Remove any positions that contain "NA"
+      selected_positions <- selected_positions[!grepl("NA", selected_positions)]
       
-      if (normalized) {
-        # Calculate frequencies for each letter at each position, ignoring NAs
-        position_freq <- apply(sequence_matrix, 2, function(pos) {
-          table(factor(pos, levels = LETTERS), useNA = "no") / sum(!is.na(pos))
-        })
-        
-        # Ensure protein sequence covers the required positions
-        if (nchar(protein_seq) < 10) {
-          tkmessageBox(message = "The protein sequence must be long enough to cover the required positions.", icon = "error")
-          return()
-        }
-        
-        # Calculate the overall frequency of each letter in the protein sequence
-        protein_freq <- table(factor(unlist(strsplit(protein_seq, "")), levels = LETTERS)) / nchar(protein_seq)
-        
-        # Normalize the position frequencies by the protein sequence frequencies
-        normalized_freq <- sweep(position_freq, 1, protein_freq, "/")
-        
-        # Replace any non-finite or negative values with 0
-        normalized_freq[!is.finite(normalized_freq) | normalized_freq <= 0] <- 0
-        
-        # Generate the sequence logo plot using ggseqlogo
-        logo_plot <- ggseqlogo(normalized_freq, method = "prob")
-      } else {
-        # For non-normalized sequences
-        selected_positions <- sapply(sequences, function(seq) {
-          n <- nchar(seq)
-          if (n >= 4) {
-            paste0(substr(seq, n - 3, n - 3),  # P4
-                   substr(seq, n - 2, n - 2),  # P3
-                   substr(seq, n - 1, n - 1),  # P2
-                   substr(seq, n, n),          # P1
-                   substr(seq, 1, 1),          # P1'
-                   substr(seq, 2, 2),          # P2'
-                   substr(seq, 3, 3),          # P3'
-                   substr(seq, 4, 4))          # P4'
-          } else {
-            paste0(rep("NA", 8), collapse = "")
-          }
-        }, USE.NAMES = FALSE)
-        
-        # Remove any positions that contain "NA"
-        selected_positions <- selected_positions[!grepl("NA", selected_positions)]
-        
-        # Create the sequence logo plot using ggseqlogo
-        logo_plot <- ggseqlogo(selected_positions, method = "prob")
-      }
-      
-      # Customize x-axis labels to include "cs" and other positions
-      logo_plot <- logo_plot + 
-        scale_x_continuous(breaks = c(1:8, 9), 
-                           labels = c("P4", "P3", "P2", "P1", "P1'", "P2'", "P3'", "P4'", "cs")) +
-        geom_vline(xintercept = 4.5, linetype = "dashed", color = "black", size = 1)  # Cleavage site at "cs"
-      
-      # Plot the sequence logo
-      print(logo_plot)
+      # Create the sequence logo plot using ggseqlogo
+      logo_plot <- ggseqlogo(selected_positions, method = "prob")
     }
     
-    # Buttons to generate plots
-    button_frame <- tkframe(tt, background = "#f5f5f5")
-    plot_normalized_button <- tkbutton(button_frame, text = "Generate Normalized Plot", command = function() generatePlot(TRUE))
-    tkgrid(plot_normalized_button, padx = 10, pady = 10)
+    # Customize x-axis labels to include "cs" and other positions
+    logo_plot <- logo_plot + 
+      scale_x_continuous(breaks = c(1:8, 9), 
+                         labels = c("P4", "P3", "P2", "P1", "P1'", "P2'", "P3'", "P4'", "cs")) +
+      geom_vline(xintercept = 4.5, linetype = "dashed", color = "black", size = 1)  # Cleavage site at "cs"
     
-    plot_non_normalized_button <- tkbutton(button_frame, text = "Generate Non-normalized Plot", command = function() generatePlot(FALSE))
-    tkgrid(plot_non_normalized_button, padx = 10, pady = 10)
-    
-    tkgrid(button_frame, padx = 20, pady = 10)
+    # Plot the sequence logo
+    print(logo_plot)
   }
   
   # Run the GUI
   generateGUI()
 }
 
-# Call the function
 #cut_sites_distribution()
+
 
 ################################################################################
 #   display_protease_cut_sites
