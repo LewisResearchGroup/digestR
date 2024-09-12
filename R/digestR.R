@@ -11736,7 +11736,7 @@ os <- function(dispPane='ol'){
                          xscrollcommand=function(...) tkset(olXscr, ...), 
                          yscrollcommand=function(...) tkset(olYscr, ...),
 			 font = "Helvetica 12 bold",
-                         bg = "white", fg = "black", selectbackground = "lavender")
+                         bg = "white", fg = "black")
 
   olXscr <- ttkscrollbar(olFileFrame, orient='horizontal',
                          command=function(...) tkxview(olFileBox, ...))
@@ -19410,6 +19410,7 @@ os <- function(dispPane='ol'){
                          exportselection=FALSE,  
                          xscrollcommand=function(...) tkset(olXscr, ...), 
                          yscrollcommand=function(...) tkset(olYscr, ...),
+                         font = "Helvetica 12 bold",
 			 bg = "white", fg = "black")
   olXscr <- ttkscrollbar(olFileFrame, orient='horizontal',
                          command=function(...) tkxview(olFileBox, ...))
