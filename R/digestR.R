@@ -13252,6 +13252,7 @@ zoom <- function(){
   #  return(invisible())
   dlg <- tktoplevel() # New
   tkwm.title(dlg, 'Zoom')
+  tkwm.geometry(dlg, "200x200+200+200")
   tkwm.resizable(dlg, FALSE, FALSE)
 
   # Withdraw the window to prevent flickering while setting up # New
