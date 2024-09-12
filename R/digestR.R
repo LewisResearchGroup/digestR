@@ -13365,13 +13365,13 @@ openStored <- function(inFolder, fileName='storedSpec'){
 # ' @export
  fs <- function(){
 
- # Check if Tcl/Tk is available
-  if (!inherits(tclRequire("Tcl"), "tclObj")) {
-    stop("Tcl/Tk is not available.")
-  }
+ #  Check if Tcl/Tk is available
+ #  if (!inherits(tclRequire("Tcl"), "tclObj")) {
+ #    stop("Tcl/Tk is not available.")
+ #  }
   
-  # Ensure the tablelist package is available
-  tclRequire("tablelist")
+ #  # Ensure the tablelist package is available
+ #  tclRequire("tablelist")
   
   ##call fo() if there are no open files
   if (!exists("fileFolder") || is.null(fileFolder) || !exists("currentSpectrum") 
@@ -13442,42 +13442,42 @@ openStored <- function(inFolder, fileName='storedSpec'){
   tkbind(dlg, '<Control-a>', function(...) 
     tkselection.set(tableList, 0, 'end'))
   
-  ##get file information and add to tablelist
-  # getFileInfo <- function(fileNames){
-  #   if (!length(fileNames) || !nzchar(fileNames))
-  #     return(invisible())
-  #   tmpFolder <- fileFolder[fileNames]
-  #   userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
+  #get file information and add to tablelist
+  getFileInfo <- function(fileNames){
+    if (!length(fileNames) || !nzchar(fileNames))
+      return(invisible())
+    tmpFolder <- fileFolder[fileNames]
+    userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
     
-  #   sizes <- as.character(sapply(tmpFolder, function(x) 
-  #     x$file.par$file.size))
+    sizes <- as.character(sapply(tmpFolder, function(x) 
+      x$file.par$file.size))
     
-  #   mods <- sapply(tmpFolder, function(x) 
-  #     as.character(x$file.par$date.modified))
-  #   paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
-  #   #		fileData <- cbind(userTitles, dims, paths, sizes, mods, deparse.level=0)
-  #   fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
-  #   for (i in 1:nrow(fileData))
-  #     tkinsert(tableList, 'end', fileData[i, ])
-  # }
-getFileInfo <- function(fileNames) {
-  if (length(fileNames) == 0 || all(!nzchar(fileNames))) {
-    return(invisible())
+    mods <- sapply(tmpFolder, function(x) 
+      as.character(x$file.par$date.modified))
+    paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
+    #		fileData <- cbind(userTitles, dims, paths, sizes, mods, deparse.level=0)
+    fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
+    for (i in 1:nrow(fileData))
+      tkinsert(tableList, 'end', fileData[i, ])
   }
-  tmpFolder <- fileFolder[fileNames]
-  userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
+# getFileInfo <- function(fileNames) {
+#   if (length(fileNames) == 0 || all(!nzchar(fileNames))) {
+#     return(invisible())
+#   }
+#   tmpFolder <- fileFolder[fileNames]
+#   userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
   
-  sizes <- as.character(sapply(tmpFolder, function(x) 
-    x$file.par$file.size))
+#   sizes <- as.character(sapply(tmpFolder, function(x) 
+#     x$file.par$file.size))
   
-  mods <- sapply(tmpFolder, function(x) 
-    as.character(x$file.par$date.modified))
-  paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
+#   mods <- sapply(tmpFolder, function(x) 
+#     as.character(x$file.par$date.modified))
+#   paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
   
-  fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
-  for (i in 1:nrow(fileData)) {
-    tkinsert(tableList, 'end', fileData[i, ])
-  }
+#   fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
+#   for (i in 1:nrow(fileData)) {
+#     tkinsert(tableList, 'end', fileData[i, ])
+#   }
   getFileInfo(names(fileFolder))
   if (!is.null(currentSpectrum)){
     tkselection.set(tableList, wc() - 1)
@@ -20635,9 +20635,10 @@ processFile <- function(fileName, species)
 
   resList <- parseMascot(fileName)
   
-  if(is.null(resList))
+  #if(is.null(resList))
+   if(is.null(resList) || !"pep_seq" %in% colnames(resList))
   {
-    log_message('No records found.')
+    log_message('Wrong file format, pep_seq column not found.')
     return(NULL)
   }else
   {
@@ -20982,7 +20983,21 @@ mergeFiles <- function(fileFolder, ffIndices, species, name = '')
 getStats <- function(myVector, noise_sd)
 {
   statSummary <- myVector
-  
+
+  # Check if statSummary is of sufficient length
+  if (length(statSummary) == 0 || is.null(statSummary)) 
+  {
+    # Display custom message when statSummary is empty or NULL
+    cat('Wrong file format, pep_seq column not found.\n')
+    
+    noiseEst <- as.numeric(-1)
+    noiseSD <- as.numeric(noise_sd) # 8 bytes
+    noiseMax <- as.numeric(-1) # 8 bytes
+    noiseMean <- as.numeric(-1) # 8 bytes
+    noiseLowHinge <- as.numeric(-1) # 8 bytes
+    noiseUpperHinge <- as.numeric(-1) # 8 bytes
+    noiseMin <- as.numeric(-1) # 8 bytes
+  }
   
   # if statSummary == -1 there were insufficient matches found to determine FDR
   if(as.vector(statSummary)[1] == -1)
