@@ -411,3 +411,8 @@ sa <- save
 #' @importFrom tcltk2
 #' @export
 undo <- ud
+
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage("digestR loaded successfully")
+  splashScreen()  # Call the splash screen function
+}
