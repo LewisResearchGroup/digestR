@@ -1102,30 +1102,31 @@ gui <- function(top=NULL){
       return(invisible())
     winMenuAdd("  digestR -->  ")
     
-    winMenuAdd("Manipulate csv")
+    winMenuAdd("Manipulate .csv files")
     
     #winMenuAddItem("Manipulate csv", 'Unique peptides				unique_peptides()/up()',"up()")
-    winMenuAddItem("Manipulate csv", 'Process Mascot Files			pm()', "pm()")
-    winMenuAddItem("Manipulate csv", 'Generate New Proteome			gp()', "gp()")
-    winMenuAddItem("Manipulate csv", 'Plot cut site distribution		csd()', "csd()")
-    winMenuAddItem("Manipulate csv", 'Plot peptide distribution			pd()', "pd()")
-    winMenuAddItem("Manipulate csv", 'Venn Diagram			        vd()', "vd()")
+    winMenuAddItem("Manipulate .csv files", 'Process Mascot Files			pm()', "pm()")
+    winMenuAddItem("Manipulate .csv files", 'Generate New Proteome			gp()', "gp()")
+    winMenuAddItem("Manipulate .csv files", 'Plot cut site distribution		        csd()', "csd()")
+    winMenuAddItem("Manipulate .csv files", 'Plot peptide distribution			pd()', "pd()")
+    winMenuAddItem("Manipulate .csv files", 'Venn Diagram			        vd()', "vd()")
     #winMenuAddItem("Manipulate csv", 'Import Maven Files			im()', "im()")
     
-    winMenuAdd("Manipulate dcf")
-    winMenuAddItem("Manipulate dcf", 'Open/Close files		fs()', "fs()")
-    winMenuAddItem("Manipulate dcf", 'Save as			sa()', "sa()")
-    winMenuAddItem('Manipulate dcf', 'Manipulate Files		mf()', "mf()")
-    winMenuAddItem('Manipulate dcf', 'Plot settings	        ct()', "ct()")
-    winMenuAddItem('Manipulate dcf', 'Overlays			ol()', "ol()")    
+    winMenuAdd("Manipulate .dcf files")
+    #winMenuAddItem("Manipulate dcf", 'Open/Close files		fs()', "fs()")
+    winMenuAddItem('Manipulate .dcf files', 'Manipulate Files		mf()', "mf()")
+    winMenuAddItem('Manipulate .dcf files', 'Plot settings	        ct()', "ct()")
+    winMenuAddItem('Manipulate .dcf files', 'Overlays			ol()', "ol()")
+    winMenuAddItem("Manipulate .dcf files", 'Save as			sa()', "sa()")   
     
     winMenuAdd("Edit")
-    winMenuAddItem("Edit", 'Undo                 undo/ud()', "undo/ud()")
+    winMenuAddItem("Edit", 'Undo                               ud()', "ud()")
+    winMenuAddItem("Edit", 'Redraw spectrum		       dd()', "dd()")
     #winMenuAddItem("Edit", 'Redo                  redo/rd()', "redo/rd()") 
     #winMenuAddItem("Edit", 'Genotype            genotype/gt()', "genotype/gt()")
     #winMenuAddItem("Edit", 'Title                 title/ti()', "title/ti()")		
-    winMenuAddItem("Edit", '--', "none")
-    winMenuAddItem("Edit", 'Preferences       ep()', "ep()")
+    #winMenuAddItem("Edit", '--', "none")
+    #winMenuAddItem("Edit", 'Preferences                       ep()', "ep()")
     
     winMenuAdd("Graphics")
     winMenuAddItem("Graphics", 'Plot colors			co()', "co()")
@@ -1135,8 +1136,8 @@ gui <- function(top=NULL){
     winMenuAddItem("View", 'Zoom					zm()', "zm()")
     #winMenuAddItem("View", 'Overlays					overlay/ol()', "ol()")
     winMenuAddItem("View", 'Display protease cut site			cs()', "cs()")
-    winMenuAddItem("View", 'Gene labeling				gene_labeling/glab()', "glab()")		
-    winMenuAddItem("View", 'Redraw spectrum				redraw/dd()', "dd()")
+    winMenuAddItem("View", 'Gene labeling				glab()', "glab()")		
+    #winMenuAddItem("View", 'Redraw spectrum				dd()', "dd()")
     
     winMenuAdd("Help")
     winMenuAddItem("Help", 'Help topics', "?digestR")
@@ -18776,7 +18777,7 @@ ps <- function(dispPane='co'){
   ####create widgets for onedFrame
   ##create file list box
   current <- wc()
-  onedFileFrame <- ttklabelframe(onedFrame, text='Files')
+  onedFileFrame <- ttklabelframe(onedFrame, text='Files - Double click to switch spectra')
   onedFileList <- tclVar()
   onedFileNames <- names(fileFolder)[which(sapply(fileFolder, 
                                                   function(x){x$file.par$number_dimensions}) == 1)]
@@ -19075,7 +19076,8 @@ ps <- function(dispPane='co'){
     if (length(usrSel))
       usrFile <- onedFileNames[usrSel]
     else{
-      if (length(names(fileFolder)) && currentSpectrum %in% onedFileNames)
+      if (length(names(fileFolder)) &&
+	  currentSpectrum %in% onedFileNames)
         usrFile <- currentSpectrum
       else
         return(invisible())
@@ -19760,14 +19762,25 @@ mf <- function()
   current <- wc()
   tclCheck()
 
+  # Destroy any existing window with the same ID to avoid conflicts # New
+  if (as.logical(tcl('winfo', 'exists', '.mf'))) {
+    tkdestroy('.mf')  # Destroy the previous window # New
+  }
+  dlg <- tktoplevel() # New
+  tkwm.title(dlg, 'Manipulate Files') # New
+  tkwm.geometry(dlg, "400x300+200+200") # new
 
+  # Withdraw the window to prevent flickering during setup
+  tkwm.withdraw(dlg) # New
+  
+  tkfocus(dlg) # New
 
-  dlg <- myToplevel('mf')
+  # dlg <- myToplevel('mf')
   
-  tkfocus(dlg)
-  tkwm.deiconify(dlg)
+  # tkfocus(dlg)
+  # tkwm.deiconify(dlg)
   
-  tkwm.title(dlg, 'Manipulate Files')
+  #tkwm.title(dlg, 'Manipulate Files')
   
   fileFrame <- ttklabelframe(dlg, text='Files')
   opFrame <- ttklabelframe(dlg, text='Operations')
@@ -20052,6 +20065,8 @@ mf <- function()
       tryCatch(tkinvoke(focus), error=function(er){})
   }
   tkbind(dlg, '<Return>', onEnter) 
+  tkwm.deiconify(dlg)
+  tcl("update")  # Ensure the window is fully drawn and updated
   
   invisible()
 }
@@ -20065,13 +20080,30 @@ checkColumnList <- function(sStr)
 im <- function()
 {
   tclCheck()
-  dlg <- myToplevel('im')
-  if (is.null(dlg))
-    return(invisible())
   
+ # Destroy any existing window with the same ID to avoid conflicts
+  if (as.logical(tcl('winfo', 'exists', '.im'))) {
+    tkdestroy('.im')  # Destroy the previous window
+  }
+
+  dlg <- tktoplevel()
   tkwm.title(dlg, 'Import Maven File')
-  tkfocus(dlg)
-  tkwm.deiconify(dlg)
+  tkwm.geometry(dlg, "300x400+200+200") 
+
+  # Withdraw the window to prevent flickering during setup
+  tkwm.withdraw(dlg)
+  
+  tkfocus(dlg)	
+	
+  #   dlg <- myToplevel('im')
+  #   if (is.null(dlg))
+  #   return(invisible())
+  
+  # tkwm.title(dlg, 'Import Maven File')
+  # tkfocus(dlg)
+  # tkwm.deiconify(dlg)
+
+  listboxFont <- tkfont.create(family = "Helvetica", size = 12)
   
   mavenLabelFrame <- ttklabelframe(dlg, text='Maven Details')
   
@@ -20099,8 +20131,6 @@ im <- function()
   thresholdFrame <- ttklabelframe(mavenLabelFrame, text='Adjust this value to determine the threshold between blanks and data readings. 
 															Higher values reduce chances of false positives.')
   thresholdMultLabel <- ttklabel(thresholdFrame, text='Threshold Multiplier:')
-  
-  
   
   ciEntry <- tclVar(character(0))
   compoundIdxEntry <- ttkentry(columnFrame, width=24, justify='left', textvariable=ciEntry)
