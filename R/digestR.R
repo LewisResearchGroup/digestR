@@ -18327,6 +18327,7 @@ es <- function()
   }
   dlg <- tktoplevel() # New
   tkwm.title(dlg, 'Edit Variables')
+  tkwm.geometry(dlg, "550x500+200+200")
 
   # Withdraw the window to prevent flickering while setting up
   tkwm.withdraw(dlg)
@@ -19315,21 +19316,35 @@ os <- function(dispPane='ol'){
   ##create main window
   current <- wc()
   tclCheck()
-  dlg <- myToplevel('os')
-  if (is.null(dlg))
-  {
-    if (dispPane == 'ol')
-    {
-      tkwm.title('.os', 'Overlays')
-      tkselect('.os.1', 0)
-    }
-    return(invisible())
-  }
+
+   # Destroy any existing window with the same ID to avoid conflicts # New
+  if (as.logical(tcl('winfo', 'exists', '.os'))) {
+    tkdestroy('.os')  # Destroy the previous window # New
+  } 
+  dlg <- tktoplevel() # New
+  tkwm.title(dlg, if (dispPane == 'ol') 'Overlays' else 'Other Title') # New
+  tkwm.geometry(dlg, "550x500+200+200") # New
   
-  tkfocus(dlg)
-  tkwm.deiconify(dlg)
-  if (dispPane == 'ol')
-    tkwm.title(dlg, 'Overlays')
+  # Withdraw the window to prevent flickering during setup
+  tkwm.withdraw(dlg) # New
+
+  tkfocus(dlg) #New
+	     
+  # dlg <- myToplevel('os')
+  # if (is.null(dlg))
+  # {
+  #   if (dispPane == 'ol')
+  #   {
+  #     tkwm.title('.os', 'Overlays')
+  #     tkselect('.os.1', 0)
+  #   }
+  #   return(invisible())
+  # }
+  
+  # tkfocus(dlg)
+  # tkwm.deiconify(dlg)
+  # if (dispPane == 'ol')
+  #   tkwm.title(dlg, 'Overlays')
   
   ##create paned notebook
   osBook <- ttknotebook(dlg, padding=3)
@@ -19718,6 +19733,10 @@ os <- function(dispPane='ol'){
       tryCatch(tkinvoke(focus), error=function(er){})
   }
   tkbind(dlg, '<Return>', onEnter) 
+
+  ## Now that the window is set up, deiconify it to show the window properly
+  tkwm.deiconify(dlg) # New
+  tcl("update")  # Ensure the window is fully drawn and updated # New
   
   invisible()
 }
@@ -19738,6 +19757,9 @@ mf <- function()
   ##create main window
   current <- wc()
   tclCheck()
+
+
+
   dlg <- myToplevel('mf')
   
   tkfocus(dlg)
