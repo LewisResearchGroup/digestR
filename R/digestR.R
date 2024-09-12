@@ -4,7 +4,7 @@
 ##                                                                            ##
 ##                                                                            ##
 ## DigestR version 1.0.0, Tools for viewing and analyzing protein catabolism. ##
-##      Copyright (C) 2023, Dimitri Desmonts de Lamache, Raied Aburashed,     ##
+##      Copyright (C) 2024, Dimitri Desmonts de Lamache, Raied Aburashed,     ##
 ##               Travis A. Bingemann, Sören Wacker and Ian A. Lewis           ##
 ##				under GPL-3                                   ##
 ##                                                                            ##
@@ -11653,7 +11653,7 @@ os <- function(dispPane='ol'){
   # Create a new window
   dlg <- tktoplevel() # New
   tkwm.title(dlg, if (dispPane == 'ol') 'Overlays' else 'Shift Referencing')  # Set window title
-  tkwm.geometry(dlg, "550x500+200+200") # New
+  tkwm.geometry(dlg, "800x500+200+200") # New
 
   # Withdraw the window to prevent flickering while setting up elements
   tkwm.withdraw(dlg) # New
@@ -11732,9 +11732,11 @@ os <- function(dispPane='ol'){
   tclObj(olFileList) <- getTitles(olFileNames)
   olFileBox <- tklistbox(olFileFrame, height=13, width=25, 
                          listvariable=olFileList, selectmode='extended', active='dotbox', 
-                         exportselection=FALSE, bg='white', 
+                         exportselection=FALSE, 
                          xscrollcommand=function(...) tkset(olXscr, ...), 
-                         yscrollcommand=function(...) tkset(olYscr, ...))
+                         yscrollcommand=function(...) tkset(olYscr, ...),
+                         bg = "white", fg = "black", selectbackground = "lightblue")
+
   olXscr <- ttkscrollbar(olFileFrame, orient='horizontal',
                          command=function(...) tkxview(olFileBox, ...))
   olYscr <- ttkscrollbar(olFileFrame, orient='vertical', 
@@ -19352,7 +19354,7 @@ os <- function(dispPane='ol'){
   } 
   dlg <- tktoplevel() # New
   tkwm.title(dlg, if (dispPane == 'ol') 'Overlays' else 'Other Title') # New
-  tkwm.geometry(dlg, "550x500+200+200") # New
+  tkwm.geometry(dlg, "800x500+200+200") # New
   
   # Withdraw the window to prevent flickering during setup
   tkwm.withdraw(dlg) # New
@@ -19404,9 +19406,10 @@ os <- function(dispPane='ol'){
   tclObj(olFileList) <- getTitles(olFileNames)
   olFileBox <- tklistbox(olFileFrame, height=13, width=25, 
                          listvariable=olFileList, selectmode='extended', active='dotbox', 
-                         exportselection=FALSE, bg='white', 
+                         exportselection=FALSE,  
                          xscrollcommand=function(...) tkset(olXscr, ...), 
-                         yscrollcommand=function(...) tkset(olYscr, ...))
+                         yscrollcommand=function(...) tkset(olYscr, ...),
+			 bg = "white", fg = "black", selectbackground = "lightblue")
   olXscr <- ttkscrollbar(olFileFrame, orient='horizontal',
                          command=function(...) tkxview(olFileBox, ...))
   olYscr <- ttkscrollbar(olFileFrame, orient='vertical', 
@@ -19551,9 +19554,10 @@ os <- function(dispPane='ol'){
     tclObj(overlaysList) <- character(0)
   overlayBox <- tklistbox(overlayFrame,	height=7, width=25, 
                           exportselection=FALSE, listvariable=overlaysList, selectmode='extended', 
-                          active='dotbox', bg='white', 
+                          active='dotbox', 
                           xscrollcommand=function(...) tkset(overlayXscr, ...), 
-                          yscrollcommand=function(...) tkset(overlayYscr, ...))
+                          yscrollcommand=function(...) tkset(overlayYscr, ...),
+                          bg = "white", fg = "black", selectbackground = "lightblue")
   overlayXscr <- ttkscrollbar(overlayFrame, orient='horizontal', 
                               command=function(...) tkxview(overlayBox, ...))
   overlayYscr <- ttkscrollbar(overlayFrame, orient='vertical',
@@ -25479,7 +25483,7 @@ display_protease_cut_sites <- function() {
   proteaseDropdown <- tklistbox(proteaseFrame, height = 10, width = 40, selectmode = "multiple", 
                                 yscrollcommand = function(...) tkset(yscroll, ...),
                                 xscrollcommand = function(...) tkset(xscroll, ...),
-                                background = "white", font = "Helvetica 12 bold")
+                                background = "white", font = "Helvetica 12 bold", selectbackground = "lightblue")
   
   tkgrid(proteaseDropdown, row = 1, column = 0, pady = 10)
   tkgrid(yscroll, row = 1, column = 1, sticky = "ns")
