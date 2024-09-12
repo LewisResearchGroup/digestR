@@ -18005,15 +18005,50 @@ process_mascot <- function()
   invisible()
 }
 
+# loadProteome <- function(sFilename, selectedSpeciesName) {
+#   log_message(sFilename)
+#   df <- read.csv(sFilename, head = TRUE, stringsAsFactors = FALSE)
+#   fileInfo <- file.info(sFilename)
+#   ID <- as.integer(fileInfo$mtime)
+#   df <- subset(df, select = c("GeneName", "seq", "chromosome", "start"))
+#   names(df)[1] <- "name"
+#   #return(prepareSpecies(selectedSpeciesName, ID, df))
+#   return(prepareSpecies('Proteome:', ID, df))
+# }
+
 loadProteome <- function(sFilename, selectedSpeciesName) {
   log_message(sFilename)
-  df <- read.csv(sFilename, head = TRUE, stringsAsFactors = FALSE)
-  fileInfo <- file.info(sFilename)
-  ID <- as.integer(fileInfo$mtime)
+  
+  # Try reading the CSV file
+  df <- tryCatch({
+    read.csv(sFilename, head = TRUE, stringsAsFactors = FALSE)
+  }, error = function(e) {
+    cat("Error reading the file:", e$message, "\n")
+    return(NULL)
+  })
+  
+  # If df is NULL, return early
+  if (is.null(df)) {
+    return(NULL)
+  }
+  
+  # Define the required columns
+  required_columns <- c("GeneName", "seq", "chromosome", "start")
+  
+  # Check if all required columns are present
+  if (!all(required_columns %in% colnames(df))) {
+    missing_cols <- setdiff(required_columns, colnames(df))
+    cat("Error: Missing columns:", paste(missing_cols, collapse = ", "), "\n")
+    cat('Check Column Names "GeneName", "seq", "chromosome", "start"\n')
+    return(NULL)
+  }
+  
+  # Proceed with subsetting the data if the columns exist
   df <- subset(df, select = c("GeneName", "seq", "chromosome", "start"))
   names(df)[1] <- "name"
-  #return(prepareSpecies(selectedSpeciesName, ID, df))
-  return(prepareSpecies('Proteome:', ID, df))
+  
+  # Call prepareSpecies with the updated dataframe
+  return(prepareSpecies('Proteome:', as.integer(file.info(sFilename)$mtime), df))
 }
 
 		       
