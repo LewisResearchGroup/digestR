@@ -20646,7 +20646,8 @@ processFile <- function(fileName, species)
   
   if(is.null(resList))
   {
-    print('No records found.')
+    #print('No records found.')
+     print('Check file format, pep_seq column not found.')
     return(NULL)
   }else
   {
