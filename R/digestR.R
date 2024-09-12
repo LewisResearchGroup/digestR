@@ -18089,109 +18089,7 @@ look_up_species_files <- function(){
   
 #   invisible()
 # }
-###########
-# Process mascot V2
-# process_mascot <- function()
-# {
 
-#   species <- look_up_species_files()
-  
-#   ##creates main window
-#   tclCheck()
-#   dlg <- myToplevel('pm')
-
-#  if (is.null(dlg)) {
-#     message("Failed to create the GUI window.")
-#     return(invisible())
-#   }
-  
-#   tkwm.title(dlg, 'Process Mascot Files')
-#   tkwm.geometry(dlg, "+200+200")  # Position window at 200, 200 on screen
-#   tkwm.deiconify(dlg)
-#   tkraise(dlg)
-
-#   tcl("update")
-
-#   speciesLabelFrame <- ttklabelframe(dlg, text='Species')
-  
-#   speciesList <- tclVar()
-#   tclObj(speciesList) <- species
-  
-#   tmp <- tclvalue(tkfont.actual(dlg))
-  
-#   tmp2 <- strsplit(tmp, ' ', fixed=TRUE)
-#   fam <- tmp2[[1]][2]
-#   siz <- tmp2[[1]][4]
-#   wgt <- tmp2[[1]][6]
-#   slt <- tmp2[[1]][8]
-#   slt <- 'italic' ## change to italics
-  
-#   myFont <- tkfont.create(family = fam, size = siz, weight = wgt, slant = slt)
-  
-#   speciesBox <- tklistbox(speciesLabelFrame, height=10, width=34, listvariable=speciesList,
-#                           selectmode='extended', active='dotbox',	exportselection=FALSE, bg='white', font = myFont,
-#                           xscrollcommand=function(...) tkset(xscr, ...), yscrollcommand=function(...) tkset(yscr, ...))
-  
-#   xscr <- ttkscrollbar(speciesLabelFrame, orient='horizontal', command=function(...) tkxview(speciesBox, ...))
-#   yscr <- ttkscrollbar(speciesLabelFrame, orient='vertical',	command=function(...) tkyview(speciesBox, ...))
-  
-#   if (length(species) > 2)
-#   {
-#     for (i in seq(0, length(species) - 1, 2))
-#       tkitemconfigure(speciesBox, i, background='#ececff')
-#   }
-  
-#   tkselection.set(speciesBox, 0)	
-#   #################
-#   ##create single vs. multiple file conversion radiobuttons
-#   fileConvFrame <- ttklabelframe(dlg, text='Convert File(s):')
-#   singleFileConvVal <- tclVar(TRUE)
-  
-#   singleFileOnButton <- ttkradiobutton(fileConvFrame, variable=singleFileConvVal, 
-#                                        value=TRUE, text='Single File')
-  
-#   singleFileOffButton <- ttkradiobutton(fileConvFrame, variable=singleFileConvVal, 
-#                                         value=FALSE, text='All Files in folder and sub folders')
-#   #################
-#   buttonFrame <- ttkframe(dlg)
-  
-#   onApply <- function()
-#   {
-#     idx <- 1 + as.integer(tkcurselection(speciesBox))
-#     #selectedSpeciesName <- basename(species[idx]) # Added
-#     globalSettings$processSpeciesID <<- idx
-#     globalSettings$processSingleFile <<- (as.logical(tclObj(singleFileConvVal)) == TRUE)
-#     tkdestroy(dlg)
-#     #loadProteome(species[idx], selectedSpeciesName)  # Added Pass the selected file and name
-#     batchConvert()
-#   }
-#   apply <- ttkbutton(buttonFrame, text='Apply', width=10, command=onApply)
-  
-#   ##add widgets to speciesFrame
-#   tkgrid(speciesLabelFrame, column=1, row=1, sticky='nswe', pady=6, padx=6)
-#   tkgrid(speciesBox, column=1, row=1, sticky='nswe')
-#   tkgrid(yscr, column=2, row=1, sticky='ns')
-#   tkgrid(xscr, column=1, row=2, sticky='we')
-  
-#   ##make fileFrame stretch when window is resized
-#   tkgrid.columnconfigure(dlg, 1, weight=1)
-#   tkgrid.rowconfigure(dlg, 1, weight=10)
-#   tkgrid.columnconfigure(speciesLabelFrame, 1, weight=1)
-#   tkgrid.rowconfigure(speciesLabelFrame, 1, weight=1)
-  
-#   tkgrid(fileConvFrame, column=1, row=2, sticky='we', pady=6, padx=6)
-#   tkgrid(singleFileOnButton, column=1, row=1, sticky='nswe', pady=6, padx=6)
-#   tkgrid(singleFileOffButton, column=2, row=1, sticky='nswe', pady=6, padx=6)
-  
-#   tkgrid(buttonFrame, column=1, row=3, sticky='nswe', pady=6, padx=6)
-#   tkgrid(apply, column=1, row=1, sticky='w')
-#   tkgrid.columnconfigure(buttonFrame, 1, weight=1)
-#   tkgrid.rowconfigure(buttonFrame, 1, weight=1)
-  
-#   tkgrid(ttksizegrip(dlg), column=2, row=3, sticky='se')
-  
-#   invisible()
-# }
 ####################################################################
 # process mascot v3
 
@@ -18209,10 +18107,13 @@ process_mascot <- function() {
 
   dlg <- tktoplevel()
   tkwm.title(dlg, 'Process Mascot Files')
-  tkwm.geometry(dlg, "+200+200")  # Position window at 200, 200 on screen
+  tkwm.geometry(dlg, "600x400+200+400")  # Position window at 200, 200 on screen
   
   # Withdraw the window initially to prevent flickering
   tkwm.withdraw(dlg)
+	
+  # Create custom font for the listbox items (increase font size)
+  #listboxFont <- tkfont.create(family = "Helvetica", size = 12)
   
   ## Species Frame
   speciesLabelFrame <- ttklabelframe(dlg, text='Species')
@@ -18222,7 +18123,9 @@ process_mascot <- function() {
 
   # Create listbox for species
   speciesBox <- tklistbox(speciesLabelFrame, height = 10, width = 34, listvariable = speciesList,
-                          selectmode = 'extended', active = 'dotbox', exportselection = FALSE, bg = 'white')
+                          selectmode = 'extended', active = 'dotbox', exportselection = FALSE,
+			  font = "Helvetica 12 bold",
+			  bg = 'white', fg = "black", selectbackground = "lightblue")
 
   xscr <- ttkscrollbar(speciesLabelFrame, orient = 'horizontal', command = function(...) tkxview(speciesBox, ...))
   yscr <- ttkscrollbar(speciesLabelFrame, orient = 'vertical', command = function(...) tkyview(speciesBox, ...))
