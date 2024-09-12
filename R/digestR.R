@@ -18532,7 +18532,7 @@ ps <- function(dispPane='co'){
 
   dlg <- tktoplevel() # New
   tkwm.title(dlg, 'Plot Settings') # New
-  tkwm.geometry(dlg, "550x500+200+200")  # Increase window size (Width=600, Height=400)
+  tkwm.geometry(dlg, "650x500+200+200")  # Increase window size (Width=600, Height=400)
 
   # Withdraw the window to prevent flickering during setup
   tkwm.withdraw(dlg) # New
@@ -18583,8 +18583,11 @@ ps <- function(dispPane='co'){
   coFileNames <- names(fileFolder)
   tclObj(coFileList) <- getTitles(coFileNames)
   coFileBox <- tklistbox(coFileFrame, width=30, listvariable=coFileList, selectmode='extended', active='dotbox',	
-                         exportselection=FALSE, bg='white', 	xscrollcommand=function(...) tkset(coXscr, ...), 
-                         yscrollcommand=function(...) tkset(coYscr, ...))
+                         exportselection=FALSE, 	
+			 xscrollcommand=function(...) tkset(coXscr, ...), 
+                         yscrollcommand=function(...) tkset(coYscr, ...),
+			 font = "Helvetica 12 bold",  # Increased font size and made bold
+                         bg = "white", fg = "black", selectbackground = "lightblue")
   
   coXscr <- ttkscrollbar(coFileFrame, orient='horizontal', command=function(...) tkxview(coFileBox, ...))
   
@@ -18783,9 +18786,12 @@ ps <- function(dispPane='co'){
                                                   function(x){x$file.par$number_dimensions}) == 1)]
   tclObj(onedFileList) <- getTitles(onedFileNames)
   onedFileBox <- tklistbox(onedFileFrame, width=30, listvariable=onedFileList, 
-                           selectmode='extended', active='dotbox',	exportselection=FALSE, bg='white',
+                           selectmode='extended', active='dotbox',	exportselection=FALSE,
                            xscrollcommand=function(...) tkset(onedXscr, ...), 
-                           yscrollcommand=function(...) tkset(onedYscr, ...))
+                           yscrollcommand=function(...) tkset(onedYscr, ...),
+			   font = "Helvetica 12 bold",  # Increased font size and made bold
+                           bg = "white", fg = "black", selectbackground = "lightblue"))
+			 
   onedXscr <- ttkscrollbar(onedFileFrame, orient='horizontal',
                            command=function(...) tkxview(onedFileBox, ...))
   onedYscr <- ttkscrollbar(onedFileFrame, orient='vertical', 
@@ -20234,6 +20240,9 @@ im <- function()
   tkgrid.rowconfigure(thresholdFrame, 1, weight=1)
   
   tkgrid(ttksizegrip(dlg), column=2, row=3, sticky='se')
+
+  tkwm.deiconify(dlg)
+  tcl("update")  # Ensure the window is fully drawn and updated
   
   invisible()
 }
