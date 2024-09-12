@@ -859,60 +859,126 @@ createTclImage <- function(imageName, path=NULL){
 ## parent - character; parent for the toplevel
 ## Note:  If a toplevel with the given id already exists the toplevel will be 
 ##   deiconified (redisplayed)
-myToplevel <- function (id, parent, ...){
+# myToplevel <- function (id, parent, ...){
   
-  ##check arguments
+#   ##check arguments
+#   tclCheck()
+#   if (missing(parent))
+#     parent <- .TkRoot
+#   if (missing(id)){
+#     tryCatch(id <- paste(parent$ID, evalq(num.subwin <- num.subwin + 1, 
+#                                           parent$env), sep = "."),
+#              error=function(er){
+#                assign('num.subwin', parent$env$num.subwin + 1, parent$env)
+#                id <<- paste(parent$ID, parent$env$num.subwin, sep = ".")
+#              })
+#   }else if (length(unlist(strsplit(id, '.', fixed=TRUE))) == 1)
+#     id <- paste(parent$ID, '.', id, sep='')
+  
+#   ##if a toplevel with the same id already exists, display it
+#   if (as.logical(tcl('winfo', 'exists', id))){
+#     hideGui(id)
+#     showGui(id)
+#     tkfocus(id)
+#     return(NULL)
+#   }
+  
+#   ##create a new window environment
+#   win <- .Tk.newwin(id)
+#   assign(id, win, envir=parent$env)
+#   assign("parent", parent, envir=win$env)
+  
+#   ##create the new toplevel
+#   win$ID <- id
+#   tcl("toplevel", id, ...)
+  
+#   ##configure the window to be displayed on top of its parent
+#   if (parent$ID != ""){
+#     parentTop <- as.logical(tcl('wm', 'attributes', parent, '-topmost'))
+#     if (parentTop)
+#       tcl('wm', 'attributes', parent, topmost=FALSE)
+#     if (as.logical(tkwinfo('viewable', parent)))
+#       tkwm.transient(win, parent)
+#     tkwm.withdraw(win)
+#     tkwm.deiconify(win)
+#     tkbind(id, "<Destroy>", function(){
+#       if (parentTop)
+#         tryCatch(tcl('wm', 'attributes', parent, topmost=TRUE), 
+#                  error=function(er){})
+#       if (exists(id, envir=parent$env, inherits=FALSE)) 
+#         rm(list=id, envir=parent$env)
+#       tkbind(id, "<Destroy>", "")})
+#   }else{
+#     tkbind(id, "<Destroy>", function(){
+#       if (exists(id, envir=parent$env, inherits=FALSE)) 
+#         rm(list=id, envir=parent$env)
+#       tkbind(id, "<Destroy>", "")})
+#   }
+  
+#   return(win)
+# }
+####################################################################
+myToplevel <- function (id, parent, ...) {
+  
+  ## Check arguments
   tclCheck()
-  if (missing(parent))
+  if (missing(parent)) {
     parent <- .TkRoot
-  if (missing(id)){
+  }
+  
+  if (missing(id)) {
     tryCatch(id <- paste(parent$ID, evalq(num.subwin <- num.subwin + 1, 
                                           parent$env), sep = "."),
-             error=function(er){
+             error = function(er) {
                assign('num.subwin', parent$env$num.subwin + 1, parent$env)
                id <<- paste(parent$ID, parent$env$num.subwin, sep = ".")
              })
-  }else if (length(unlist(strsplit(id, '.', fixed=TRUE))) == 1)
-    id <- paste(parent$ID, '.', id, sep='')
+  } else if (length(unlist(strsplit(id, '.', fixed = TRUE))) == 1) {
+    id <- paste(parent$ID, '.', id, sep = '')
+  }
   
-  ##if a toplevel with the same id already exists, display it
-  if (as.logical(tcl('winfo', 'exists', id))){
+  ## If a toplevel with the same id already exists, reuse it
+  if (as.logical(tcl('winfo', 'exists', id))) {
     hideGui(id)
     showGui(id)
     tkfocus(id)
-    return(NULL)
+    
+    # Return the existing window instead of NULL
+    return(get(id, envir = parent$env))
   }
   
-  ##create a new window environment
+  ## Create a new window environment
   win <- .Tk.newwin(id)
-  assign(id, win, envir=parent$env)
-  assign("parent", parent, envir=win$env)
+  assign(id, win, envir = parent$env)
+  assign("parent", parent, envir = win$env)
   
-  ##create the new toplevel
+  ## Create the new toplevel
   win$ID <- id
   tcl("toplevel", id, ...)
   
-  ##configure the window to be displayed on top of its parent
-  if (parent$ID != ""){
+  ## Configure the window to be displayed on top of its parent
+  if (parent$ID != "") {
     parentTop <- as.logical(tcl('wm', 'attributes', parent, '-topmost'))
     if (parentTop)
-      tcl('wm', 'attributes', parent, topmost=FALSE)
+      tcl('wm', 'attributes', parent, topmost = FALSE)
     if (as.logical(tkwinfo('viewable', parent)))
       tkwm.transient(win, parent)
     tkwm.withdraw(win)
     tkwm.deiconify(win)
-    tkbind(id, "<Destroy>", function(){
+    tkbind(id, "<Destroy>", function() {
       if (parentTop)
-        tryCatch(tcl('wm', 'attributes', parent, topmost=TRUE), 
-                 error=function(er){})
-      if (exists(id, envir=parent$env, inherits=FALSE)) 
-        rm(list=id, envir=parent$env)
-      tkbind(id, "<Destroy>", "")})
-  }else{
-    tkbind(id, "<Destroy>", function(){
-      if (exists(id, envir=parent$env, inherits=FALSE)) 
-        rm(list=id, envir=parent$env)
-      tkbind(id, "<Destroy>", "")})
+        tryCatch(tcl('wm', 'attributes', parent, topmost = TRUE), 
+                 error = function(er) {})
+      if (exists(id, envir = parent$env, inherits = FALSE)) 
+        rm(list = id, envir = parent$env)
+      tkbind(id, "<Destroy>", "")
+    })
+  } else {
+    tkbind(id, "<Destroy>", function() {
+      if (exists(id, envir = parent$env, inherits = FALSE)) 
+        rm(list = id, envir = parent$env)
+      tkbind(id, "<Destroy>", "")
+    })
   }
   
   return(win)
