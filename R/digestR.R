@@ -11735,7 +11735,8 @@ os <- function(dispPane='ol'){
                          exportselection=FALSE, 
                          xscrollcommand=function(...) tkset(olXscr, ...), 
                          yscrollcommand=function(...) tkset(olYscr, ...),
-                         bg = "white", fg = "black", selectbackground = "lightblue")
+			 font = "Helvetica 12 bold",
+                         bg = "white", fg = "black", selectbackground = "lavender")
 
   olXscr <- ttkscrollbar(olFileFrame, orient='horizontal',
                          command=function(...) tkxview(olFileBox, ...))
@@ -17914,7 +17915,7 @@ gene_labeling <- function()
                        selectmode='extended', active='dotbox',	exportselection=FALSE, bg='white', 
                        xscrollcommand=function(...) tkset(xscr, ...), yscrollcommand=function(...) tkset(yscr, ...),
 		       font = "Helvetica 12 bold",  # Increased font size and made bold
-                       bg = "white", fg = "black", selectbackground = "lightblue")
+                       bg = "white", fg = "black")
   
   xscr <- ttkscrollbar(fileFrame, orient='horizontal', command=function(...) tkxview(fileBox, ...))
   yscr <- ttkscrollbar(fileFrame, orient='vertical',	command=function(...) tkyview(fileBox, ...))
@@ -18195,7 +18196,7 @@ process_mascot <- function() {
   speciesBox <- tklistbox(speciesLabelFrame, height = 10, width = 34, listvariable = speciesList,
                           selectmode = 'extended', active = 'dotbox', exportselection = FALSE,
 			  font = "Helvetica 12 bold",
-			  bg = 'white', fg = "black", selectbackground = "lightblue")
+			  bg = 'white', fg = "black")
 
   xscr <- ttkscrollbar(speciesLabelFrame, orient = 'horizontal', command = function(...) tkxview(speciesBox, ...))
   yscr <- ttkscrollbar(speciesLabelFrame, orient = 'vertical', command = function(...) tkyview(speciesBox, ...))
@@ -18608,7 +18609,7 @@ ps <- function(dispPane='co'){
 			 xscrollcommand=function(...) tkset(coXscr, ...), 
                          yscrollcommand=function(...) tkset(coYscr, ...),
 			 font = "Helvetica 12 bold",  # Increased font size and made bold
-                         bg = "white", fg = "black", selectbackground = "lightblue")
+                         bg = "white", fg = "black")
   
   coXscr <- ttkscrollbar(coFileFrame, orient='horizontal', command=function(...) tkxview(coFileBox, ...))
   
@@ -18811,7 +18812,7 @@ ps <- function(dispPane='co'){
                            xscrollcommand=function(...) tkset(onedXscr, ...), 
                            yscrollcommand=function(...) tkset(onedYscr, ...),
 			   font = "Helvetica 12 bold",  # Increased font size and made bold
-                           bg = "white", fg = "black", selectbackground = "lightblue")
+                           bg = "white", fg = "black")
 			 
   onedXscr <- ttkscrollbar(onedFileFrame, orient='horizontal',
                            command=function(...) tkxview(onedFileBox, ...))
@@ -19409,7 +19410,7 @@ os <- function(dispPane='ol'){
                          exportselection=FALSE,  
                          xscrollcommand=function(...) tkset(olXscr, ...), 
                          yscrollcommand=function(...) tkset(olYscr, ...),
-			 bg = "white", fg = "black", selectbackground = "lightblue")
+			 bg = "white", fg = "black")
   olXscr <- ttkscrollbar(olFileFrame, orient='horizontal',
                          command=function(...) tkxview(olFileBox, ...))
   olYscr <- ttkscrollbar(olFileFrame, orient='vertical', 
@@ -19557,7 +19558,7 @@ os <- function(dispPane='ol'){
                           active='dotbox', 
                           xscrollcommand=function(...) tkset(overlayXscr, ...), 
                           yscrollcommand=function(...) tkset(overlayYscr, ...),
-                          bg = "white", fg = "black", selectbackground = "lightblue")
+                          bg = "white", fg = "black")
   overlayXscr <- ttkscrollbar(overlayFrame, orient='horizontal', 
                               command=function(...) tkxview(overlayBox, ...))
   overlayYscr <- ttkscrollbar(overlayFrame, orient='vertical',
@@ -23606,7 +23607,7 @@ venn_diagram_generator <- function() {
                        yscrollcommand = function(...) tkset(yscroll, ...), 
                        xscrollcommand = function(...) tkset(xscroll, ...), 
                        font = "Helvetica 12 bold",  # Increased font size and made bold
-                       bg = "white", fg = "black", selectbackground = "lightblue")
+                       bg = "white", fg = "black")
   
   # Grid the listbox and scrollbars inside the labeled frame
   tkgrid(listbox, row = 0, column = 0)
@@ -24187,7 +24188,7 @@ peptides_distribution <- function() {
   listbox <- tklistbox(listboxFrame, height = 10, width = 40, selectmode = "multiple", 
                        yscrollcommand = function(...) tkset(yscroll, ...), 
                        xscrollcommand = function(...) tkset(xscroll, ...), 
-                       font = "Helvetica 12 bold", bg = "white", fg = "black", selectbackground = "lightblue")  # Increased font size and made bold
+                       font = "Helvetica 12 bold", bg = "white", fg = "black")  # Increased font size and made bold
   
   # Grid the listbox and scrollbars
   tkgrid(listbox, row = 0, column = 0)
@@ -25483,7 +25484,7 @@ display_protease_cut_sites <- function() {
   proteaseDropdown <- tklistbox(proteaseFrame, height = 10, width = 40, selectmode = "multiple", 
                                 yscrollcommand = function(...) tkset(yscroll, ...),
                                 xscrollcommand = function(...) tkset(xscroll, ...),
-                                background = "white", font = "Helvetica 12 bold", selectbackground = "lightblue")
+                                background = "white", font = "Helvetica 12 bold", fg = "black")
   
   tkgrid(proteaseDropdown, row = 1, column = 0, pady = 10)
   tkgrid(yscroll, row = 1, column = 1, sticky = "ns")
