@@ -20399,57 +20399,57 @@ exportFileListRAW <- function()
 ## Note - This function behaves differently than fo() and is meant for internal
 ##	use.  Attempting to open a file that already exists in fileFolder will 
 ##	create a duplicate entry.  3D spectra are not supported.
-silentOpen <- function(fileList){
+# silentOpen <- function(fileList){
   
-  ## Read selected files
-  fileList <- sort(fileList)
-  for (i in seq_along(fileList)){
+#   ## Read selected files
+#   fileList <- sort(fileList)
+#   for (i in seq_along(fileList)){
     
-    ##Read Sparky Header and file info from binary
-    new.file <- try(dianaHead(file.name=fileList[i], print.info=FALSE), 
-                    silent=TRUE)
-    if (!is.list(new.file) || !length(new.file$file.par)){
-      fileList <- fileList[-i]
-      next
-    }	
+#     ##Read Sparky Header and file info from binary
+#     new.file <- try(dianaHead(file.name=fileList[i], print.info=FALSE), 
+#                     silent=TRUE)
+#     if (!is.list(new.file) || !length(new.file$file.par)){
+#       fileList <- fileList[-i]
+#       next
+#     }	
     
-    ## Fetch the default graphics settings 
-    new.file$graphics.par <- defaultSettings
+#     ## Fetch the default graphics settings 
+#     new.file$graphics.par <- defaultSettings
     
-    ## Set initial plotting range
-    if (new.file$file.par$number_dimensions == 1){
-      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
-                                     new.file$file.par$upfield_ppm[1], 
-                                     new.file$file.par$zero_offset - 
-                                       (new.file$file.par$max_intensity - new.file$file.par$zero_offset) 
-                                     * globalSettings$position.1D,
-                                     new.file$file.par$max_intensity)
-    }else{         
-      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[2],
-                                     new.file$file.par$upfield_ppm[2], 
-                                     new.file$file.par$downfield_ppm[1],
-                                     new.file$file.par$upfield_ppm[1])
-    }    
+#     ## Set initial plotting range
+#     if (new.file$file.par$number_dimensions == 1){
+#       new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
+#                                      new.file$file.par$upfield_ppm[1], 
+#                                      new.file$file.par$zero_offset - 
+#                                        (new.file$file.par$max_intensity - new.file$file.par$zero_offset) 
+#                                      * globalSettings$position.1D,
+#                                      new.file$file.par$max_intensity)
+#     }else{         
+#       new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[2],
+#                                      new.file$file.par$upfield_ppm[2], 
+#                                      new.file$file.par$downfield_ppm[1],
+#                                      new.file$file.par$upfield_ppm[1])
+#     }    
     
-    ## Change name if spectrum already exists in fileFolder
-    fileNames <- as.vector(sapply(fileFolder, function(x) x$file.par$file.name))
-    matches <- which(fileNames == fileList[i])
-    if (length(matches)) {
-      newName <- paste(fileList[i], '(', length(matches) + 1, ')', sep='')
-      new.file$file.par$user_title <- basename(newName)
-      fileList[i] <- newName
-    }
+#     ## Change name if spectrum already exists in fileFolder
+#     fileNames <- as.vector(sapply(fileFolder, function(x) x$file.par$file.name))
+#     matches <- which(fileNames == fileList[i])
+#     if (length(matches)) {
+#       newName <- paste(fileList[i], '(', length(matches) + 1, ')', sep='')
+#       new.file$file.par$user_title <- basename(newName)
+#       fileList[i] <- newName
+#     }
     
-    ## Add spectrum to fileFolder
-    fileFolder[[(length(fileFolder) + 1)]] <- new.file
-    names(fileFolder)[[(length(fileFolder))]] <- fileList[i]
-  }
+#     ## Add spectrum to fileFolder
+#     fileFolder[[(length(fileFolder) + 1)]] <- new.file
+#     names(fileFolder)[[(length(fileFolder))]] <- fileList[i]
+#   }
   
-  ## Assign the new objects to the global environment
-  myAssign('fileFolder', fileFolder, save.backup=FALSE)
+#   ## Assign the new objects to the global environment
+#   myAssign('fileFolder', fileFolder, save.backup=FALSE)
   
-  invisible(fileList)
-}
+#   invisible(fileList)
+# }
 
 ## Create RSD file
 ## fileName - character string; full file path for input spectrum
