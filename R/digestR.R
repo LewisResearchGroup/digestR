@@ -18094,6 +18094,7 @@ process_mascot <- function()
 {
 
   species <- look_up_species_files()
+  tkwm.geometry(dlg, "+200+200")  # Position window at 200, 200 on screen
 
   ##creates main window
   tclCheck()
