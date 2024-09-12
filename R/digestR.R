@@ -941,9 +941,15 @@ myToplevel <- function (id, parent, ...) {
   if (as.logical(tcl('winfo', 'exists', id))) {
     hideGui(id)
     showGui(id)
-    tkfocus(id)
     
-    # Return the existing window instead of NULL
+    ## Ensure the window is raised and focused
+    tkwm.deiconify(id)   # Ensure the window is visible
+    tkraise(id)          # Bring the window to the front
+    tkfocus(id)          # Focus on the window
+    
+    ## Force an update to ensure the window is drawn immediately
+    tcl("update")
+    
     return(get(id, envir = parent$env))
   }
   
@@ -956,6 +962,14 @@ myToplevel <- function (id, parent, ...) {
   win$ID <- id
   tcl("toplevel", id, ...)
   
+  ## Force the window to be visible and bring it to the front
+  tkwm.deiconify(id)
+  tkraise(id)
+  tkfocus(id)
+  
+  ## Force the update to ensure the window is drawn
+  tcl("update")
+  
   ## Configure the window to be displayed on top of its parent
   if (parent$ID != "") {
     parentTop <- as.logical(tcl('wm', 'attributes', parent, '-topmost'))
@@ -963,8 +977,12 @@ myToplevel <- function (id, parent, ...) {
       tcl('wm', 'attributes', parent, topmost = FALSE)
     if (as.logical(tkwinfo('viewable', parent)))
       tkwm.transient(win, parent)
+    
+    ## Withdraw and deiconify the window to force redrawing
     tkwm.withdraw(win)
     tkwm.deiconify(win)
+    
+    ## Set up destroy callback
     tkbind(id, "<Destroy>", function() {
       if (parentTop)
         tryCatch(tcl('wm', 'attributes', parent, topmost = TRUE), 
@@ -981,6 +999,7 @@ myToplevel <- function (id, parent, ...) {
     })
   }
   
+  ## Return the window object
   return(win)
 }
 
