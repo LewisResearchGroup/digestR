@@ -18790,7 +18790,7 @@ ps <- function(dispPane='co'){
                            xscrollcommand=function(...) tkset(onedXscr, ...), 
                            yscrollcommand=function(...) tkset(onedYscr, ...),
 			   font = "Helvetica 12 bold",  # Increased font size and made bold
-                           bg = "white", fg = "black", selectbackground = "lightblue"))
+                           bg = "white", fg = "black", selectbackground = "lightblue")
 			 
   onedXscr <- ttkscrollbar(onedFileFrame, orient='horizontal',
                            command=function(...) tkxview(onedFileBox, ...))
