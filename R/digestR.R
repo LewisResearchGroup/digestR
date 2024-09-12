@@ -13363,15 +13363,7 @@ openStored <- function(inFolder, fileName='storedSpec'){
 #' @import tcltk2
 #'
 # ' @export
- fs <- function(){
-
- #  Check if Tcl/Tk is available
- #  if (!inherits(tclRequire("Tcl"), "tclObj")) {
- #    stop("Tcl/Tk is not available.")
- #  }
-  
- #  # Ensure the tablelist package is available
- #  tclRequire("tablelist")
+fs <- function(){
   
   ##call fo() if there are no open files
   if (!exists("fileFolder") || is.null(fileFolder) || !exists("currentSpectrum") 
@@ -13392,7 +13384,7 @@ openStored <- function(inFolder, fileName='storedSpec'){
   tkfocus(dlg)
   tkwm.deiconify(dlg)
   
-  #log_message('d')
+  #	log_message('d')
   flush.console()
   
   ##create tablelist widget
@@ -13442,7 +13434,7 @@ openStored <- function(inFolder, fileName='storedSpec'){
   tkbind(dlg, '<Control-a>', function(...) 
     tkselection.set(tableList, 0, 'end'))
   
-  #get file information and add to tablelist
+  ##get file information and add to tablelist
   getFileInfo <- function(fileNames){
     if (!length(fileNames) || !nzchar(fileNames))
       return(invisible())
@@ -13460,30 +13452,12 @@ openStored <- function(inFolder, fileName='storedSpec'){
     for (i in 1:nrow(fileData))
       tkinsert(tableList, 'end', fileData[i, ])
   }
-# getFileInfo <- function(fileNames) {
-#   if (length(fileNames) == 0 || all(!nzchar(fileNames))) {
-#     return(invisible())
-#   }
-#   tmpFolder <- fileFolder[fileNames]
-#   userTitles <- sapply(tmpFolder, function(x) x$file.par$user_title)
-  
-#   sizes <- as.character(sapply(tmpFolder, function(x) 
-#     x$file.par$file.size))
-  
-#   mods <- sapply(tmpFolder, function(x) 
-#     as.character(x$file.par$date.modified))
-#   paths <- sapply(tmpFolder, function(x) x$file.par$file.name)
-  
-#   fileData <- cbind(userTitles, paths, sizes, mods, deparse.level=0)
-#   for (i in 1:nrow(fileData)) {
-#     tkinsert(tableList, 'end', fileData[i, ])
-#   }
   getFileInfo(names(fileFolder))
   if (!is.null(currentSpectrum)){
     tkselection.set(tableList, wc() - 1)
     tcl(tableList, 'see', wc() - 1)
-   }
   }
+  
   #	log_message('h')
   flush.console()	
   
