@@ -16145,7 +16145,7 @@ checkImage <- function(){
 ## Executes a set of tasks whenever the digestR package loads
 .onLoad <- function(lib, pkg){
 
-  log_message('Loading digestR backend functions')
+  #log_message('Loading digestR backend functions')
 
   ## Create or update necessary digestR objects
   digestR:::patch()
