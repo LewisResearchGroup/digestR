@@ -1094,7 +1094,7 @@ showGui <- function(guiName){
 #' @export
 gui <- function(top=NULL){
   
-  splashScreen()
+  #splashScreen()
 
   if (.Platform$OS.type == 'windows' && .Platform$GUI == 'Rgui' && 
       is.null(top)){
