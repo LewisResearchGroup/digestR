@@ -414,5 +414,6 @@ undo <- ud
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage("digestR loaded successfully")
-  splashScreen()  # Call the splash screen function
+  splashScreen() # Call for the splash Screen function
+  gui() # Call for the Gui
 }
