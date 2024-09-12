@@ -20640,18 +20640,17 @@ mapToAA <- function(lSpecies, lMatches)
 processFile <- function(fileName, species)
 {
   flush.console()
-  log_message(paste('Parsing mascot file: ', fileName))
+  print(paste('Parsing mascot file: ', fileName))
 
   resList <- parseMascot(fileName)
   
-  #if(is.null(resList))
-   if(is.null(resList) || !"pep_seq" %in% colnames(resList))
+  if(is.null(resList))
   {
-    log_message('Wrong file format, pep_seq column not found.')
+    print('No records found.')
     return(NULL)
   }else
   {
-    log_message("Align and score peptides.")
+    print("Align and score peptides.")
     return(alignAndScorePeptides(resList, species))
   }
 }
@@ -20988,11 +20987,11 @@ mergeFiles <- function(fileFolder, ffIndices, species, name = '')
   
 }
 
-
 getStats <- function(myVector, noise_sd)
 {
   statSummary <- myVector
-
+  
+  
   # if statSummary == -1 there were insufficient matches found to determine FDR
   if(as.vector(statSummary)[1] == -1)
   {
