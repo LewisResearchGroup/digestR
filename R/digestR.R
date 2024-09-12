@@ -11631,6 +11631,7 @@ plot_colors <- function(){
 #' @export
 plot_settings <- function(){
   current <- wc()
+
   if (fileFolder[[current]]$file.par$number_dimensions == 1)
     ps('ct1D')
   else
@@ -11643,7 +11644,20 @@ os <- function(dispPane='ol'){
   ##create main window
   current <- wc()
   tclCheck()
-  dlg <- myToplevel('os')
+
+  if (as.logical(tcl('winfo', 'exists', '.os'))) { 
+  tkdestroy('.os')
+  } # New
+
+  # Create a new window
+  dlg <- tktoplevel() # New
+  tkwm.title(dlg, if (dispPane == 'ol') 'Overlays' else 'Shift Referencing')  # Set window title
+  tkwm.geometry(dlg, "600x400+200+200") # New
+
+  # Withdraw the window to prevent flickering while setting up elements
+  tkwm.withdraw(dlg) # New
+
+  #dlg <- myToplevel('os')
   if (is.null(dlg))
   {
     if (dispPane == 'ol')
@@ -13198,6 +13212,11 @@ os <- function(dispPane='ol'){
   tkbind(dlg, '<Enter>', onMouse)
   tkbind(dlg, '<FocusIn>', onMouse)
   tkbind(dlg, '<<NotebookTabChanged>>', onSwitch)
+
+# Now that the window is set up, deiconify it to show the window properly
+  tkwm.deiconify(dlg) # New
+  tkraise(dlg) # New
+  tcl("update") # New
   
   invisible()
 }
@@ -13222,11 +13241,22 @@ zoom <- function(){
   
   ##creates main window
   tclCheck()
-  dlg <- myToplevel('zm', pady=2, padx=4)
-  if (is.null(dlg))
-    return(invisible())
+
+ # Destroy any existing window with the same ID # New
+  if (as.logical(tcl('winfo', 'exists', '.zm'))) {
+    tkdestroy('.zm')  # Destroy previous window to avoid conflicts
+  }
+
+  #dlg <- myToplevel('zm', pady=2, padx=4)
+  #if (is.null(dlg))
+  #  return(invisible())
+  dlg <- tktoplevel() # New
   tkwm.title(dlg, 'Zoom')
   tkwm.resizable(dlg, FALSE, FALSE)
+
+  # Withdraw the window to prevent flickering while setting up # New
+  tkwm.withdraw(dlg)
+	
   tcl('wm', 'attributes', dlg, topmost=TRUE)
   tkfocus(dlg)
   tkwm.deiconify(dlg)
@@ -13385,6 +13415,10 @@ zoom <- function(){
   tkbind(dlg, '<Return>', function(...) tryCatch(tkinvoke(tkfocus()), 
                                                  error=function(er){}))
   
+  ## Now that the window is set up, deiconify and show the window
+  tkwm.deiconify(dlg) # New
+  tcl("update")  # New, Ensure the window is fully drawn and updated
+	 
   invisible()
 }
 
