@@ -1120,8 +1120,8 @@ gui <- function(top=NULL){
     winMenuAddItem("Manipulate .dcf files", 'Save as			sa()', "sa()")   
     
     winMenuAdd("Edit")
-    winMenuAddItem("Edit", 'Undo                               ud()', "ud()")
-    winMenuAddItem("Edit", 'Redraw spectrum		       dd()', "dd()")
+    winMenuAddItem("Edit", 'Undo				ud()', "ud()")
+    winMenuAddItem("Edit", 'Redraw spectrum 				dd()', "dd()")
     #winMenuAddItem("Edit", 'Redo                  redo/rd()', "redo/rd()") 
     #winMenuAddItem("Edit", 'Genotype            genotype/gt()', "genotype/gt()")
     #winMenuAddItem("Edit", 'Title                 title/ti()', "title/ti()")		
@@ -17882,13 +17882,26 @@ gene_labeling <- function()
 {
   ##creates main window
   tclCheck()
-  dlg <- myToplevel('gl')
-  if (is.null(dlg))
-    return(invisible())
-  
+ 
+  # Destroy any existing window with the same ID to avoid conflicts
+  if (as.logical(tcl('winfo', 'exists', '.gl'))) {
+    tkdestroy('.gl')  # Destroy the previous window
+  }
+
+  dlg <- tktoplevel()
   tkwm.title(dlg, 'Gene Name Threshold')
+
+  # Withdraw the window to prevent flickering during setup
+  tkwm.withdraw(dlg)
+
   tkfocus(dlg)
-  tkwm.deiconify(dlg)
+
+  # dlg <- myToplevel('gl')
+  # if (is.null(dlg))
+  #   return(invisible())
+  # tkwm.title(dlg, 'Gene Name Threshold')
+  # tkfocus(dlg)
+  # tkwm.deiconify(dlg)
   
   ##create file list box
   fileFrame <- ttklabelframe(dlg, text='Files')
@@ -17897,7 +17910,9 @@ gene_labeling <- function()
   tclObj(fileList) <- getTitles(fileNames)
   fileBox <- tklistbox(fileFrame, height=10, width=34, listvariable=fileList,
                        selectmode='extended', active='dotbox',	exportselection=FALSE, bg='white', 
-                       xscrollcommand=function(...) tkset(xscr, ...), yscrollcommand=function(...) tkset(yscr, ...))
+                       xscrollcommand=function(...) tkset(xscr, ...), yscrollcommand=function(...) tkset(yscr, ...),
+		       font = "Helvetica 12 bold",  # Increased font size and made bold
+                       bg = "white", fg = "black", selectbackground = "lightblue")
   
   xscr <- ttkscrollbar(fileFrame, orient='horizontal', command=function(...) tkxview(fileBox, ...))
   yscr <- ttkscrollbar(fileFrame, orient='vertical',	command=function(...) tkyview(fileBox, ...))
@@ -18013,6 +18028,10 @@ gene_labeling <- function()
       tryCatch(tkinvoke(focus), error=function(er){})
   }
   tkbind(dlg, '<Return>', onEnter)
+
+ ## Now that the window is set up, deiconify it to show the window properly
+  tkwm.deiconify(dlg)
+  tcl("update")  # Ensure the window is fully drawn and updated
   
   invisible()
 }
