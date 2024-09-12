@@ -20993,21 +20993,6 @@ getStats <- function(myVector, noise_sd)
 {
   statSummary <- myVector
 
-  # Check if statSummary is of sufficient length
-  if (length(statSummary) == 0 || is.null(statSummary)) 
-  {
-    # Display custom message when statSummary is empty or NULL
-    cat('Wrong file format, pep_seq column not found.\n')
-    
-    noiseEst <- as.numeric(-1)
-    noiseSD <- as.numeric(noise_sd) # 8 bytes
-    noiseMax <- as.numeric(-1) # 8 bytes
-    noiseMean <- as.numeric(-1) # 8 bytes
-    noiseLowHinge <- as.numeric(-1) # 8 bytes
-    noiseUpperHinge <- as.numeric(-1) # 8 bytes
-    noiseMin <- as.numeric(-1) # 8 bytes
-  }
-  
   # if statSummary == -1 there were insufficient matches found to determine FDR
   if(as.vector(statSummary)[1] == -1)
   {
