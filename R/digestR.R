@@ -11656,6 +11656,7 @@ os <- function(dispPane='ol'){
 
   # Withdraw the window to prevent flickering while setting up elements
   tkwm.withdraw(dlg) # New
+  tkfocus(dlg) # New
 
   #dlg <- myToplevel('os')
   # if (is.null(dlg))
@@ -18530,6 +18531,7 @@ ps <- function(dispPane='co'){
 
   dlg <- tktoplevel() # New
   tkwm.title(dlg, 'Plot Settings') # New
+  tkwm.geometry(dlg, "550x500+200+200")  # Increase window size (Width=600, Height=400)
 
   # Withdraw the window to prevent flickering during setup
   tkwm.withdraw(dlg) # New
