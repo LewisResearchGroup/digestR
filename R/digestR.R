@@ -17909,223 +17909,98 @@ look_up_species_files <- function(){
 #'
 #' @import tcltk
 #' @export
-# process_mascot <- function()
-# {
+process_mascot <- function()
+{
 
-#   species <- look_up_species_files()
-
-#   ##creates main window
-#   tclCheck()
-#   dlg <- myToplevel('pm')
-#   if (is.null(dlg))
-#     return(invisible())
-  
-#   tkwm.title(dlg, 'Process Mascot Files')
-#   tkfocus(dlg)
-#   tkwm.deiconify(dlg)
-  
-#   speciesLabelFrame <- ttklabelframe(dlg, text='Species')
-  
-#   speciesList <- tclVar()
-#   tclObj(speciesList) <- species
-  
-#   tmp <- tclvalue(tkfont.actual(dlg))
-  
-#   tmp2 <- strsplit(tmp, ' ', fixed=TRUE)
-#   fam <- tmp2[[1]][2]
-#   siz <- tmp2[[1]][4]
-#   wgt <- tmp2[[1]][6]
-#   slt <- tmp2[[1]][8]
-#   slt <- 'italic' ## change to italics
-  
-#   myFont <- tkfont.create(family = fam, size = siz, weight = wgt, slant = slt)
-  
-#   speciesBox <- tklistbox(speciesLabelFrame, height=10, width=34, listvariable=speciesList,
-#                           selectmode='extended', active='dotbox',	exportselection=FALSE, bg='white', font = myFont,
-#                           xscrollcommand=function(...) tkset(xscr, ...), yscrollcommand=function(...) tkset(yscr, ...))
-  
-#   xscr <- ttkscrollbar(speciesLabelFrame, orient='horizontal', command=function(...) tkxview(speciesBox, ...))
-#   yscr <- ttkscrollbar(speciesLabelFrame, orient='vertical',	command=function(...) tkyview(speciesBox, ...))
-  
-#   if (length(species) > 2)
-#   {
-#     for (i in seq(0, length(species) - 1, 2))
-#       tkitemconfigure(speciesBox, i, background='#ececff')
-#   }
-  
-#   tkselection.set(speciesBox, 0)	
-#   #################
-#   ##create single vs. multiple file conversion radiobuttons
-#   fileConvFrame <- ttklabelframe(dlg, text='Convert File(s):')
-#   singleFileConvVal <- tclVar(TRUE)
-  
-#   singleFileOnButton <- ttkradiobutton(fileConvFrame, variable=singleFileConvVal, 
-#                                        value=TRUE, text='Single File')
-  
-#   singleFileOffButton <- ttkradiobutton(fileConvFrame, variable=singleFileConvVal, 
-#                                         value=FALSE, text='All Files in folder and sub folders')
-#   #################
-#   buttonFrame <- ttkframe(dlg)
-  
-#   onApply <- function()
-#   {
-#     idx <- 1 + as.integer(tkcurselection(speciesBox))
-#     #selectedSpeciesName <- basename(species[idx]) # Added
-#     globalSettings$processSpeciesID <<- idx
-#     globalSettings$processSingleFile <<- (as.logical(tclObj(singleFileConvVal)) == TRUE)
-#     tkdestroy(dlg)
-#     #loadProteome(species[idx], selectedSpeciesName)  # Added Pass the selected file and name
-#     batchConvert()
-#   }
-#   apply <- ttkbutton(buttonFrame, text='Apply', width=10, command=onApply)
-  
-#   ##add widgets to speciesFrame
-#   tkgrid(speciesLabelFrame, column=1, row=1, sticky='nswe', pady=6, padx=6)
-#   tkgrid(speciesBox, column=1, row=1, sticky='nswe')
-#   tkgrid(yscr, column=2, row=1, sticky='ns')
-#   tkgrid(xscr, column=1, row=2, sticky='we')
-  
-#   ##make fileFrame stretch when window is resized
-#   tkgrid.columnconfigure(dlg, 1, weight=1)
-#   tkgrid.rowconfigure(dlg, 1, weight=10)
-#   tkgrid.columnconfigure(speciesLabelFrame, 1, weight=1)
-#   tkgrid.rowconfigure(speciesLabelFrame, 1, weight=1)
-  
-#   tkgrid(fileConvFrame, column=1, row=2, sticky='we', pady=6, padx=6)
-#   tkgrid(singleFileOnButton, column=1, row=1, sticky='nswe', pady=6, padx=6)
-#   tkgrid(singleFileOffButton, column=2, row=1, sticky='nswe', pady=6, padx=6)
-  
-#   tkgrid(buttonFrame, column=1, row=3, sticky='nswe', pady=6, padx=6)
-#   tkgrid(apply, column=1, row=1, sticky='w')
-#   tkgrid.columnconfigure(buttonFrame, 1, weight=1)
-#   tkgrid.rowconfigure(buttonFrame, 1, weight=1)
-  
-#   tkgrid(ttksizegrip(dlg), column=2, row=3, sticky='se')
-  
-#   invisible()
-# }
-
-process_mascot <- function() {
   species <- look_up_species_files()
-  
-  # Check if species list is empty
-  if (length(species) == 0) {
-    message("No species files found!")
-    return(invisible())
-  }
-  
-  # Creates the main window
-  tclCheck() # Ensure Tcl is ready
+
+  ##creates main window
+  tclCheck()
   dlg <- myToplevel('pm')
-  
-  if (is.null(dlg)) {
-    message("Failed to create the GUI window.")
+  if (is.null(dlg))
     return(invisible())
-  }
   
-  # Set window title and focus
   tkwm.title(dlg, 'Process Mascot Files')
   tkfocus(dlg)
-  
-  # Deiconify to ensure the window is visible
   tkwm.deiconify(dlg)
-  tkraise(dlg)  # Bring the window to the front
   
-  # Create species label frame
   speciesLabelFrame <- ttklabelframe(dlg, text='Species')
   
-  # Populate the species listbox
   speciesList <- tclVar()
   tclObj(speciesList) <- species
   
-  # Font customization (italics)
   tmp <- tclvalue(tkfont.actual(dlg))
-  tmp2 <- strsplit(tmp, ' ', fixed = TRUE)
+  
+  tmp2 <- strsplit(tmp, ' ', fixed=TRUE)
   fam <- tmp2[[1]][2]
   siz <- tmp2[[1]][4]
   wgt <- tmp2[[1]][6]
-  slt <- 'italic'  # Change to italics
+  slt <- tmp2[[1]][8]
+  slt <- 'italic' ## change to italics
   
   myFont <- tkfont.create(family = fam, size = siz, weight = wgt, slant = slt)
   
-  # Create listbox for species selection
-  speciesBox <- tklistbox(speciesLabelFrame, height = 10, width = 34, listvariable = speciesList,
-                          selectmode = 'extended', active = 'dotbox', exportselection = FALSE,
-                          bg = 'white', font = myFont)
+  speciesBox <- tklistbox(speciesLabelFrame, height=10, width=34, listvariable=speciesList,
+                          selectmode='extended', active='dotbox',	exportselection=FALSE, bg='white', font = myFont,
+                          xscrollcommand=function(...) tkset(xscr, ...), yscrollcommand=function(...) tkset(yscr, ...))
   
-  # Scrollbars for the listbox
-  xscr <- ttkscrollbar(speciesLabelFrame, orient = 'horizontal', command = function(...) tkxview(speciesBox, ...))
-  yscr <- ttkscrollbar(speciesLabelFrame, orient = 'vertical', command = function(...) tkyview(speciesBox, ...))
+  xscr <- ttkscrollbar(speciesLabelFrame, orient='horizontal', command=function(...) tkxview(speciesBox, ...))
+  yscr <- ttkscrollbar(speciesLabelFrame, orient='vertical',	command=function(...) tkyview(speciesBox, ...))
   
-  # Alternate row coloring
-  if (length(species) > 2) {
-    for (i in seq(0, length(species) - 1, 2)) {
-      tkitemconfigure(speciesBox, i, background = '#ececff')
-    }
+  if (length(species) > 2)
+  {
+    for (i in seq(0, length(species) - 1, 2))
+      tkitemconfigure(speciesBox, i, background='#ececff')
   }
   
-  # Set default selection
-  tkselection.set(speciesBox, 0)
-  
-  # Create radiobuttons for single vs multiple file conversion
-  fileConvFrame <- ttklabelframe(dlg, text = 'Convert File(s):')
+  tkselection.set(speciesBox, 0)	
+  #################
+  ##create single vs. multiple file conversion radiobuttons
+  fileConvFrame <- ttklabelframe(dlg, text='Convert File(s):')
   singleFileConvVal <- tclVar(TRUE)
   
-  singleFileOnButton <- ttkradiobutton(fileConvFrame, variable = singleFileConvVal, value = TRUE, text = 'Single File')
-  singleFileOffButton <- ttkradiobutton(fileConvFrame, variable = singleFileConvVal, value = FALSE, text = 'All Files in folder and subfolders')
+  singleFileOnButton <- ttkradiobutton(fileConvFrame, variable=singleFileConvVal, 
+                                       value=TRUE, text='Single File')
   
-  # Create apply button frame
+  singleFileOffButton <- ttkradiobutton(fileConvFrame, variable=singleFileConvVal, 
+                                        value=FALSE, text='All Files in folder and sub folders')
+  #################
   buttonFrame <- ttkframe(dlg)
   
-  # Function to execute when apply button is pressed
-  onApply <- function() {
+  onApply <- function()
+  {
     idx <- 1 + as.integer(tkcurselection(speciesBox))
-    
-    if (length(idx) == 0) {
-      tkmessageBox(message = "Please select at least one species.", icon = "warning")
-      return()
-    }
-    
+    #selectedSpeciesName <- basename(species[idx]) # Added
     globalSettings$processSpeciesID <<- idx
-    globalSettings$processSingleFile <<- as.logical(tclObj(singleFileConvVal))
-    
-    message("Processing species: ", species[idx])
-    
-    tkdestroy(dlg)  # Close the window after applying
-    batchConvert()  # Run the conversion process
+    globalSettings$processSingleFile <<- (as.logical(tclObj(singleFileConvVal)) == TRUE)
+    tkdestroy(dlg)
+    #loadProteome(species[idx], selectedSpeciesName)  # Added Pass the selected file and name
+    batchConvert()
   }
+  apply <- ttkbutton(buttonFrame, text='Apply', width=10, command=onApply)
   
-  apply <- ttkbutton(buttonFrame, text = 'Apply', width = 10, command = onApply)
+  ##add widgets to speciesFrame
+  tkgrid(speciesLabelFrame, column=1, row=1, sticky='nswe', pady=6, padx=6)
+  tkgrid(speciesBox, column=1, row=1, sticky='nswe')
+  tkgrid(yscr, column=2, row=1, sticky='ns')
+  tkgrid(xscr, column=1, row=2, sticky='we')
   
-  # Arrange widgets in grid layout
-  tkgrid(speciesLabelFrame, column = 1, row = 1, sticky = 'nswe', pady = 6, padx = 6)
-  tkgrid(speciesBox, column = 1, row = 1, sticky = 'nswe')
-  tkgrid(yscr, column = 2, row = 1, sticky = 'ns')
-  tkgrid(xscr, column = 1, row = 2, sticky = 'we')
+  ##make fileFrame stretch when window is resized
+  tkgrid.columnconfigure(dlg, 1, weight=1)
+  tkgrid.rowconfigure(dlg, 1, weight=10)
+  tkgrid.columnconfigure(speciesLabelFrame, 1, weight=1)
+  tkgrid.rowconfigure(speciesLabelFrame, 1, weight=1)
   
-  # Make species frame stretchable
-  tkgrid.columnconfigure(dlg, 1, weight = 1)
-  tkgrid.rowconfigure(dlg, 1, weight = 10)
-  tkgrid.columnconfigure(speciesLabelFrame, 1, weight = 1)
-  tkgrid.rowconfigure(speciesLabelFrame, 1, weight = 1)
+  tkgrid(fileConvFrame, column=1, row=2, sticky='we', pady=6, padx=6)
+  tkgrid(singleFileOnButton, column=1, row=1, sticky='nswe', pady=6, padx=6)
+  tkgrid(singleFileOffButton, column=2, row=1, sticky='nswe', pady=6, padx=6)
   
-  # File conversion frame and buttons
-  tkgrid(fileConvFrame, column = 1, row = 2, sticky = 'we', pady = 6, padx = 6)
-  tkgrid(singleFileOnButton, column = 1, row = 1, sticky = 'nswe', pady = 6, padx = 6)
-  tkgrid(singleFileOffButton, column = 2, row = 1, sticky = 'nswe', pady = 6, padx = 6)
+  tkgrid(buttonFrame, column=1, row=3, sticky='nswe', pady=6, padx=6)
+  tkgrid(apply, column=1, row=1, sticky='w')
+  tkgrid.columnconfigure(buttonFrame, 1, weight=1)
+  tkgrid.rowconfigure(buttonFrame, 1, weight=1)
   
-  tkgrid(buttonFrame, column = 1, row = 3, sticky = 'nswe', pady = 6, padx = 6)
-  tkgrid(apply, column = 1, row = 1, sticky = 'w')
-  
-  # Make button frame stretchable
-  tkgrid.columnconfigure(buttonFrame, 1, weight = 1)
-  tkgrid.rowconfigure(buttonFrame, 1, weight = 1)
-  
-  # Size grip for window resizing
-  tkgrid(ttksizegrip(dlg), column = 2, row = 3, sticky = 'se')
-  
-  # Wait for the window to be closed before returning control to R
-  tkwait.window(dlg)
+  tkgrid(ttksizegrip(dlg), column=2, row=3, sticky='se')
   
   invisible()
 }
