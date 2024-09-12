@@ -1326,86 +1326,43 @@ popupGui <- function(dev){
   }
 }
 
-## Displays the digestR splash screen
-# splashScreen <- function(){
-#   par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
-#       cex.main=defaultSettings$cex.main, bg='black')
-#   colMain <- '#b4d0f3'
-#   colBack <- '#0065ca'
-#   plot(0, 0, type='n', xlab='', ylab='', col.axis='black')
-#   # Define your color palette
-#   #colMain <- '#FF5733'  # A warm main color
-#   #colBack <- '#2E86C1'  # A contrasting background color
-  
-#   # Letter positions and colors
-#   letters <- c('D', 'I', 'G', 'E', 'S', 'T', 'R')
-#   colors <- c(colMain, colMain, colMain, colMain, colMain, colMain, colBack)
-#   cex_values <- c(7, 7, 7, 7, 7, 7, 6.5)
-#   offset_values <- c(0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4)
-  
-#   # Loop to create and position letters
-#   for (i in 1:length(letters)) {
-#     text(-0.75 + (i-1)*0.25, 0.2, letters[i], col=colors[i], cex=cex_values[i], pos=3, offset=offset_values[i])
-#   }
-  
-#   # Add a decorative 'R' in a different color
-#   text(0.70, 0.2, 'R', col='#E74C3C', cex=5.5, pos=3, offset=0.4)
-  
-#   # Other text elements (modify as needed)
-#   text(0, 0.08, 'Digestomics Analyzer', col=colMain, cex=2.5, font=1)
-#   text(0, -0.15, paste('version 1.0.0', pkgVar$version), col=colMain, font=3)
-#   text(0, -0.25, 'gp() - Generate New Proteome', col=colMain)
-#   text(0, -0.35, 'pm() - Process Mascot files', col=colMain)
-#   text(0, -0.45, 'fo() - Open *.dcf files', col=colMain)
-
-#   # Force the graphics device to refresh
-#   dev.flush()
-# }
-	  
-##################################################################################
-# Test updated SplashScreen
+# Displays the digestR splash screen
 splashScreen <- function(){
-  # Close any active graphics device if open, then open a new one
-  if (dev.cur() != 1) dev.off()
-  
-  # Open a new device or set the current device to ensure it is active
-  dev.new()
-  
-  # Set up graphical parameters
   par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
       cex.main=defaultSettings$cex.main, bg='black')
-  
   colMain <- '#b4d0f3'
   colBack <- '#0065ca'
-  
-  # Set up the initial blank plot
   plot(0, 0, type='n', xlab='', ylab='', col.axis='black')
+  # Define your color palette
+  #colMain <- '#FF5733'  # A warm main color
+  #colBack <- '#2E86C1'  # A contrasting background color
   
-  # Define letters and positions
+  # Letter positions and colors
   letters <- c('D', 'I', 'G', 'E', 'S', 'T', 'R')
   colors <- c(colMain, colMain, colMain, colMain, colMain, colMain, colBack)
   cex_values <- c(7, 7, 7, 7, 7, 7, 6.5)
   offset_values <- c(0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4)
   
-  # Loop to display the letters with appropriate positions and colors
+  # Loop to create and position letters
   for (i in 1:length(letters)) {
     text(-0.75 + (i-1)*0.25, 0.2, letters[i], col=colors[i], cex=cex_values[i], pos=3, offset=offset_values[i])
   }
   
-  # Add the letter 'R' in a different color
+  # Add a decorative 'R' in a different color
   text(0.70, 0.2, 'R', col='#E74C3C', cex=5.5, pos=3, offset=0.4)
   
-  # Add additional information text
+  # Other text elements (modify as needed)
   text(0, 0.08, 'Digestomics Analyzer', col=colMain, cex=2.5, font=1)
   text(0, -0.15, paste('version 1.0.0', pkgVar$version), col=colMain, font=3)
   text(0, -0.25, 'gp() - Generate New Proteome', col=colMain)
   text(0, -0.35, 'pm() - Process Mascot files', col=colMain)
   text(0, -0.45, 'fo() - Open *.dcf files', col=colMain)
 
-  # Force refresh of the graphics device
+  # Force the graphics device to refresh
   dev.flush()
 }
-############################################################################################
+	  
+##################################################################################
 
 about <- function(){
   ##creates toplevel
@@ -6312,183 +6269,6 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #########################################################################################
 # Working Fo but opening errors still happening.
 
-# file_open <- function(fileName, ...) {
-  
-#   ## Create any/all of the digestR objects that are missing
-#   createObj()
-  
-#   ## Have user select all files they wish to open
-#   if (missing(fileName)) {
-#     usrList <- sort(myOpen())
-#     if(!length(usrList) || !nzchar(usrList))
-#       return(invisible())
-#   } else {
-#     usrList <- fileName
-#   }
-  
-#   ## Read selected files
-#   errors <- FALSE
-#   fileNames <- names(fileFolder)
-#   userTitles <- NULL
-#   if (!is.null(fileFolder))
-#     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
-  
-#   ## Temporarily suppress all warnings
-#   old_warn <- options(warn = -1)
-  
-#   for (i in 1:length(usrList)) {
-    
-#     ## Try to read the file while suppressing warnings
-#     new.file <- tryCatch(
-#       dianaHead(file.name = usrList[i], print.info = TRUE), 
-#       error = function(cond) handleFoErrors(cond, usrList[i])
-#     )
-    
-#     if (!is.list(new.file)) {
-#       # If not a list, the operation failed, log the error and skip to the next iteration
-#       log_message(paste("file opened", basename(usrList[i]), ":", new.file))
-#       next
-#     }
-    
-#     ## Make sure input files are of the correct format
-#     if (length(new.file$file.par) == 0) {
-#       log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
-#       flush.console()
-#       next
-#     }
-    
-#     ## Fetch the default graphics settings 
-#     new.file$graphics.par <- defaultSettings
-    
-#     ## Set initial plotting range
-#     if (new.file$file.par$number_dimensions == 1) {
-#       new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
-#                                      new.file$file.par$upfield_ppm[1], 
-#                                      new.file$file.par$min_intensity,
-#                                      new.file$file.par$max_intensity)
-#     } else {
-#       new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[2],
-#                                      new.file$file.par$upfield_ppm[2], 
-#                                      new.file$file.par$downfield_ppm[1],
-#                                      new.file$file.par$upfield_ppm[1])
-#     }
-    
-#     ## Make a new entry in the file folder if file is not already present 
-#     filePar <- new.file$file.par
-#     if (!new.file$file.par$file.name %in% fileNames) {
-      
-#       ## Add 1D/2D spectra to the file folder
-#       if (new.file$file.par$number_dimensions < 3) {
-#         if (new.file$file.par$user_title %in% userTitles)
-#           new.file$file.par$user_title <- new.file$file.par$file.name
-#         fileFolder[[(length(fileFolder) + 1)]] <- new.file
-#         names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
-#       } else {
-        
-#         ## Make duplicate entries in fileFolder for each z-slice in 3D spectra
-#         w3 <- seq(filePar$upfield_ppm[3], filePar$downfield_ppm[3], 
-#                   length.out = filePar$matrix_size[3])
-#         for (j in seq_along(w3)) {
-#           userTitle <- paste(basename(filePar$file.name), ' (z=', w3[j], ')', sep = '')
-#           new.file$file.par$user_title <- userTitle
-#           new.file$file.par$z_value <- w3[j]
-#           fileFolder[[length(fileFolder) + 1]] <- new.file
-#           names(fileFolder)[length(fileFolder)] <- userTitle
-#         }
-#       }
-#     } else {
-      
-#       ## Update fileFolder entry if file is already present in fileFolder
-#       fLoc <- match(new.file$file.par$file.name, fileNames)
-#       if (new.file$file.par$number_dimensions < 3) {
-#         fileFolder[[fLoc]] <- new.file
-#         if (new.file$file.par$user_title %in% userTitles)
-#           new.file$file.par$user_title <- new.file$file.par$file.name
-#       } else {
-#         for (j in fLoc) {
-#           zVal <- fileFolder[[j]]$file.par$z_value
-#           new.file$file.par$user_title <- paste(basename(filePar$file.name), 
-#                                                 ' (z=', zVal, ')', sep = '')
-#           new.file$file.par$z_value <- zVal
-#           fileFolder[[j]] <- new.file
-#         }
-#       }
-#     }
-    
-#     ## Reassign currentSpectrum
-#     if (new.file$file.par$number_dimensions < 3) {
-#       currentSpectrum <- new.file$file.par$file.name
-#     } else {
-#       currentSpectrum <- userTitle
-#     }
-    
-#     ## Tell user which files have been loaded
-#     log_message(paste("File", basename(usrList[i]), "opened successfully."))
-#     flush.console()
-#   }
-  
-#   ## Restore warning options
-#   options(old_warn)
-  
-#   ## Assign the new objects to the global environment
-#   myAssign("fileFolder", fileFolder, save.backup = FALSE)
-#   myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
-  
-#   ## Save an undo point and refresh the active graphics
-#   if (!is.null(fileFolder)) {
-#     myAssign("currentSpectrum", currentSpectrum, save.backup = TRUE)
-#     refresh(...)   
-#   }
-  
-#   ## Display error dialog
-#   if (errors) {
-#     myMsg(paste('Errors occurred while opening files', 'Check the R console for details.', sep = '\n'), icon = 'error')
-#   }
-  
-#   return(invisible(usrList))
-
-#   # Call the splash screen after loading the file
-#   splashScreen()
-  
-#   # Ensure the graphical device is updated immediately
-#   dev.flush()  # Forces a redraw of the graphics device
-  
-#   # If necessary, call refresh to update the main plot window
-#   refresh(...)
-
-# }
-
-# handleFoErrors <- function(cond, fileName = NULL) {
-#   # Set errors flag to TRUE to indicate that an error occurred
-#   errors <<- TRUE
-  
-#   # Customize the error message based on the error type or condition
-#   if (grepl("unused argument \\(cond\\)", cond$message)) {
-#     log_message <- "An unused argument error occurred in the function. Please check the function arguments."
-#   } else if (grepl("truncating string with embedded nuls", cond$message)) {
-#     # Specific handling for "truncating string with embedded nuls" warnings/errors
-#     log_message <- paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
-#                          if (!is.null(fileName)) basename(fileName) else "", sep = " ")
-#   } else {
-#     # Generic error handling for other types of errors
-#     log_message <- paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message)
-#   }
-  
-#   # Log the error message to a log file or suppress the output
-#   # write(log_message, file = "fo_error_log.txt", append = TRUE)
-  
-#   # Optionally print the message for debugging purposes (comment out to suppress completely)
-#   # cat(log_message, "\n")
-  
-#   # Return NULL or an appropriate value to allow the function to continue
-#   return(NULL)
-# }
-
-
-#######################################################################################
-# Test Updated Fo with updated SplasScreen
-#######################################################################################
-
 file_open <- function(fileName, ...) {
   
   ## Create any/all of the digestR objects that are missing
@@ -6622,13 +6402,17 @@ file_open <- function(fileName, ...) {
     myMsg(paste('Errors occurred while opening files', 'Check the R console for details.', sep = '\n'), icon = 'error')
   }
   
-  ## Call the splash screen after loading the file
+  return(invisible(usrList))
+
+  # Call the splash screen after loading the file
   splashScreen()
   
-  ## Ensure the graphical device is updated immediately
+  # Ensure the graphical device is updated immediately
   dev.flush()  # Forces a redraw of the graphics device
+  
+  # If necessary, call refresh to update the main plot window
+  refresh(...)
 
-  return(invisible(usrList))
 }
 
 handleFoErrors <- function(cond, fileName = NULL) {
@@ -6637,14 +6421,23 @@ handleFoErrors <- function(cond, fileName = NULL) {
   
   # Customize the error message based on the error type or condition
   if (grepl("unused argument \\(cond\\)", cond$message)) {
-    log_message("An unused argument error occurred in the function. Please check the function arguments.")
+    log_message <- "An unused argument error occurred in the function. Please check the function arguments."
   } else if (grepl("truncating string with embedded nuls", cond$message)) {
-    log_message(paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
-                      if (!is.null(fileName)) basename(fileName) else "", sep = " "))
+    # Specific handling for "truncating string with embedded nuls" warnings/errors
+    log_message <- paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
+                         if (!is.null(fileName)) basename(fileName) else "", sep = " ")
   } else {
-    log_message(paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message))
+    # Generic error handling for other types of errors
+    log_message <- paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message)
   }
   
+  # Log the error message to a log file or suppress the output
+  write(log_message, file = "fo_error_log.txt", append = TRUE)
+  
+  # Optionally print the message for debugging purposes (comment out to suppress completely)
+  cat(log_message, "\n")
+  
+  # Return NULL or an appropriate value to allow the function to continue
   return(NULL)
 }
 
