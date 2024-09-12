@@ -11652,7 +11652,7 @@ os <- function(dispPane='ol'){
   # Create a new window
   dlg <- tktoplevel() # New
   tkwm.title(dlg, if (dispPane == 'ol') 'Overlays' else 'Shift Referencing')  # Set window title
-  tkwm.geometry(dlg, "600x400+200+200") # New
+  tkwm.geometry(dlg, "550x500+200+200") # New
 
   # Withdraw the window to prevent flickering while setting up elements
   tkwm.withdraw(dlg) # New
