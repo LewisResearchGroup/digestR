@@ -13264,7 +13264,7 @@ zoom <- function(){
   #  return(invisible())
   dlg <- tktoplevel() # New
   tkwm.title(dlg, 'Zoom')
-  tkwm.geometry(dlg, "300x100+200+200")
+  tkwm.geometry(dlg, "250x100+200+200")
   tkwm.resizable(dlg, FALSE, FALSE)
 
   # Withdraw the window to prevent flickering while setting up # New
@@ -18316,13 +18316,23 @@ es <- function()
 {	
   ##creates main window
   tclCheck()
-  dlg <- myToplevel('es')
-  if (is.null(dlg))
-    return(invisible())
   
+  #dlg <- myToplevel('es')
+  # if (is.null(dlg))
+  # return(invisible())
+
+  # Destroy any existing window with the same ID to avoid conflicts # New
+  if (as.logical(tcl('winfo', 'exists', '.es'))) {
+    tkdestroy('.es')  # Destroy the previous window # New
+  }
+  dlg <- tktoplevel() # New
   tkwm.title(dlg, 'Edit Variables')
+
+  # Withdraw the window to prevent flickering while setting up
+  tkwm.withdraw(dlg)
+	
   tkfocus(dlg)
-  tkwm.deiconify(dlg)
+  #tkwm.deiconify(dlg)
   
   editStringFrame <- ttkframe(dlg)
   
@@ -18511,20 +18521,34 @@ ps <- function(dispPane='co'){
   ##create main window
   current <- wc()
   tclCheck()
-  dlg <- myToplevel('ps')
-  if (is.null(dlg))
-  {
-    if (dispPane == 'co')
-      tkselect('.ps.1', 0)
-    else
-      tkselect('.ps.1', 1)
-    
-    return(invisible())
+
+ # Destroy any existing window with the same ID # New
+  if (as.logical(tcl('winfo', 'exists', '.ps'))) {
+    tkdestroy('.ps')  # Destroy the previous window
   }
+
+  dlg <- tktoplevel() # New
+  tkwm.title(dlg, 'Plot Settings') # New
+
+  # Withdraw the window to prevent flickering during setup
+  tkwm.withdraw(dlg) # New
   
-  tkwm.title(dlg, 'Plot Settings')
-  tkfocus(dlg)
-  tkwm.deiconify(dlg)
+  tkfocus(dlg) # New
+
+  # dlg <- myToplevel('ps')
+  # if (is.null(dlg))
+  # {
+  #   if (dispPane == 'co')
+  #     tkselect('.ps.1', 0)
+  #   else
+  #     tkselect('.ps.1', 1)
+    
+  #   return(invisible())
+  # }
+  
+  #tkwm.title(dlg, 'Plot Settings')
+  #tkfocus(dlg)
+  #tkwm.deiconify(dlg)
   
   ##create paned notebook
   plotBook <- ttknotebook(dlg, padding=3)
@@ -19121,6 +19145,10 @@ ps <- function(dispPane='co'){
   }
   tkbind(dlg, '<Enter>', onMouse)
   tkbind(dlg, '<FocusIn>', onMouse)
+
+  ## Now that the window is set up, deiconify it to show the window properly
+  tkwm.deiconify(dlg)
+  tcl("update")  # Ensure the window is fully drawn and updated
   
   invisible()
 }
