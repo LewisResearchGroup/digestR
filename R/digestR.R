@@ -11658,23 +11658,35 @@ os <- function(dispPane='ol'){
   tkwm.withdraw(dlg) # New
 
   #dlg <- myToplevel('os')
-  if (is.null(dlg))
-  {
-    if (dispPane == 'ol')
-    {
+  # if (is.null(dlg))
+  # {
+  #   if (dispPane == 'ol')
+  #   {
+  #     tkwm.title('.os', 'Overlays')
+  #     tkselect('.os.1', 0)
+  #   }else
+  #   {
+  #     tkwm.title('.os', 'Shift Referencing')
+  #     if (dispPane == 'sr1D')
+  #       tkselect('.os.1', 1)
+  #     else
+  #       tkselect('.os.1', 2)
+  #   }
+  #   return(invisible())
+  # }
+      if (dispPane == 'ol') {
       tkwm.title('.os', 'Overlays')
       tkselect('.os.1', 0)
-    }else
-    {
+    } else {
       tkwm.title('.os', 'Shift Referencing')
-      if (dispPane == 'sr1D')
+      if (dispPane == 'sr1D') {
         tkselect('.os.1', 1)
-      else
+      } else {
         tkselect('.os.1', 2)
     }
     return(invisible())
   }
-  
+    
   tkfocus(dlg)
   tkwm.deiconify(dlg)
   if (dispPane == 'ol')
@@ -13252,7 +13264,7 @@ zoom <- function(){
   #  return(invisible())
   dlg <- tktoplevel() # New
   tkwm.title(dlg, 'Zoom')
-  tkwm.geometry(dlg, "200x200+200+200")
+  tkwm.geometry(dlg, "300x100+200+200")
   tkwm.resizable(dlg, FALSE, FALSE)
 
   # Withdraw the window to prevent flickering while setting up # New
