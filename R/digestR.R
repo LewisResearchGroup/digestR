@@ -6105,13 +6105,15 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 # Updated fo function: DDLM
 #################################################################################
 
-# file_open <- function(fileName, ...){
+# # Working Fo but opening errors still happening.
+
+# file_open <- function(fileName, ...) {
   
 #   ## Create any/all of the digestR objects that are missing
 #   createObj()
   
 #   ## Have user select all files they wish to open
-#   if (missing(fileName)){
+#   if (missing(fileName)) {
 #     usrList <- sort(myOpen())
 #     if(!length(usrList) || !nzchar(usrList))
 #       return(invisible())
@@ -6126,22 +6128,16 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #   if (!is.null(fileFolder))
 #     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
   
-#   for(i in 1:length(usrList)){
+#   ## Temporarily suppress all warnings
+#   old_warn <- options(warn = -1)
+  
+#   for (i in 1:length(usrList)) {
     
-#     ## Read Sparky Header and file info from binary
-#     if(length(usrList) == 1) {
-#       new.file <- tryCatch(
-#         dianaHead(file.name = usrList[i], print.info = TRUE), 
-#         error = function(cond) handleFoErrors(cond, usrList[i])
-#       )
-#       if (errors)
-#         err(new.file)
-#     } else {
-#       new.file <- tryCatch(
-#         dianaHead(file.name = usrList[i], print.info = FALSE), 
-#         error = function(cond) handleFoErrors(cond, usrList[i])
-#       )
-#     }
+#     ## Try to read the file while suppressing warnings
+#     new.file <- tryCatch(
+#       dianaHead(file.name = usrList[i], print.info = TRUE), 
+#       error = function(cond) handleFoErrors(cond, usrList[i])
+#     )
     
 #     if (!is.list(new.file)) {
 #       # If not a list, the operation failed, log the error and skip to the next iteration
@@ -6150,8 +6146,8 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #     }
     
 #     ## Make sure input files are of the correct format
-#     if(length(new.file$file.par) == 0) {
-#       log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote=FALSE)
+#     if (length(new.file$file.par) == 0) {
+#       log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
 #       flush.console()
 #       next
 #     }
@@ -6160,7 +6156,7 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #     new.file$graphics.par <- defaultSettings
     
 #     ## Set initial plotting range
-#     if(new.file$file.par$number_dimensions == 1) {
+#     if (new.file$file.par$number_dimensions == 1) {
 #       new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
 #                                      new.file$file.par$upfield_ppm[1], 
 #                                      new.file$file.par$min_intensity,
@@ -6174,11 +6170,11 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
     
 #     ## Make a new entry in the file folder if file is not already present 
 #     filePar <- new.file$file.par
-#     if(!new.file$file.par$file.name %in% fileNames) {
+#     if (!new.file$file.par$file.name %in% fileNames) {
       
 #       ## Add 1D/2D spectra to the file folder
-#       if(new.file$file.par$number_dimensions < 3) {
-#         if(new.file$file.par$user_title %in% userTitles)
+#       if (new.file$file.par$number_dimensions < 3) {
+#         if (new.file$file.par$user_title %in% userTitles)
 #           new.file$file.par$user_title <- new.file$file.par$file.name
 #         fileFolder[[(length(fileFolder) + 1)]] <- new.file
 #         names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
@@ -6186,9 +6182,9 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
         
 #         ## Make duplicate entries in fileFolder for each z-slice in 3D spectra
 #         w3 <- seq(filePar$upfield_ppm[3], filePar$downfield_ppm[3], 
-#                   length.out=filePar$matrix_size[3])
-#         for(j in seq_along(w3)) {
-#           userTitle <- paste(basename(filePar$file.name), ' (z=', w3[j], ')', sep='')
+#                   length.out = filePar$matrix_size[3])
+#         for (j in seq_along(w3)) {
+#           userTitle <- paste(basename(filePar$file.name), ' (z=', w3[j], ')', sep = '')
 #           new.file$file.par$user_title <- userTitle
 #           new.file$file.par$z_value <- w3[j]
 #           fileFolder[[length(fileFolder) + 1]] <- new.file
@@ -6199,15 +6195,15 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
       
 #       ## Update fileFolder entry if file is already present in fileFolder
 #       fLoc <- match(new.file$file.par$file.name, fileNames)
-#       if(new.file$file.par$number_dimensions < 3) {
+#       if (new.file$file.par$number_dimensions < 3) {
 #         fileFolder[[fLoc]] <- new.file
-#         if(new.file$file.par$user_title %in% userTitles)
+#         if (new.file$file.par$user_title %in% userTitles)
 #           new.file$file.par$user_title <- new.file$file.par$file.name
 #       } else {
-#         for(j in fLoc){
+#         for (j in fLoc) {
 #           zVal <- fileFolder[[j]]$file.par$z_value
 #           new.file$file.par$user_title <- paste(basename(filePar$file.name), 
-#                                                 ' (z=', zVal, ')', sep='')
+#                                                 ' (z=', zVal, ')', sep = '')
 #           new.file$file.par$z_value <- zVal
 #           fileFolder[[j]] <- new.file
 #         }
@@ -6215,33 +6211,46 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #     }
     
 #     ## Reassign currentSpectrum
-#     if(new.file$file.par$number_dimensions < 3) {
+#     if (new.file$file.par$number_dimensions < 3) {
 #       currentSpectrum <- new.file$file.par$file.name
 #     } else {
 #       currentSpectrum <- userTitle
 #     }
     
 #     ## Tell user which files have been loaded
-#     log_message(basename(usrList)[i], quote = FALSE)
+#     log_message(paste("File", basename(usrList[i]), "opened successfully."))
 #     flush.console()
 #   }
+  
+#   ## Restore warning options
+#   options(old_warn)
   
 #   ## Assign the new objects to the global environment
 #   myAssign("fileFolder", fileFolder, save.backup = FALSE)
 #   myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
   
 #   ## Save an undo point and refresh the active graphics
-#   if(!is.null(fileFolder)) {
+#   if (!is.null(fileFolder)) {
 #     myAssign("currentSpectrum", currentSpectrum, save.backup = TRUE)
 #     refresh(...)   
 #   }
   
 #   ## Display error dialog
-#   if(errors) {
-#     myMsg(paste('Errors occurred while opening files', 'Check the R console for details.', sep='\n'), icon='error')
+#   if (errors) {
+#     myMsg(paste('Errors occurred while opening files', 'Check the R console for details.', sep = '\n'), icon = 'error')
 #   }
   
 #   return(invisible(usrList))
+
+#   # Call the splash screen after loading the file
+#   splashScreen()
+  
+#   # Ensure the graphical device is updated immediately
+#   dev.flush()  # Forces a redraw of the graphics device
+  
+#   # If necessary, call refresh to update the main plot window
+#   refresh(...)
+
 # }
 
 # handleFoErrors <- function(cond, fileName = NULL) {
@@ -6252,36 +6261,38 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #   if (grepl("unused argument \\(cond\\)", cond$message)) {
 #     log_message <- "An unused argument error occurred in the function. Please check the function arguments."
 #   } else if (grepl("truncating string with embedded nuls", cond$message)) {
-#     log_message <- "A string truncation error occurred due to embedded null characters in the file."
+#     # Specific handling for "truncating string with embedded nuls" warnings/errors
+#     log_message <- paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
+#                          if (!is.null(fileName)) basename(fileName) else "", sep = " ")
 #   } else {
+#     # Generic error handling for other types of errors
 #     log_message <- paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message)
 #   }
   
-#   # Log the error message to a file or variable, or just suppress it
-#   # write(log_message, file = "fo_error_log.txt", append = TRUE)
+#   # Log the error message to a log file or suppress the output
+#   write(log_message, file = "fo_error_log.txt", append = TRUE)
   
-#   # Optionally, print the message to the console for debugging purposes (comment out if not needed)
-#   # cat(log_message, "\n")
+#   # Optionally print the message for debugging purposes (comment out to suppress completely)
+#   cat(log_message, "\n")
   
 #   # Return NULL or an appropriate value to allow the function to continue
 #   return(NULL)
 # }
-#########################################################################################
-# Working Fo but opening errors still happening.
+######################################################################################
+# Fo function imported from travis' code
 
-file_open <- function(fileName, ...) {
+file_open <- function(fileName, ...){
   
-  ## Create any/all of the digestR objects that are missing
+  ## Create any/all of the rNMR objects that are missing
   createObj()
   
   ## Have user select all files they wish to open
-  if (missing(fileName)) {
+  if (missing(fileName)){
     usrList <- sort(myOpen())
     if(!length(usrList) || !nzchar(usrList))
       return(invisible())
-  } else {
+  }else
     usrList <- fileName
-  }
   
   ## Read selected files
   errors <- FALSE
@@ -6289,83 +6300,111 @@ file_open <- function(fileName, ...) {
   userTitles <- NULL
   if (!is.null(fileFolder))
     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
-  
-  ## Temporarily suppress all warnings
-  old_warn <- options(warn = -1)
-  
-  for (i in 1:length(usrList)) {
+  for( i in 1:length(usrList) ){
     
-    ## Try to read the file while suppressing warnings
-    new.file <- tryCatch(
-      dianaHead(file.name = usrList[i], print.info = TRUE), 
-      error = function(cond) handleFoErrors(cond, usrList[i])
-    )
-    
-    if (!is.list(new.file)) {
-      # If not a list, the operation failed, log the error and skip to the next iteration
-      log_message(paste("file opened", basename(usrList[i]), ":", new.file))
-      next
+    ##Read Sparky Header and file info from binary
+    if( length(usrList) == 1 )
+    {
+      new.file <- tryCatch(dianaHead(file.name=usrList[i], print.info=TRUE), 
+                           error=function(er){
+                             errors <<- TRUE
+                             return(er$message)})
+      if (errors)
+        err(new.file)
+    }else
+    {
+      new.file <- tryCatch(dianaHead(file.name=usrList[i], print.info=FALSE), 
+                           error=function(er){
+                             errors <<- TRUE
+                             paste('\nOpening file "', basename(usrList[i]), '" produced an', 
+                                   ' error:\n"', er$message, '"', sep='')
+                           })
+      if (!is.list(new.file)){
+        cat(new.file, '\n\n')
+        flush.console()
+        next()
+      }
     }
     
     ## Make sure input files are of the correct format
-    if (length(new.file$file.par) == 0) {
-      log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
+    if( length(new.file$file.par) == 0 )
+    {
+      print( paste('ERROR:', basename(usrList)[i], "is unreadable" ), 
+             quote=FALSE)
       flush.console()
-      next
+      next()			
     }
     
     ## Fetch the default graphics settings 
     new.file$graphics.par <- defaultSettings
     
     ## Set initial plotting range
-    if (new.file$file.par$number_dimensions == 1) {
-      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
-                                     new.file$file.par$upfield_ppm[1], 
-                                     new.file$file.par$min_intensity,
-                                     new.file$file.par$max_intensity)
-    } else {
-      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[2],
-                                     new.file$file.par$upfield_ppm[2], 
-                                     new.file$file.par$downfield_ppm[1],
-                                     new.file$file.par$upfield_ppm[1])
-    }
+    if( new.file$file.par$number_dimensions == 1 ) 
+    {
+      #		3rd parameter math basically vertically "centers" the origin
+      #		not desired functionality for DIANA	
+      #			new.file$graphics.par$usr <- c( new.file$file.par$downfield_ppm[1],
+      #					new.file$file.par$upfield_ppm[1], 
+      #					new.file$file.par$zero_offset - 
+      #							(new.file$file.par$max_intensity - new.file$file.par$zero_offset) 
+      #							* globalSettings$position.1D,
+      #					new.file$file.par$max_intensity )
+      
+      new.file$graphics.par$usr <- c( new.file$file.par$downfield_ppm[1],
+                                      new.file$file.par$upfield_ppm[1], new.file$file.par$min_intensity,
+                                      new.file$file.par$max_intensity )			
+    }else
+    {         
+      new.file$graphics.par$usr <- c( new.file$file.par$downfield_ppm[2],
+                                      new.file$file.par$upfield_ppm[2], 
+                                      new.file$file.par$downfield_ppm[1],
+                                      new.file$file.par$upfield_ppm[1] )
+    }    
     
     ## Make a new entry in the file folder if file is not already present 
     filePar <- new.file$file.par
-    if (!new.file$file.par$file.name %in% fileNames) {
+    if(!new.file$file.par$file.name %in% fileNames)
+    {
       
       ## Add 1D/2D spectra to the file folder
-      if (new.file$file.par$number_dimensions < 3) {
+      if (new.file$file.par$number_dimensions < 3)
+      {
         if (new.file$file.par$user_title %in% userTitles)
           new.file$file.par$user_title <- new.file$file.par$file.name
         fileFolder[[(length(fileFolder) + 1)]] <- new.file
         names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
-      } else {
+      }else
+      {
         
         ## Make duplicate entries in fileFolder for each z-slice in 3D spectra
         w3 <- seq(filePar$upfield_ppm[3], filePar$downfield_ppm[3], 
-                  length.out = filePar$matrix_size[3])
-        for (j in seq_along(w3)) {
-          userTitle <- paste(basename(filePar$file.name), ' (z=', w3[j], ')', sep = '')
+                  length.out=filePar$matrix_size[3])
+        for (j in seq_along(w3))
+        {
+          userTitle <- paste(basename(filePar$file.name), ' (z=', w3[j], ')', 
+                             sep='')
           new.file$file.par$user_title <- userTitle
           new.file$file.par$z_value <- w3[j]
-          fileFolder[[length(fileFolder) + 1]] <- new.file
+          fileFolder[[length(fileFolder) + 1]] <- new.file					
           names(fileFolder)[length(fileFolder)] <- userTitle
         }
       }
-    } else {
+    }else
+    {
       
       ## Update fileFolder entry if file is already present in fileFolder
       fLoc <- match(new.file$file.par$file.name, fileNames)
-      if (new.file$file.par$number_dimensions < 3) {
+      if (new.file$file.par$number_dimensions < 3)
+      {
         fileFolder[[fLoc]] <- new.file
         if (new.file$file.par$user_title %in% userTitles)
           new.file$file.par$user_title <- new.file$file.par$file.name
-      } else {
-        for (j in fLoc) {
+      }else
+      {
+        for (j in fLoc){
           zVal <- fileFolder[[j]]$file.par$z_value
           new.file$file.par$user_title <- paste(basename(filePar$file.name), 
-                                                ' (z=', zVal, ')', sep = '')
+                                                ' (z=', zVal, ')', sep='')
           new.file$file.par$z_value <- zVal
           fileFolder[[j]] <- new.file
         }
@@ -6373,73 +6412,35 @@ file_open <- function(fileName, ...) {
     }
     
     ## Reassign currentSpectrum
-    if (new.file$file.par$number_dimensions < 3) {
+    if (new.file$file.par$number_dimensions < 3)
       currentSpectrum <- new.file$file.par$file.name
-    } else {
+    else
       currentSpectrum <- userTitle
-    }
     
     ## Tell user which files have been loaded
-    log_message(paste("File", basename(usrList[i]), "opened successfully."))
+    print( basename(usrList)[i], quote = FALSE )
     flush.console()
   }
-  
-  ## Restore warning options
-  options(old_warn)
   
   ## Assign the new objects to the global environment
   myAssign("fileFolder", fileFolder, save.backup = FALSE)
   myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
   
   ## Save an undo point and refresh the active graphics
-  if (!is.null(fileFolder)) {
+  if( !is.null(fileFolder) ){
     myAssign("currentSpectrum", currentSpectrum, save.backup = TRUE)
+    
     refresh(...)   
   }
   
-  ## Display error dialog
-  if (errors) {
-    myMsg(paste('Errors occurred while opening files', 'Check the R console for details.', sep = '\n'), icon = 'error')
-  }
+  ##display error dialog
+  if (errors)
+    myMsg(paste('Errors occurred while opening files ',
+                'Check the R console for details.', sep='\n'), icon='error')
   
   return(invisible(usrList))
-
-  # Call the splash screen after loading the file
-  splashScreen()
-  
-  # Ensure the graphical device is updated immediately
-  dev.flush()  # Forces a redraw of the graphics device
-  
-  # If necessary, call refresh to update the main plot window
-  refresh(...)
-
 }
 
-handleFoErrors <- function(cond, fileName = NULL) {
-  # Set errors flag to TRUE to indicate that an error occurred
-  errors <<- TRUE
-  
-  # Customize the error message based on the error type or condition
-  if (grepl("unused argument \\(cond\\)", cond$message)) {
-    log_message <- "An unused argument error occurred in the function. Please check the function arguments."
-  } else if (grepl("truncating string with embedded nuls", cond$message)) {
-    # Specific handling for "truncating string with embedded nuls" warnings/errors
-    log_message <- paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
-                         if (!is.null(fileName)) basename(fileName) else "", sep = " ")
-  } else {
-    # Generic error handling for other types of errors
-    log_message <- paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message)
-  }
-  
-  # Log the error message to a log file or suppress the output
-  write(log_message, file = "fo_error_log.txt", append = TRUE)
-  
-  # Optionally print the message for debugging purposes (comment out to suppress completely)
-  cat(log_message, "\n")
-  
-  # Return NULL or an appropriate value to allow the function to continue
-  return(NULL)
-}
 
 #######################################################################################
 ## User file function fc
