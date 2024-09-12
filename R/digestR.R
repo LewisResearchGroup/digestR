@@ -18094,8 +18094,7 @@ process_mascot <- function()
 {
 
   species <- look_up_species_files()
-  tkwm.geometry(dlg, "+200+200")  # Position window at 200, 200 on screen
-
+  
   ##creates main window
   tclCheck()
   dlg <- myToplevel('pm')
@@ -18106,6 +18105,7 @@ process_mascot <- function()
   }
   
   tkwm.title(dlg, 'Process Mascot Files')
+  tkwm.geometry(dlg, "+200+200")  # Position window at 200, 200 on screen
   tkwm.deiconify(dlg)
   tkraise(dlg)
 
