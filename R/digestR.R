@@ -1363,11 +1363,10 @@ popupGui <- function(dev){
 #   dev.flush()
 # }
 ##################################################################################
-
-
+library(png) 
 splashScreen <- function() {
   
-   library(png)  # For PNG images
+  
   par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
       cex.main=defaultSettings$cex.main, bg='black')
   colMain <- '#b4d0f3'
