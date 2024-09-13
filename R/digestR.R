@@ -1372,23 +1372,16 @@ library(png)
   # Load the image and get its dimensions
   img_path <- system.file("extdata", "DigestRpicture.png", package = "digestR")
   img <- readPNG(img_path)
-  # Define the plot limits (xlim, ylim) based on the image dimensions or the desired screen size
-  xlim <- c(-1.5, 1.5)  # Adjust the x-axis limits as needed
-  ylim <- c(-1.5, 1.5)  # Adjust the y-axis limits as needed
-  
-  # Create plot with no margins and appropriate limits
-  par(mar=c(0,0,0,0), bg='#0d0d0d')
-  plot(0, 0, type='n', xlab='', ylab='', axes=FALSE, xlim=xlim, ylim=ylim)
-  
-  # Display the image, stretched to fit the plot region
-  rasterImage(img, xlim[1], ylim[1], xlim[2], ylim[2])
-  
+
+  # Display the image properly (full window)
+  rasterImage(img, -1.5, -1.5, 1.5, 1.5)
+
   # Letter positions and modern color scheme for "PANDAS"
   letters <- c('P', 'A', 'N', 'D', 'A', 'S')
   x_positions <- c(-0.9, -0.6, -0.3, 0.0, 0.3, 0.6)  # Custom X positions for each letter
-  y_positions <- c(0.62, 0.62, 0.62, 0.62, 0.62, 0.62)  # Use different y positions as needed
-  colors <- rep('#4da6ff', 6)  #
-  cex_values <- rep(5, 6)  # Reduced font size for smaller splash screen
+  y_positions <- c(0.62, 0.62, 0.62, 0.62, 0.62, 0.62)  # Same Y position for all
+  colors <- rep('#4da6ff', 6)  # Light blue for all letters
+  cex_values <- rep(5, 6)  # Font size for letters
   
   # Add shadow effect to the letters for depth
   shadow_col <- '#00000050'  # Semi-transparent black shadow
@@ -1396,20 +1389,17 @@ library(png)
     text(x_positions[i] + 0.02, y_positions[i] - 0.02, letters[i], col=shadow_col, cex=cex_values[i], pos=3)
     text(x_positions[i], y_positions[i], letters[i], col=colors[i], cex=cex_values[i], pos=3)
   }
-  
+
   # Add black shadow for the title "Peptide Analyzer of Naturally Digested Amino acid Sequences"
-  # Shadow for "Peptide Analyzer of"
   text(0, -0.4, 'Peptide Analyzer of', col='black', cex=1.80, font=2.3)  # Black shadow
-  # Main text for "Peptide Analyzer of"
   text(0, -0.4, 'Peptide Analyzer of', col='#4da6ff', cex=1.8, font=2)  # Main text
   
-  # Shadow for "Naturally Digested Amino acid sequences"
+  # Shadow for "Naturally Digested Amino acid Sequences"
   text(0, -0.53, 'Naturally Digested Amino acid Sequences', col='black', cex=1.80, font=2.3)  # Black shadow
-  # Main text for "Naturally Digested Amino acid sequences"
   text(0, -0.53, 'Naturally Digested Amino acid Sequences', col='#4da6ff', cex=1.8, font=2)  # Main text
   
   # Version and command text, shifted further downwards
-  text(0, -0.75, paste('version', packageVersion('digestR')), col='#00b3b3', font=2))  # Dynamic color
+  text(0, -0.75, paste('version 1.0.0', pkgVar$version), col='#00b3b3', font=2)  # Dynamic color
   
   # Clean, minimal function list with better spacing and shifted downwards
   text(0, -0.86, 'gp() - Generate New Proteome', col='#00b3b3', cex=1.1, font = 2)  # Light blue
