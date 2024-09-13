@@ -1327,73 +1327,108 @@ popupGui <- function(dev){
 }
 
 # Displays the digestR splash screen
-splashScreen <- function(){
-  par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
-      cex.main=defaultSettings$cex.main, bg='black')
-  colMain <- '#b4d0f3'
-  colBack <- '#0065ca'
-  plot(0, 0, type='n', xlab='', ylab='', col.axis='black')
-  # Define your color palette
-  #colMain <- '#FF5733'  # A warm main color
-  #colBack <- '#2E86C1'  # A contrasting background color
-  
-  # Letter positions and colors
-  letters <- c('D', 'I', 'G', 'E', 'S', 'T', 'R')
-  colors <- c(colMain, colMain, colMain, colMain, colMain, colMain, colBack)
-  cex_values <- c(7, 7, 7, 7, 7, 7, 6.5)
-  offset_values <- c(0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4)
-  
-  # Loop to create and position letters
-  for (i in 1:length(letters)) {
-    text(-0.75 + (i-1)*0.25, 0.2, letters[i], col=colors[i], cex=cex_values[i], pos=3, offset=offset_values[i])
-  }
-  
-  # Add a decorative 'R' in a different color
-  text(0.70, 0.2, 'R', col='#E74C3C', cex=5.5, pos=3, offset=0.4)
-  
-  # Other text elements (modify as needed)
-  text(0, 0.08, 'Digestomics Analyzer', col=colMain, cex=2.5, font=1)
-  text(0, -0.15, paste('version 1.0.0', pkgVar$version), col=colMain, font=3)
-  text(0, -0.25, 'gp() - Generate New Proteome', col=colMain)
-  text(0, -0.35, 'pm() - Process Mascot files', col=colMain)
-  text(0, -0.45, 'fo() - Open *.dcf files', col=colMain)
-
-  # Force the graphics device to refresh
-  dev.flush()
-}
-
 # splashScreen <- function(){
-#   par(mar=c(0,0,0,0), bg='#0d0d0d')  # Darker background color
 
-#   # Set up background color gradient with an even darker shade
-#   plot(0, 0, type='n', xlab='', ylab='', axes=FALSE)
-#   rect(-2, -2, 2, 2, col=rgb(0.05, 0.2, 0.4, alpha=0.9), border=NA)  # Darker blue background
+#   par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
+#       cex.main=defaultSettings$cex.main, bg='black')
+#   colMain <- '#b4d0f3'
+#   colBack <- '#0065ca'
+#   plot(0, 0, type='n', xlab='', ylab='', col.axis='black')
+#   # Define your color palette
+#   #colMain <- '#FF5733'  # A warm main color
+#   #colBack <- '#2E86C1'  # A contrasting background color
   
-#   # Letter positions and modern color scheme
-#   letters <- c('P', 'A', 'N', 'D', 'A', 'S')
-#   colors <- rep('#b4d0f3', 6)
-#   cex_values <- c(6.5, 6.5, 6.5, 6.5, 6.5, 6.5)  # Uniform letter size
-#   offset_values <- c(0.3, 0.3, 0.3, 0.3, 0.3, 0.3)
-
-#   # Add shadow effect to the letters for depth
-#   shadow_col <- '#00000050'  # Semi-transparent black
+#   # Letter positions and colors
+#   letters <- c('D', 'I', 'G', 'E', 'S', 'T', 'R')
+#   colors <- c(colMain, colMain, colMain, colMain, colMain, colMain, colBack)
+#   cex_values <- c(7, 7, 7, 7, 7, 7, 6.5)
+#   offset_values <- c(0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4)
+  
+#   # Loop to create and position letters
 #   for (i in 1:length(letters)) {
-#     text(-0.75 + (i-1)*0.25 + 0.02, 0.2 - 0.02, letters[i], col=shadow_col, cex=cex_values[i], pos=3)
-#     text(-0.75 + (i-1)*0.25, 0.2, letters[i], col=colors[i], cex=cex_values[i], pos=3)
+#     text(-0.75 + (i-1)*0.25, 0.2, letters[i], col=colors[i], cex=cex_values[i], pos=3, offset=offset_values[i])
 #   }
-
-#   # Modern titles with the new phrase
-#   text(0, 0.08, 'Peptide Analyzer of Naturally Digested Amino acid sequences', col='#ffffff', cex=2.5, font=2)
-#   text(0, -0.15, paste('version 1.0.0', pkgVar$version), col='#b4d0f3', font=3)
-
-#   # Clean, minimal function list with better spacing
-#   text(0, -0.25, 'gp() - Generate New Proteome', col='#ffffff', cex=1.2)
-#   text(0, -0.32, 'pm() - Process Mascot files', col='#ffffff', cex=1.2)
-#   text(0, -0.39, 'fo() - Open *.dcf files', col='#ffffff', cex=1.2)
+  
+#   # Add a decorative 'R' in a different color
+#   text(0.70, 0.2, 'R', col='#E74C3C', cex=5.5, pos=3, offset=0.4)
+  
+#   # Other text elements (modify as needed)
+#   text(0, 0.08, 'Digestomics Analyzer', col=colMain, cex=2.5, font=1)
+#   text(0, -0.15, paste('version 1.0.0', pkgVar$version), col=colMain, font=3)
+#   text(0, -0.25, 'gp() - Generate New Proteome', col=colMain)
+#   text(0, -0.35, 'pm() - Process Mascot files', col=colMain)
+#   text(0, -0.45, 'fo() - Open *.dcf files', col=colMain)
 
 #   # Force the graphics device to refresh
 #   dev.flush()
 # }
+
+# Displays the digestR splash screen
+splashScreen <- function(){
+
+library(png)
+	
+ # Load the image and get its dimensions
+  img_path <- system.file("extdata", "DigestRpicture.png", package = "digestR")
+  img <- readPNG(img_path)  
+  img_width <- dim(img)[2]  # Width of the image
+  img_height <- dim(img)[1]  # Height of the image
+  aspect_ratio <- img_height / img_width  # Calculate the aspect ratio
+  
+  # Set plot limits based on the aspect ratio
+  if (aspect_ratio > 1) {
+    # Taller than wide, fit height and expand width
+    xlim <- c(-1.5, 1.5)  # Adjust these values to fill the width
+    ylim <- c(-1.5 * aspect_ratio, 1.5 * aspect_ratio)
+  } else {
+    # Wider than tall, fit width and expand height
+    xlim <- c(-1.5 / aspect_ratio, 1.5 / aspect_ratio)
+    ylim <- c(-1.5, 1.5)
+  }
+  
+  # Create plot with no margins and appropriate limits
+  par(mar=c(0,0,0,0), bg='#0d0d0d')
+  plot(0, 0, type='n', xlab='', ylab='', axes=FALSE, xlim=xlim, ylim=ylim)
+  
+  # Display the image, stretched to fit the plot region
+  rasterImage(img, xlim[1], ylim[1], xlim[2], ylim[2])
+  
+  # Letter positions and modern color scheme for "PANDAS"
+  letters <- c('P', 'A', 'N', 'D', 'A', 'S')
+  x_positions <- c(-0.9, -0.6, -0.3, 0.0, 0.3, 0.6)  # Custom X positions for each letter
+  y_positions <- c(0.62, 0.62, 0.62, 0.62, 0.62, 0.62)  # Use different y positions as needed
+  colors <- rep('#4da6ff', 6)  #
+  cex_values <- rep(5, 6)  # Reduced font size for smaller splash screen
+  
+  # Add shadow effect to the letters for depth
+  shadow_col <- '#00000050'  # Semi-transparent black shadow
+  for (i in 1:length(letters)) {
+    text(x_positions[i] + 0.02, y_positions[i] - 0.02, letters[i], col=shadow_col, cex=cex_values[i], pos=3)
+    text(x_positions[i], y_positions[i], letters[i], col=colors[i], cex=cex_values[i], pos=3)
+  }
+  
+  # Add black shadow for the title "Peptide Analyzer of Naturally Digested Amino acid Sequences"
+  # Shadow for "Peptide Analyzer of"
+  text(0, -0.4, 'Peptide Analyzer of', col='black', cex=1.80, font=2.3)  # Black shadow
+  # Main text for "Peptide Analyzer of"
+  text(0, -0.4, 'Peptide Analyzer of', col='#4da6ff', cex=1.8, font=2)  # Main text
+  
+  # Shadow for "Naturally Digested Amino acid sequences"
+  text(0, -0.53, 'Naturally Digested Amino acid Sequences', col='black', cex=1.80, font=2.3)  # Black shadow
+  # Main text for "Naturally Digested Amino acid sequences"
+  text(0, -0.53, 'Naturally Digested Amino acid Sequences', col='#4da6ff', cex=1.8, font=2)  # Main text
+  
+  # Version and command text, shifted further downwards
+  text(0, -0.75, paste('version 1.0.0', pkgVar$version), col='#00b3b3', font=2)  # Dynamic color
+  
+  # Clean, minimal function list with better spacing and shifted downwards
+  text(0, -0.86, 'gp() - Generate New Proteome', col='#00b3b3', cex=1.1, font = 2)  # Light blue
+  text(0, -0.94, 'pm() - Process Mascot files', col='#00b3b3', cex=1.1, font = 2)  # Light blue
+  text(0, -1.02, 'fo() - Open *.dcf files', col='#00b3b3', cex=1.1, font = 2)  # Light blue
+
+  # Force the graphics device to refresh
+  dev.flush()
+}
 	  
 ##################################################################################
 
