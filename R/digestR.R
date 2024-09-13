@@ -1424,11 +1424,12 @@ library(png)  # For PNG images
 
 splashScreen <- function() {
   
+   library(png)  # For PNG images
   par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
       cex.main=defaultSettings$cex.main, bg='black')
-  
   colMain <- '#b4d0f3'
   colBack <- '#0065ca'
+  plot(0, 0, type='n', xlab='', ylab='', col.axis='black')
   
   # Define plot area without axis
   plot(0, 0, type='n', xlab='', ylab='', axes=FALSE, xlim=c(-1.5, 1.5), ylim=c(-1.5, 1.5))
