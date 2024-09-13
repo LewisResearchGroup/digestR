@@ -1376,9 +1376,6 @@ library(png)
  # Load the image and get its dimensions
   img_path <- system.file("extdata", "DigestRpicture.png", package = "digestR")
   img <- readPNG(img_path)  
-  img_width <- dim(img)[2]  # Width of the image
-  img_height <- dim(img)[1]  # Height of the image
-  aspect_ratio <- img_height / img_width  # Calculate the aspect ratio
   
   # Set plot limits based on the aspect ratio
   if (aspect_ratio > 1) {
