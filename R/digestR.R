@@ -1409,7 +1409,7 @@ library(png)
   text(0, -0.53, 'Naturally Digested Amino acid Sequences', col='#4da6ff', cex=1.8, font=2)  # Main text
   
   # Version and command text, shifted further downwards
-  text(0, -0.75, paste('version 1.0.0', pkgVar$version), col='#00b3b3', font=2)  # Dynamic color
+  text(0, -0.75, paste('version', packageVersion('digestR')), col='#00b3b3', font=2))  # Dynamic color
   
   # Clean, minimal function list with better spacing and shifted downwards
   text(0, -0.86, 'gp() - Generate New Proteome', col='#00b3b3', cex=1.1, font = 2)  # Light blue
