@@ -1367,6 +1367,11 @@ popupGui <- function(dev){
 splashScreen <- function(){
 
 library(png)
+  par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
+      cex.main=defaultSettings$cex.main, bg='black')
+  colMain <- '#b4d0f3'
+  colBack <- '#0065ca'
+  plot(0, 0, type='n', xlab='', ylab='', col.axis='black')
 	
  # Load the image and get its dimensions
   img_path <- system.file("extdata", "DigestRpicture.png", package = "digestR")
