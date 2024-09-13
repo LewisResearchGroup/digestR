@@ -1415,7 +1415,6 @@ library(png)
   # Force the graphics device to refresh
   dev.flush()
 }
-}
 	  
 ##################################################################################
 
