@@ -1377,17 +1377,6 @@ library(png)
   img_path <- system.file("extdata", "DigestRpicture.png", package = "digestR")
   img <- readPNG(img_path)  
   
-  # Set plot limits based on the aspect ratio
-  if (aspect_ratio > 1) {
-    # Taller than wide, fit height and expand width
-    xlim <- c(-1.5, 1.5)  # Adjust these values to fill the width
-    ylim <- c(-1.5 * aspect_ratio, 1.5 * aspect_ratio)
-  } else {
-    # Wider than tall, fit width and expand height
-    xlim <- c(-1.5 / aspect_ratio, 1.5 / aspect_ratio)
-    ylim <- c(-1.5, 1.5)
-  }
-  
   # Create plot with no margins and appropriate limits
   par(mar=c(0,0,0,0), bg='#0d0d0d')
   plot(0, 0, type='n', xlab='', ylab='', axes=FALSE, xlim=xlim, ylim=ylim)
