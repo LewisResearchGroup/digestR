@@ -33,7 +33,8 @@ Imports:
     VennDiagram,
     readr,
     grid,
-    tkrplot
+    tkrplot,
+    png
     
 Suggests:
     testthat,
