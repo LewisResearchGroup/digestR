@@ -1377,6 +1377,9 @@ library(png)
   img_path <- system.file("extdata", "DigestRpicture.png", package = "digestR")
   img <- readPNG(img_path)  
   
+  xlim <- c(-1.5, 1.5)  # Adjust the x-axis limits as needed
+  ylim <- c(-1.5, 1.5)  # Adjust the y-axis limits as needed
+  
   # Create plot with no margins and appropriate limits
   par(mar=c(0,0,0,0), bg='#0d0d0d')
   plot(0, 0, type='n', xlab='', ylab='', axes=FALSE, xlim=xlim, ylim=ylim)
@@ -1416,7 +1419,7 @@ library(png)
   text(0, -0.86, 'gp() - Generate New Proteome', col='#00b3b3', cex=1.1, font = 2)  # Light blue
   text(0, -0.94, 'pm() - Process Mascot files', col='#00b3b3', cex=1.1, font = 2)  # Light blue
   text(0, -1.02, 'fo() - Open *.dcf files', col='#00b3b3', cex=1.1, font = 2)  # Light blue
-
+  
   # Force the graphics device to refresh
   dev.flush()
 }
