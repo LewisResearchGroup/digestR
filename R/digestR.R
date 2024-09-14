@@ -1372,7 +1372,7 @@ library(png)
   # Load the image and get its dimensions
   img_path <- system.file("extdata", "DigestRpicture.png", package = "digestR")
   img <- readPNG(img_path)
-
+  plot(0, 0, type = 'n', xlab = '', ylab = '', axes = FALSE, xlim = c(-1.5, 1.5), ylim = c(-1.5, 1.5))
   # Display the image properly (full window)
   rasterImage(img, -1.5, -1.5, 1.5, 1.5)
 
@@ -1399,7 +1399,8 @@ library(png)
   text(0, -0.53, 'Naturally Digested Amino acid Sequences', col='#4da6ff', cex=1.8, font=2)  # Main text
   
   # Version and command text, shifted further downwards
-  text(0, -0.75, paste('version 1.0.0', pkgVar$version), col='#00b3b3', font=2)  # Dynamic color
+  version <- '1.0.0'
+  text(0, -0.75, paste('version', version), col = '#00b3b3', font = 2)  # Dynamic color # Dynamic color
   
   # Clean, minimal function list with better spacing and shifted downwards
   text(0, -0.86, 'gp() - Generate New Proteome', col='#00b3b3', cex=1.1, font = 2)  # Light blue
