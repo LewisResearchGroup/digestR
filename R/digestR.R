@@ -6313,6 +6313,7 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 # }
 #######################################################################
 file_open <- function(fileName, ...) {
+  
   ## Initialize necessary objects at the beginning
   if (exists("fileFolder") && is.null(fileFolder)) {
     fileFolder <- list()  # Ensure fileFolder is initialized if not already
@@ -6406,14 +6407,17 @@ file_open <- function(fileName, ...) {
     refresh(...)   
   }
   
-  ## Ensure graphics device is ready and call splash screen
+  ## Check if splash screen is ready
   if (dev.cur() == 1) {
     dev.new()  # Open a new graphics device if none is active
   }
   
+  ## Log before calling splashScreen
   log_message("Calling splashScreen to update the UI.")
+  log_message(paste("fileFolder before splashScreen:", fileFolder))
+  log_message(paste("currentSpectrum before splashScreen:", currentSpectrum))
   
-  splashScreen()
+  splashScreen()  # Call the splash screen
   
   ## Add a short delay to ensure the screen is ready
   Sys.sleep(0.5)
@@ -6428,23 +6432,6 @@ file_open <- function(fileName, ...) {
   return(invisible(usrList))
 }
 
-handleFoErrors <- function(cond, fileName = NULL) {
-  errors <<- TRUE  # Set errors flag to TRUE
-  
-  if (grepl("unused argument \\(cond\\)", cond$message)) {
-    log_message <- "An unused argument error occurred in the function. Please check the function arguments."
-  } else if (grepl("truncating string with embedded nuls", cond$message)) {
-    log_message <- paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
-                         if (!is.null(fileName)) basename(fileName) else "", sep = " ")
-  } else {
-    log_message <- paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message)
-  }
-  
-  write(log_message, file = "fo_error_log.txt", append = TRUE)
-  cat(log_message, "\n")
-  
-  return(NULL)
-}
 
 #######################################################################################
 ## User file function fc
