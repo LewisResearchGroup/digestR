@@ -6407,14 +6407,20 @@ file_open <- function(fileName, ...) {
   if (is.null(fileFolder) || length(fileFolder) == 0) {
     log_message("fileFolder is empty after loading.")
   } else {
-    log_message("fileFolder is populated. Proceeding to refresh splashScreen.")
+    log_message(paste("fileFolder is populated. CurrentSpectrum is:", currentSpectrum))
     
     ## Ensure graphics device is ready and call splash screen
     if (dev.cur() == 1) {
       dev.new()  # Open a new graphics device if none is active
     }
   
-    splashScreen()
+    splashScreen()  # Call the splash screen
+
+    ## Log a message to confirm that splashScreen was called
+    log_message("splashScreen called to update the UI.")
+    
+    ## Ensure the plotting function is called
+    plotData(currentSpectrum)  # Add your plotting logic here
     
     ## Short delay to ensure screen is ready
     Sys.sleep(0.5)
@@ -6427,6 +6433,20 @@ file_open <- function(fileName, ...) {
   ## Return the user list of files that were opened
   return(invisible(usrList))
 }
+
+## Placeholder for plotData function:
+## This is where you will actually plot the data from currentSpectrum
+plotData <- function(spectrum) {
+  if (!is.null(spectrum)) {
+    log_message(paste("Plotting data for spectrum:", spectrum))
+    ## Add your actual plotting code here based on the spectrum
+    ## Example plot call:
+    # plot(some_data_from_spectrum)
+  } else {
+    log_message("No spectrum available for plotting.")
+  }
+}
+
 
 #######################################################################################
 ## User file function fc
