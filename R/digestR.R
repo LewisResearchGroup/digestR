@@ -6009,7 +6009,7 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #   ## Have user select all files they wish to open
 #   if (missing(fileName)){
 #     usrList <- sort(myOpen())
-#     if(!length(usrList) || !nzchar(usrList))
+#     if(!length(usrList) || !)
 #       return(invisible())
 #   }else
 #     usrList <- fileName
@@ -6206,7 +6206,8 @@ file_open <- function(fileName, ...){
   ## Have user select all files they wish to open
   if (missing(fileName)){
     usrList <- sort(myOpen())
-    if (!length(usrList) || !nzchar(usrList))
+    #if (!length(usrList) || !nzchar(usrList))
+    if (length(usrList) == 0 || !all(nzchar(usrList)))
       return(invisible())
   } else {
     usrList <- fileName
