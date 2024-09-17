@@ -6373,6 +6373,15 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #   }
 # }
 #######################################################################################
+
+handleFoErrors <- function(cond) {
+  # Log and handle the error message
+  log_message(paste("An error occurred:", cond$message))
+  
+  # Return NULL to indicate that the file couldn't be processed
+  return(NULL)
+}
+
 file_open <- function(fileName, ...) {
   
   # Initialize necessary objects at the beginning
@@ -6526,6 +6535,35 @@ file_open <- function(fileName, ...) {
   return(invisible(usrList))
 }
 
+## Plotting function with bg parameter fix
+plotData <- function(spectrum, fileFolder) {
+  if (!is.null(spectrum)) {
+    log_message(paste("Plotting data for spectrum:", spectrum))
+    
+    ## Retrieve the relevant file's graphical parameters
+    file <- fileFolder[[which(names(fileFolder) == spectrum)]]
+    graphicsParams <- file$graphics.par
+    
+    ## Log the parameters to debug
+    log_message(paste("Using graphics parameters:", graphicsParams))
+    
+    ## Set correct graphical parameters
+    par(bg = "white")  # Set the background to a valid single value
+    
+    ## Apply other graphical parameters if needed
+    usr <- graphicsParams$usr
+    if (!is.null(usr)) {
+      par(usr = usr)
+    }
+    
+    ## Add your actual plotting code here
+    # Example plot:
+    # plot(x, y, ...)
+    
+  } else {
+    log_message("No spectrum available for plotting.")
+  }
+}
 #######################################################################################
 ## User file function fc
 ## Closes a user defined file from a list
