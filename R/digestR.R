@@ -6377,19 +6377,26 @@ file_open <- function(fileName, ...) {
       next
     }
 
+    ## Fetch the default graphics settings 
+    new.file$graphics.par <- defaultSettings
+
     ## Set initial plotting range
     if (new.file$file.par$number_dimensions == 1) {
-      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
-                                     new.file$file.par$upfield_ppm[1], 
-                                     new.file$file.par$min_intensity,
-                                     new.file$file.par$max_intensity)
-    } else {
-      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[2],
-                                     new.file$file.par$upfield_ppm[2], 
-                                     new.file$file.par$downfield_ppm[1],
-                                     new.file$file.par$upfield_ppm[1])
+      new.file$graphics.par$usr <- c(
+        new.file$file.par$downfield_ppm[1],
+        new.file$file.par$upfield_ppm[1], 
+        new.file$file.par$min_intensity,
+        new.file$file.par$max_intensity
+      )			
+    } else {         
+      new.file$graphics.par$usr <- c(
+        new.file$file.par$downfield_ppm[2],
+        new.file$file.par$upfield_ppm[2], 
+        new.file$file.par$downfield_ppm[1],
+        new.file$file.par$upfield_ppm[1]
+      )
     }
-    
+
     ## Make a new entry in the file folder if file is not already present 
     filePar <- new.file$file.par
     fileNames <- names(fileFolder)
@@ -6413,7 +6420,7 @@ file_open <- function(fileName, ...) {
           userTitle <- paste(basename(filePar$file.name), ' (z=', w3[j], ')', sep = '')
           new.file$file.par$user_title <- userTitle
           new.file$file.par$z_value <- w3[j]
-          fileFolder[[length(fileFolder) + 1]] <- new.file
+          fileFolder[[length(fileFolder) + 1]] <- new.file					
           names(fileFolder)[length(fileFolder)] <- userTitle
         }
       }
@@ -6427,23 +6434,22 @@ file_open <- function(fileName, ...) {
       } else {
         for (j in fLoc) {
           zVal <- fileFolder[[j]]$file.par$z_value
-          new.file$file.par$user_title <- paste(basename(filePar$file.name), 
-                                                ' (z=', zVal, ')', sep = '')
+          new.file$file.par$user_title <- paste(basename(filePar$file.name), ' (z=', zVal, ')', sep = '')
           new.file$file.par$z_value <- zVal
           fileFolder[[j]] <- new.file
         }
       }
     }
+
+    ## Reassign currentSpectrum
+    if (new.file$file.par$number_dimensions < 3) {
+      currentSpectrum <- new.file$file.par$file.name
+    } else {
+      currentSpectrum <- userTitle
+    }
     
-    ## Set the currentSpectrum to the current file
-    currentSpectrum <- new.file$file.par$file.name
-    
-    ## Debugging: Log the fileFolder state after adding the file
-    log_message(paste("File added to fileFolder:", new.file$file.par$file.name))
-    log_message(paste("Current fileFolder size:", length(fileFolder)))
-    
-    ## Log successful file opening
-    log_message(paste("File", basename(usrList[i]), "opened successfully."))
+    ## Tell user which files have been loaded
+    log_message(basename(usrList[i]), quote = FALSE)
     flush.console()
   }
 
@@ -6490,18 +6496,26 @@ plotData <- function(spectrum, fileFolder) {
   if (!is.null(spectrum)) {
     log_message(paste("Plotting data for spectrum:", spectrum))
     
-    ## Example of setting correct graphical parameters for the plot
-    par(bg = "white")  # Ensure the background is correctly set to a single value
-    
     ## Retrieve the relevant file's graphical parameters
     file <- fileFolder[[which(names(fileFolder) == spectrum)]]
     graphicsParams <- file$graphics.par
     
-    ## Example of using the graphics parameters for plotting
+    ## Log the parameters to debug
     log_message(paste("Using graphics parameters:", graphicsParams))
     
-    ## Add your actual plotting code here based on the spectrum
-    # plot(some_data_from_spectrum)
+    ## Set correct graphical parameters
+    par(bg = "white")  # Set the background to a valid single value
+    
+    ## Apply other graphical parameters if needed
+    usr <- graphicsParams$usr
+    if (!is.null(usr)) {
+      par(usr = usr)
+    }
+    
+    ## Add your actual plotting code here
+    # Example plot:
+    # plot(x, y, ...)
+    
   } else {
     log_message("No spectrum available for plotting.")
   }
