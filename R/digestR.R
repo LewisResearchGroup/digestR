@@ -6471,7 +6471,7 @@ file_open <- function(fileName, ...) {
     log_message("splashScreen called to update the UI.")
     
     ## Ensure the plotting function is called
-    plotData(currentSpectrum)  # Add your plotting logic here
+    plotData(currentSpectrum, fileFolder)  # Add your plotting logic here
     
     ## Short delay to ensure screen is ready
     Sys.sleep(0.5)
@@ -6485,18 +6485,23 @@ file_open <- function(fileName, ...) {
   return(invisible(usrList))
 }
 
-## Placeholder for plotData function:
-## This is where you will actually plot the data from currentSpectrum
-plotData <- function(spectrum) {
+## Plotting function with bg parameter fix
+plotData <- function(spectrum, fileFolder) {
   if (!is.null(spectrum)) {
     log_message(paste("Plotting data for spectrum:", spectrum))
+    
+    ## Example of setting correct graphical parameters for the plot
+    par(bg = "white")  # Ensure the background is correctly set to a single value
+    
+    ## Retrieve the relevant file's graphical parameters
+    file <- fileFolder[[which(names(fileFolder) == spectrum)]]
+    graphicsParams <- file$graphics.par
+    
+    ## Example of using the graphics parameters for plotting
+    log_message(paste("Using graphics parameters:", graphicsParams))
+    
     ## Add your actual plotting code here based on the spectrum
-    ## Example plot call:
-    # plot(some_data_from_spectrum)
-  } else {
-    log_message("No spectrum available for plotting.")
-  }
-}
+    #
 
 
 #######################################################################################
