@@ -1327,7 +1327,7 @@ popupGui <- function(dev){
 }
 
 # Displays the digestR splash screen
- <- function(){
+ splashScreen <- function(){
 
   par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
       cex.main=defaultSettings$cex.main, bg='black')
