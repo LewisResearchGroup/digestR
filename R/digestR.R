@@ -6589,7 +6589,7 @@ file_open <- function(fileName, ...){
     }
     
     ## Log successful file opening
-    log_message(paste("file opened", basename(usrList[i]), ":", new.file))
+    #log_message(paste("file opened", basename(usrList[i]), ":", new.file))
     
     ## Make a new entry in the file folder if file is not already present 
     filePar <- new.file$file.par
