@@ -6313,6 +6313,14 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 # }
 #######################################################################
 file_open <- function(fileName, ...) {
+  ## Initialize necessary objects at the beginning
+  if (exists("fileFolder") && is.null(fileFolder)) {
+    fileFolder <- list()  # Ensure fileFolder is initialized if not already
+  }
+  
+  if (exists("currentSpectrum") && is.null(currentSpectrum)) {
+    currentSpectrum <- NULL  # Initialize currentSpectrum to a default state
+  }
   
   ## Create any/all of the digestR objects that are missing
   createObj()
@@ -6320,8 +6328,9 @@ file_open <- function(fileName, ...) {
   ## Have user select all files they wish to open
   if (missing(fileName)) {
     usrList <- sort(myOpen())
-    if(!length(usrList) || !nzchar(usrList))
+    if (!length(usrList) || !nzchar(usrList)) {
       return(invisible())
+    }
   } else {
     usrList <- fileName
   }
@@ -6330,18 +6339,18 @@ file_open <- function(fileName, ...) {
   errors <- FALSE
   fileNames <- names(fileFolder)
   userTitles <- NULL
-  if (!is.null(fileFolder))
+  if (!is.null(fileFolder)) {
     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
+  }
   
   ## Temporarily suppress all warnings
   old_warn <- options(warn = -1)
   
   for (i in 1:length(usrList)) {
-    
     ## Try to read the file while suppressing warnings
     new.file <- tryCatch(
       dianaHead(file.name = usrList[i], print.info = TRUE), 
-      error = function(cond) handleFoErrors(cond, usrList[i])  ## Pass the fileName within the loop
+      error = function(cond) handleFoErrors(cond, usrList[i])
     )
     
     if (!is.list(new.file)) {
@@ -6371,8 +6380,9 @@ file_open <- function(fileName, ...) {
     
     filePar <- new.file$file.par
     if (!new.file$file.par$file.name %in% fileNames) {
-      if (new.file$file.par$user_title %in% userTitles)
+      if (new.file$file.par$user_title %in% userTitles) {
         new.file$file.par$user_title <- new.file$file.par$file.name
+      }
       fileFolder[[(length(fileFolder) + 1)]] <- new.file
       names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
     }
@@ -6383,8 +6393,10 @@ file_open <- function(fileName, ...) {
     flush.console()
   }
   
+  ## Restore warning options
   options(old_warn)
   
+  ## Assign the new objects to the global environment
   myAssign("fileFolder", fileFolder, save.backup = FALSE)
   myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
   
@@ -6417,33 +6429,22 @@ file_open <- function(fileName, ...) {
 }
 
 handleFoErrors <- function(cond, fileName = NULL) {
-  # Set errors flag to TRUE to indicate that an error occurred
-  errors <<- TRUE
+  errors <<- TRUE  # Set errors flag to TRUE
   
-  # Customize the error message based on the error type or condition
   if (grepl("unused argument \\(cond\\)", cond$message)) {
     log_message <- "An unused argument error occurred in the function. Please check the function arguments."
   } else if (grepl("truncating string with embedded nuls", cond$message)) {
-    # Specific handling for "truncating string with embedded nuls" warnings/errors
     log_message <- paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
                          if (!is.null(fileName)) basename(fileName) else "", sep = " ")
   } else {
-    # Generic error handling for other types of errors
     log_message <- paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message)
   }
   
-  # Log the error message to a log file or suppress the output
   write(log_message, file = "fo_error_log.txt", append = TRUE)
-  
-  # Optionally print the message for debugging purposes (comment out to suppress completely)
   cat(log_message, "\n")
   
-  # Return NULL or an appropriate value to allow the function to continue
   return(NULL)
 }
-
-
-
 
 #######################################################################################
 ## User file function fc
