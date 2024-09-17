@@ -6532,6 +6532,8 @@ handleFoErrors <- function(cond, fileName = NULL, logFile = "fo_error_log.txt") 
 
 file_open <- function(fileName, ...){
   
+  suppressWarnings({
+	  
   ## Create any/all of the digestR objects that are missing
   createObj()
   
@@ -6601,6 +6603,7 @@ file_open <- function(fileName, ...){
           new.file$file.par$user_title <- new.file$file.par$file.name
         fileFolder[[length(fileFolder) + 1]] <- new.file
         names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
+        cat(paste("File", basename(usrList[i]), "opened successfully.\n"))
       } else {
         
         ## Make duplicate entries in fileFolder for each z-slice in 3D spectra
@@ -6613,6 +6616,7 @@ file_open <- function(fileName, ...){
           fileFolder[[length(fileFolder) + 1]] <- new.file					
           names(fileFolder)[length(fileFolder)] <- userTitle
         }
+          cat(paste("File", basename(usrList[i]), "opened successfully.\n"))
       }
     } else {
       
@@ -6673,6 +6677,7 @@ if (!is.null(fileFolder) && length(fileFolder) > 0) {
   }
   
   return(invisible(usrList))
+  }) 
 }
 
 #######################################################################################
