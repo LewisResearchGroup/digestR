@@ -6334,11 +6334,15 @@ file_open <- function(fileName, ...) {
   ## Create any/all of the digestR objects that are missing
   createObj()
   
+  ## Suppress warnings temporarily
+  old_warn <- options(warn = -1)  # Save the current warning settings and suppress warnings
+  
   ## Have user select all files they wish to open
   if (missing(fileName)) {
     usrList <- sort(myOpen())
     if (!length(usrList) || !nzchar(usrList)) {
       log_message("No files selected.")
+      options(old_warn)  # Restore warning settings
       return(invisible())
     }
   } else {
@@ -6368,7 +6372,7 @@ file_open <- function(fileName, ...) {
     
     ## Make sure input files are of the correct format
     if (length(new.file$file.par) == 0) {
-      log_message(paste('ERROR:', basename(usrList[i]), "is unreadable"), quote = FALSE)
+      log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
       flush.console()
       next
     }
@@ -6392,8 +6396,8 @@ file_open <- function(fileName, ...) {
     flush.console()
   }
 
-  ## Restore options if any warnings were suppressed
-  options(old_warn)
+  ## Restore the original warning settings
+  options(old_warn)  # Restore warning settings to their previous state
   
   ## Assign the new objects to the global environment
   myAssign("fileFolder", fileFolder, save.backup = FALSE)
@@ -6423,7 +6427,6 @@ file_open <- function(fileName, ...) {
   ## Return the user list of files that were opened
   return(invisible(usrList))
 }
-
 
 #######################################################################################
 ## User file function fc
