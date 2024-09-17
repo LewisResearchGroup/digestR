@@ -6498,28 +6498,34 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #   return(invisible(usrList))
 # }
 #######################################################################################
-handleFoErrors <- function(cond, fileName = NULL) {
+handleFoErrors <- function(cond, fileName = NULL, logFile = "fo_error_log.txt") {
   # Set errors flag to TRUE to indicate that an error occurred
   errors <<- TRUE
   
+  # Get the current timestamp
+  timestamp <- Sys.time()
+
   # Customize the error message based on the error type or condition
-  if (grepl("unused argument \\(cond\\)", cond$message)) {
-    log_message <- "An unused argument error occurred in the function. Please check the function arguments."
-  } else if (grepl("truncating string with embedded nuls", cond$message)) {
-    # Specific handling for "truncating string with embedded nuls" warnings/errors
-    log_message <- paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
-                         if (!is.null(fileName)) basename(fileName) else "", sep = " ")
+  if (grepl("truncating string with embedded nuls", cond$message)) {
+    # Suppress "truncating string with embedded nuls" warnings
+    log_message <- paste0("[", timestamp, "] Warning: A truncation issue occurred due to embedded null characters in the file: ", 
+                          if (!is.null(fileName)) basename(fileName) else "")
+    # Return NULL but suppress further output for these specific warnings
+    return(NULL)
+  } else if (grepl("unused argument \\(cond\\)", cond$message)) {
+    log_message <- paste0("[", timestamp, "] An unused argument error occurred. Please check the function arguments.")
   } else {
     # Generic error handling for other types of errors
-    log_message <- paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message)
+    log_message <- paste0("[", timestamp, "] An error occurred while processing ", 
+                          if (!is.null(fileName)) basename(fileName) else "", ": ", cond$message)
   }
-  
-  # Log the error message to a log file or suppress the output
-  write(log_message, file = "fo_error_log.txt", append = TRUE)
-  
+
+  # Log the error message to the log file
+  write(log_message, file = logFile, append = TRUE)
+
   # Optionally print the message for debugging purposes (comment out to suppress completely)
   cat(log_message, "\n")
-  
+
   # Return NULL or an appropriate value to allow the function to continue
   return(NULL)
 }
@@ -6635,7 +6641,7 @@ file_open <- function(fileName, ...){
     }
     
     ## Tell user which files have been loaded
-    log_message(basename(usrList[i]), quote = FALSE)
+    #log_message(basename(usrList[i]), quote = FALSE)
     flush.console()
   }
   
@@ -6644,8 +6650,7 @@ file_open <- function(fileName, ...){
   myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
   
   ## Refresh the splash screen after the files are loaded and currentSpectrum is set
-  if (!is.null(fileFolder) && length(fileFolder) > 0) {
-    log_message("Refreshing splash screen with current spectrum.")
+if (!is.null(fileFolder) && length(fileFolder) > 0) {
     
     ## Ensure the graphical device is ready and refresh splash screen
     if (dev.cur() == 1) {
@@ -6655,13 +6660,13 @@ file_open <- function(fileName, ...){
     splashScreen()  # Call the splash screen
     
     ## Short delay to ensure screen is ready
-    Sys.sleep(0.5)
+    #Sys.sleep(0.5)
     
     ## Force a redraw of the graphics device
     dev.flush()
     refresh(...)   
-  }
-  
+}
+
   ## Display error dialog if errors occurred
   if (errors) {
     myMsg(paste('Errors occurred while opening files. Check the R console for details.', sep = '\n'), icon = 'error')
