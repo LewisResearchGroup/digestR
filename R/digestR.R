@@ -6001,7 +6001,7 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 #' @seealso `createObj`, `dianaHead`, `log_message`, `myAssign`, `refresh`
 #'
 #' @export
-#  file_open <- function(fileName, ...){
+# file_open <- function(fileName, ...){
   
 #   ## Create any/all of the digestR objects that are missing
 #   createObj()
@@ -10464,7 +10464,9 @@ myDir <- function(initialdir='', parent=NULL, title='', mustexist=TRUE){
                                             mustexist=mustexist))
   
   ## Save the selected (not canceled) directory
-  if (length(returnVal) && nzchar(returnVal)){
+  # if (length(returnVal) && nzchar(returnVal))
+ if (length(returnVal) > 0 && all(nzchar(returnVal)))
+ {
     returnVal <- gsub('\\', '/', returnVal, fixed=TRUE)
     pkgVar$prevDir <- returnVal
     myAssign("pkgVar", pkgVar, save.backup = FALSE)
@@ -10542,7 +10544,9 @@ myOpen <- function( defaultextension='', filetypes='', initialfile='',
   }
   
   ## Save the selected (not canceled) directory
-  if (length(returnVal) > 0 && nzchar(returnVal)){
+  # if (length(returnVal) > 0 && nzchar(returnVal))
+if (length(returnVal) > 0 && all(nzchar(returnVal)))
+  {
     pkgVar$prevDir <- dirname(returnVal[1])
     myAssign("pkgVar", pkgVar, save.backup=FALSE)
   }
@@ -10608,7 +10612,9 @@ mySave <- function(defaultextension='', filetypes='', initialfile='',
                                         initialfile=initialfile))
   
   ## Save the selected (not canceled) directory
-  if (length(returnVal) > 0 && nzchar(returnVal)){
+  # if (length(returnVal) > 0 && nzchar(returnVal))
+ if (length(returnVal) > 0 && all(nzchar(returnVal)))
+  {
     pkgVar$prevDir <- dirname(returnVal[1])
     myAssign("pkgVar", pkgVar, save.backup=FALSE)
   }
