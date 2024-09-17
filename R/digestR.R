@@ -6323,11 +6323,11 @@ handleFoErrors <- function(cond) {
 file_open <- function(fileName, ...) {
   
   ## Initialize necessary objects at the beginning
-  if (exists("fileFolder") && is.null(fileFolder)) {
-    fileFolder <- list()  # Ensure fileFolder is initialized if not already
+  if (!exists("fileFolder") || is.null(fileFolder)) {
+    fileFolder <- list()  # Initialize fileFolder if it doesn't exist or is NULL
   }
   
-  if (exists("currentSpectrum") && is.null(currentSpectrum)) {
+  if (!exists("currentSpectrum") || is.null(currentSpectrum)) {
     currentSpectrum <- NULL  # Initialize currentSpectrum to a default state
   }
   
@@ -6338,11 +6338,15 @@ file_open <- function(fileName, ...) {
   if (missing(fileName)) {
     usrList <- sort(myOpen())
     if (!length(usrList) || !nzchar(usrList)) {
+      log_message("No files selected.")
       return(invisible())
     }
   } else {
     usrList <- fileName
   }
+  
+  ## Debugging: Log the files to be processed
+  log_message(paste("Files to be processed:", paste(usrList, collapse = ", ")))
   
   ## Read selected files
   for (i in 1:length(usrList)) {
@@ -6359,25 +6363,46 @@ file_open <- function(fileName, ...) {
       next
     }
     
-    ## Proceed with processing new.file if successfully loaded
+    ## Debugging: Log the successful file load
+    log_message(paste("File", basename(usrList[i]), "loaded successfully"))
+    
+    ## Make sure input files are of the correct format
     if (length(new.file$file.par) == 0) {
-      log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
+      log_message(paste('ERROR:', basename(usrList[i]), "is unreadable"), quote = FALSE)
       flush.console()
       next
     }
     
-    ## File processing and state update
+    ## Set up default graphics settings for the new file
     new.file$graphics.par <- defaultSettings
+    
+    ## Add the new file to the fileFolder
     fileFolder[[length(fileFolder) + 1]] <- new.file
     names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
+    
+    ## Set the currentSpectrum to the current file
     currentSpectrum <- new.file$file.par$file.name
-
+    
+    ## Debugging: Log the fileFolder state after adding the file
+    log_message(paste("File added to fileFolder:", new.file$file.par$file.name))
+    log_message(paste("Current fileFolder size:", length(fileFolder)))
+    
+    ## Log successful file opening
     log_message(paste("File", basename(usrList[i]), "opened successfully."))
     flush.console()
   }
 
-  ## If fileFolder and currentSpectrum are properly initialized, refresh splashScreen
-  if (!is.null(fileFolder) && length(fileFolder) > 0) {
+  ## Restore options if any warnings were suppressed
+  options(old_warn)
+  
+  ## Assign the new objects to the global environment
+  myAssign("fileFolder", fileFolder, save.backup = FALSE)
+  myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
+  
+  ## Debugging: Log the state of fileFolder before splashScreen call
+  if (is.null(fileFolder) || length(fileFolder) == 0) {
+    log_message("fileFolder is empty after loading.")
+  } else {
     log_message("fileFolder is populated. Proceeding to refresh splashScreen.")
     
     ## Ensure graphics device is ready and call splash screen
@@ -6386,11 +6411,16 @@ file_open <- function(fileName, ...) {
     }
   
     splashScreen()
-    Sys.sleep(0.5)  # Short delay to ensure screen is ready
+    
+    ## Short delay to ensure screen is ready
+    Sys.sleep(0.5)
+    
+    ## Force a redraw of the graphics device
     dev.flush()
     refresh(...)
   }
 
+  ## Return the user list of files that were opened
   return(invisible(usrList))
 }
 
