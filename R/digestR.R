@@ -6154,12 +6154,159 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 # Updated fo function: DDLM
 #################################################################################
 
-# # Working Fo but opening errors still happening.
+# # # Working Fo but opening errors still happening.
 
+# file_open <- function(fileName, ...) {
+  
+#   ## Create any/all of the digestR objects that are missing
+#   createObj()
+  
+#   ## Have user select all files they wish to open
+#   if (missing(fileName)) {
+#     usrList <- sort(myOpen())
+#     if(!length(usrList) || !nzchar(usrList))
+#       return(invisible())
+#   } else {
+#     usrList <- fileName
+#   }
+  
+#   ## Read selected files
+#   errors <- FALSE
+#   fileNames <- names(fileFolder)
+#   userTitles <- NULL
+#   if (!is.null(fileFolder))
+#     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
+  
+#   ## Temporarily suppress all warnings
+#   old_warn <- options(warn = -1)
+  
+#   for (i in 1:length(usrList)) {
+    
+#     ## Try to read the file while suppressing warnings
+#     new.file <- tryCatch(
+#       dianaHead(file.name = usrList[i], print.info = TRUE), 
+#       error = function(cond) handleFoErrors(cond, usrList[i])
+#     )
+    
+#     if (!is.list(new.file)) {
+#       # If not a list, the operation failed, log the error and skip to the next iteration
+#       log_message(paste("file opened", basename(usrList[i]), ":", new.file))
+#       next
+#     }
+    
+#     ## Make sure input files are of the correct format
+#     if (length(new.file$file.par) == 0) {
+#       log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
+#       flush.console()
+#       next
+#     }
+    
+#     ## Fetch the default graphics settings 
+#     new.file$graphics.par <- defaultSettings
+    
+#     ## Set initial plotting range
+#     if (new.file$file.par$number_dimensions == 1) {
+#       new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
+#                                      new.file$file.par$upfield_ppm[1], 
+#                                      new.file$file.par$min_intensity,
+#                                      new.file$file.par$max_intensity)
+#     } else {
+#       new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[2],
+#                                      new.file$file.par$upfield_ppm[2], 
+#                                      new.file$file.par$downfield_ppm[1],
+#                                      new.file$file.par$upfield_ppm[1])
+#     }
+    
+#     ## Make a new entry in the file folder if file is not already present 
+#     filePar <- new.file$file.par
+#     if (!new.file$file.par$file.name %in% fileNames) {
+      
+#       ## Add 1D/2D spectra to the file folder
+#       if (new.file$file.par$number_dimensions < 3) {
+#         if (new.file$file.par$user_title %in% userTitles)
+#           new.file$file.par$user_title <- new.file$file.par$file.name
+#         fileFolder[[(length(fileFolder) + 1)]] <- new.file
+#         names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
+#       } else {
+        
+#         ## Make duplicate entries in fileFolder for each z-slice in 3D spectra
+#         w3 <- seq(filePar$upfield_ppm[3], filePar$downfield_ppm[3], 
+#                   length.out = filePar$matrix_size[3])
+#         for (j in seq_along(w3)) {
+#           userTitle <- paste(basename(filePar$file.name), ' (z=', w3[j], ')', sep = '')
+#           new.file$file.par$user_title <- userTitle
+#           new.file$file.par$z_value <- w3[j]
+#           fileFolder[[length(fileFolder) + 1]] <- new.file
+#           names(fileFolder)[length(fileFolder)] <- userTitle
+#         }
+#       }
+#     } else {
+      
+#       ## Update fileFolder entry if file is already present in fileFolder
+#       fLoc <- match(new.file$file.par$file.name, fileNames)
+#       if (new.file$file.par$number_dimensions < 3) {
+#         fileFolder[[fLoc]] <- new.file
+#         if (new.file$file.par$user_title %in% userTitles)
+#           new.file$file.par$user_title <- new.file$file.par$file.name
+#       } else {
+#         for (j in fLoc) {
+#           zVal <- fileFolder[[j]]$file.par$z_value
+#           new.file$file.par$user_title <- paste(basename(filePar$file.name), 
+#                                                 ' (z=', zVal, ')', sep = '')
+#           new.file$file.par$z_value <- zVal
+#           fileFolder[[j]] <- new.file
+#         }
+#       }
+#     }
+    
+#     ## Reassign currentSpectrum
+#     if (new.file$file.par$number_dimensions < 3) {
+#       currentSpectrum <- new.file$file.par$file.name
+#     } else {
+#       currentSpectrum <- userTitle
+#     }
+    
+#     ## Tell user which files have been loaded
+#     log_message(paste("File", basename(usrList[i]), "opened successfully."))
+#     flush.console()
+#   }
+  
+#   ## Restore warning options
+#   options(old_warn)
+  
+#   ## Assign the new objects to the global environment
+#   myAssign("fileFolder", fileFolder, save.backup = FALSE)
+#   myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
+  
+#   ## Save an undo point and refresh the active graphics
+#   if (!is.null(fileFolder)) {
+#     myAssign("currentSpectrum", currentSpectrum, save.backup = TRUE)
+#     refresh(...)   
+#   }
+  
+#   ## Display error dialog
+#   if (errors) {
+#     myMsg(paste('Errors occurred while opening files', 'Check the R console for details.', sep = '\n'), icon = 'error')
+#   }
+  
+#   return(invisible(usrList))
+
+#   # Call the splash screen after loading the file
+#   splashScreen()
+  
+#   # Ensure the graphical device is updated immediately
+#   dev.flush()  # Forces a redraw of the graphics device
+  
+#   # If necessary, call refresh to update the main plot window
+#   refresh(...)
+
+# }
+#######################################################################
 file_open <- function(fileName, ...) {
   
   ## Create any/all of the digestR objects that are missing
   createObj()
+  browser()  # Breakpoint 1 - after creating objects
   
   ## Have user select all files they wish to open
   if (missing(fileName)) {
@@ -6169,6 +6316,7 @@ file_open <- function(fileName, ...) {
   } else {
     usrList <- fileName
   }
+  browser()  # Breakpoint 2 - after getting the user list
   
   ## Read selected files
   errors <- FALSE
@@ -6176,11 +6324,13 @@ file_open <- function(fileName, ...) {
   userTitles <- NULL
   if (!is.null(fileFolder))
     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
+  browser()  # Breakpoint 3 - after reading fileFolder
   
   ## Temporarily suppress all warnings
   old_warn <- options(warn = -1)
   
   for (i in 1:length(usrList)) {
+    browser()  # Breakpoint 4 - inside the loop before reading the file
     
     ## Try to read the file while suppressing warnings
     new.file <- tryCatch(
@@ -6189,7 +6339,6 @@ file_open <- function(fileName, ...) {
     )
     
     if (!is.list(new.file)) {
-      # If not a list, the operation failed, log the error and skip to the next iteration
       log_message(paste("file opened", basename(usrList[i]), ":", new.file))
       next
     }
@@ -6216,6 +6365,7 @@ file_open <- function(fileName, ...) {
                                      new.file$file.par$downfield_ppm[1],
                                      new.file$file.par$upfield_ppm[1])
     }
+    browser()  # Breakpoint 5 - after setting plotting range
     
     ## Make a new entry in the file folder if file is not already present 
     filePar <- new.file$file.par
@@ -6273,6 +6423,7 @@ file_open <- function(fileName, ...) {
   
   ## Restore warning options
   options(old_warn)
+  browser()  # Breakpoint 6 - after file processing
   
   ## Assign the new objects to the global environment
   myAssign("fileFolder", fileFolder, save.backup = FALSE)
@@ -6301,6 +6452,7 @@ file_open <- function(fileName, ...) {
   refresh(...)
 
 }
+
 
 handleFoErrors <- function(cond, fileName = NULL) {
   # Set errors flag to TRUE to indicate that an error occurred
