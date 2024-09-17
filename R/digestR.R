@@ -6306,7 +6306,6 @@ file_open <- function(fileName, ...) {
   
   ## Create any/all of the digestR objects that are missing
   createObj()
-  browser()  # Breakpoint 1 - after creating objects
   
   ## Have user select all files they wish to open
   if (missing(fileName)) {
@@ -6316,7 +6315,6 @@ file_open <- function(fileName, ...) {
   } else {
     usrList <- fileName
   }
-  browser()  # Breakpoint 2 - after getting the user list
   
   ## Read selected files
   errors <- FALSE
@@ -6324,13 +6322,11 @@ file_open <- function(fileName, ...) {
   userTitles <- NULL
   if (!is.null(fileFolder))
     userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
-  browser()  # Breakpoint 3 - after reading fileFolder
   
   ## Temporarily suppress all warnings
   old_warn <- options(warn = -1)
   
   for (i in 1:length(usrList)) {
-    browser()  # Breakpoint 4 - inside the loop before reading the file
     
     ## Try to read the file while suppressing warnings
     new.file <- tryCatch(
@@ -6339,6 +6335,7 @@ file_open <- function(fileName, ...) {
     )
     
     if (!is.list(new.file)) {
+      # If not a list, the operation failed, log the error and skip to the next iteration
       log_message(paste("file opened", basename(usrList[i]), ":", new.file))
       next
     }
@@ -6365,7 +6362,6 @@ file_open <- function(fileName, ...) {
                                      new.file$file.par$downfield_ppm[1],
                                      new.file$file.par$upfield_ppm[1])
     }
-    browser()  # Breakpoint 5 - after setting plotting range
     
     ## Make a new entry in the file folder if file is not already present 
     filePar <- new.file$file.par
@@ -6423,7 +6419,6 @@ file_open <- function(fileName, ...) {
   
   ## Restore warning options
   options(old_warn)
-  browser()  # Breakpoint 6 - after file processing
   
   ## Assign the new objects to the global environment
   myAssign("fileFolder", fileFolder, save.backup = FALSE)
@@ -6435,24 +6430,23 @@ file_open <- function(fileName, ...) {
     refresh(...)   
   }
   
+  ## Call the splash screen after loading the file
+  splashScreen()  # Now moved above the return statement
+
+  ## Force a redraw of the graphics device to ensure it updates
+  dev.flush()  # Forces a redraw of the graphics device
+  
+  ## Optionally, call refresh to update the main plot window
+  refresh(...)
+  
   ## Display error dialog
   if (errors) {
     myMsg(paste('Errors occurred while opening files', 'Check the R console for details.', sep = '\n'), icon = 'error')
   }
   
+  ## Return file list after splash screen is shown
   return(invisible(usrList))
-
-  # Call the splash screen after loading the file
-  splashScreen()
-  
-  # Ensure the graphical device is updated immediately
-  dev.flush()  # Forces a redraw of the graphics device
-  
-  # If necessary, call refresh to update the main plot window
-  refresh(...)
-
 }
-
 
 handleFoErrors <- function(cond, fileName = NULL) {
   # Set errors flag to TRUE to indicate that an error occurred
@@ -6479,6 +6473,7 @@ handleFoErrors <- function(cond, fileName = NULL) {
   # Return NULL or an appropriate value to allow the function to continue
   return(NULL)
 }
+
 
 #######################################################################################
 ## User file function fc
