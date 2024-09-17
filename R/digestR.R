@@ -6335,22 +6335,18 @@ file_open <- function(fileName, ...) {
     )
     
     if (!is.list(new.file)) {
-      # If not a list, the operation failed, log the error and skip to the next iteration
       log_message(paste("file opened", basename(usrList[i]), ":", new.file))
       next
     }
     
-    ## Make sure input files are of the correct format
     if (length(new.file$file.par) == 0) {
       log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
       flush.console()
       next
     }
     
-    ## Fetch the default graphics settings 
     new.file$graphics.par <- defaultSettings
     
-    ## Set initial plotting range
     if (new.file$file.par$number_dimensions == 1) {
       new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
                                      new.file$file.par$upfield_ppm[1], 
@@ -6363,64 +6359,22 @@ file_open <- function(fileName, ...) {
                                      new.file$file.par$upfield_ppm[1])
     }
     
-    ## Make a new entry in the file folder if file is not already present 
     filePar <- new.file$file.par
     if (!new.file$file.par$file.name %in% fileNames) {
-      
-      ## Add 1D/2D spectra to the file folder
-      if (new.file$file.par$number_dimensions < 3) {
-        if (new.file$file.par$user_title %in% userTitles)
-          new.file$file.par$user_title <- new.file$file.par$file.name
-        fileFolder[[(length(fileFolder) + 1)]] <- new.file
-        names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
-      } else {
-        
-        ## Make duplicate entries in fileFolder for each z-slice in 3D spectra
-        w3 <- seq(filePar$upfield_ppm[3], filePar$downfield_ppm[3], 
-                  length.out = filePar$matrix_size[3])
-        for (j in seq_along(w3)) {
-          userTitle <- paste(basename(filePar$file.name), ' (z=', w3[j], ')', sep = '')
-          new.file$file.par$user_title <- userTitle
-          new.file$file.par$z_value <- w3[j]
-          fileFolder[[length(fileFolder) + 1]] <- new.file
-          names(fileFolder)[length(fileFolder)] <- userTitle
-        }
-      }
-    } else {
-      
-      ## Update fileFolder entry if file is already present in fileFolder
-      fLoc <- match(new.file$file.par$file.name, fileNames)
-      if (new.file$file.par$number_dimensions < 3) {
-        fileFolder[[fLoc]] <- new.file
-        if (new.file$file.par$user_title %in% userTitles)
-          new.file$file.par$user_title <- new.file$file.par$file.name
-      } else {
-        for (j in fLoc) {
-          zVal <- fileFolder[[j]]$file.par$z_value
-          new.file$file.par$user_title <- paste(basename(filePar$file.name), 
-                                                ' (z=', zVal, ')', sep = '')
-          new.file$file.par$z_value <- zVal
-          fileFolder[[j]] <- new.file
-        }
-      }
+      if (new.file$file.par$user_title %in% userTitles)
+        new.file$file.par$user_title <- new.file$file.par$file.name
+      fileFolder[[(length(fileFolder) + 1)]] <- new.file
+      names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
     }
     
-    ## Reassign currentSpectrum
-    if (new.file$file.par$number_dimensions < 3) {
-      currentSpectrum <- new.file$file.par$file.name
-    } else {
-      currentSpectrum <- userTitle
-    }
+    currentSpectrum <- new.file$file.par$file.name
     
-    ## Tell user which files have been loaded
     log_message(paste("File", basename(usrList[i]), "opened successfully."))
     flush.console()
   }
   
-  ## Restore warning options
   options(old_warn)
   
-  ## Assign the new objects to the global environment
   myAssign("fileFolder", fileFolder, save.backup = FALSE)
   myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
   
@@ -6430,49 +6384,28 @@ file_open <- function(fileName, ...) {
     refresh(...)   
   }
   
-  ## Call the splash screen after loading the file
-  splashScreen()  # Now moved above the return statement
-
-  ## Force a redraw of the graphics device to ensure it updates
-  dev.flush()  # Forces a redraw of the graphics device
+  ## Ensure graphics device is ready and call splash screen
+  if (dev.cur() == 1) {
+    dev.new()  # Open a new graphics device if none is active
+  }
   
-  ## Optionally, call refresh to update the main plot window
+  log_message("Calling splashScreen to update the UI.")
+  
+  splashScreen()
+  
+  ## Add a short delay to ensure the screen is ready
+  Sys.sleep(0.5)
+  
+  dev.flush()
   refresh(...)
   
-  ## Display error dialog
   if (errors) {
     myMsg(paste('Errors occurred while opening files', 'Check the R console for details.', sep = '\n'), icon = 'error')
   }
   
-  ## Return file list after splash screen is shown
   return(invisible(usrList))
 }
 
-handleFoErrors <- function(cond, fileName = NULL) {
-  # Set errors flag to TRUE to indicate that an error occurred
-  errors <<- TRUE
-  
-  # Customize the error message based on the error type or condition
-  if (grepl("unused argument \\(cond\\)", cond$message)) {
-    log_message <- "An unused argument error occurred in the function. Please check the function arguments."
-  } else if (grepl("truncating string with embedded nuls", cond$message)) {
-    # Specific handling for "truncating string with embedded nuls" warnings/errors
-    log_message <- paste("Warning: A truncation error occurred due to embedded null characters in the file:", 
-                         if (!is.null(fileName)) basename(fileName) else "", sep = " ")
-  } else {
-    # Generic error handling for other types of errors
-    log_message <- paste("An error occurred while processing", if (!is.null(fileName)) basename(fileName) else "", ":", cond$message)
-  }
-  
-  # Log the error message to a log file or suppress the output
-  write(log_message, file = "fo_error_log.txt", append = TRUE)
-  
-  # Optionally print the message for debugging purposes (comment out to suppress completely)
-  cat(log_message, "\n")
-  
-  # Return NULL or an appropriate value to allow the function to continue
-  return(NULL)
-}
 
 
 #######################################################################################
