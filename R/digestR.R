@@ -25822,5 +25822,3 @@ generate_proteome <- function() {
     print("Other action taken.")
   }
 }
-
-
