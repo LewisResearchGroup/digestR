@@ -6312,6 +6312,14 @@ pseudo1D <- function(x){range(x)[which.max(abs(range(x)))]}
 
 # }
 #######################################################################
+handleFoErrors <- function(cond) {
+  # Log and handle the error message
+  log_message(paste("An error occurred:", cond$message))
+  
+  # Return NULL to indicate that the file couldn't be processed
+  return(NULL)
+}
+
 file_open <- function(fileName, ...) {
   
   ## Initialize necessary objects at the beginning
@@ -6337,98 +6345,52 @@ file_open <- function(fileName, ...) {
   }
   
   ## Read selected files
-  errors <- FALSE
-  fileNames <- names(fileFolder)
-  userTitles <- NULL
-  if (!is.null(fileFolder)) {
-    userTitles <- sapply(fileFolder, function(x) x$file.par$user_title)
-  }
-  
-  ## Temporarily suppress all warnings
-  old_warn <- options(warn = -1)
-  
   for (i in 1:length(usrList)) {
+    
     ## Try to read the file while suppressing warnings
     new.file <- tryCatch(
       dianaHead(file.name = usrList[i], print.info = TRUE), 
-      error = function(cond) handleFoErrors(cond, usrList[i])
+      error = function(cond) handleFoErrors(cond)  # Only pass 'cond'
     )
     
-    if (!is.list(new.file)) {
-      log_message(paste("file opened", basename(usrList[i]), ":", new.file))
+    ## If new.file is NULL, continue to next iteration (file failed to load)
+    if (is.null(new.file)) {
+      log_message(paste("Error opening file", basename(usrList[i])))
       next
     }
     
+    ## Proceed with processing new.file if successfully loaded
     if (length(new.file$file.par) == 0) {
       log_message(paste('ERROR:', basename(usrList)[i], "is unreadable"), quote = FALSE)
       flush.console()
       next
     }
     
+    ## File processing and state update
     new.file$graphics.par <- defaultSettings
-    
-    if (new.file$file.par$number_dimensions == 1) {
-      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[1],
-                                     new.file$file.par$upfield_ppm[1], 
-                                     new.file$file.par$min_intensity,
-                                     new.file$file.par$max_intensity)
-    } else {
-      new.file$graphics.par$usr <- c(new.file$file.par$downfield_ppm[2],
-                                     new.file$file.par$upfield_ppm[2], 
-                                     new.file$file.par$downfield_ppm[1],
-                                     new.file$file.par$upfield_ppm[1])
-    }
-    
-    filePar <- new.file$file.par
-    if (!new.file$file.par$file.name %in% fileNames) {
-      if (new.file$file.par$user_title %in% userTitles) {
-        new.file$file.par$user_title <- new.file$file.par$file.name
-      }
-      fileFolder[[(length(fileFolder) + 1)]] <- new.file
-      names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
-    }
-    
+    fileFolder[[length(fileFolder) + 1]] <- new.file
+    names(fileFolder)[length(fileFolder)] <- new.file$file.par$file.name
     currentSpectrum <- new.file$file.par$file.name
-    
+
     log_message(paste("File", basename(usrList[i]), "opened successfully."))
     flush.console()
   }
+
+  ## If fileFolder and currentSpectrum are properly initialized, refresh splashScreen
+  if (!is.null(fileFolder) && length(fileFolder) > 0) {
+    log_message("fileFolder is populated. Proceeding to refresh splashScreen.")
+    
+    ## Ensure graphics device is ready and call splash screen
+    if (dev.cur() == 1) {
+      dev.new()  # Open a new graphics device if none is active
+    }
   
-  ## Restore warning options
-  options(old_warn)
-  
-  ## Assign the new objects to the global environment
-  myAssign("fileFolder", fileFolder, save.backup = FALSE)
-  myAssign("currentSpectrum", currentSpectrum, save.backup = FALSE)
-  
-  ## Save an undo point and refresh the active graphics
-  if (!is.null(fileFolder)) {
-    myAssign("currentSpectrum", currentSpectrum, save.backup = TRUE)
-    refresh(...)   
+    splashScreen()
+    Sys.sleep(0.5)  # Short delay to ensure screen is ready
+    dev.flush()
+    refresh(...)
   }
-  
-  ## Check if splash screen is ready
-  if (dev.cur() == 1) {
-    dev.new()  # Open a new graphics device if none is active
-  }
-  
-  ## Log before calling splashScreen
-  log_message("Calling splashScreen to update the UI.")
-  log_message(paste("fileFolder before splashScreen:", fileFolder))
-  log_message(paste("currentSpectrum before splashScreen:", currentSpectrum))
-  
-  splashScreen()  # Call the splash screen
-  
-  ## Add a short delay to ensure the screen is ready
-  Sys.sleep(0.5)
-  
-  dev.flush()
-  refresh(...)
-  
-  if (errors) {
-    myMsg(paste('Errors occurred while opening files', 'Check the R console for details.', sep = '\n'), icon = 'error')
-  }
-  
+
   return(invisible(usrList))
 }
 
