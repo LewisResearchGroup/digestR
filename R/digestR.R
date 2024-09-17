@@ -6501,8 +6501,11 @@ plotData <- function(spectrum, fileFolder) {
     log_message(paste("Using graphics parameters:", graphicsParams))
     
     ## Add your actual plotting code here based on the spectrum
-    #
-
+    # plot(some_data_from_spectrum)
+  } else {
+    log_message("No spectrum available for plotting.")
+  }
+}
 
 #######################################################################################
 ## User file function fc
