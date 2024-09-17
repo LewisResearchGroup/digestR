@@ -43,13 +43,6 @@ Install the the digestR package directly from GitHub
 
     library(digestR)
 
-### Setp 4: Set your working directory before you start
-
-	setwd('<your-working-directory>')  
-
-### Step 5: Call DigestR gui and the plot window
-	gui()
-
 ## Reproducing the R Environment
 
 This project uses `renv` to manage package dependencies. To reproduce the exact environment used:
