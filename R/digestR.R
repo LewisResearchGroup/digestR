@@ -1094,7 +1094,7 @@ showGui <- function(guiName){
 #' @export
 gui <- function(top=NULL){
   
-  #splashScreen()
+  #()
 
   if (.Platform$OS.type == 'windows' && .Platform$GUI == 'Rgui' && 
       is.null(top)){
@@ -1327,7 +1327,7 @@ popupGui <- function(dev){
 }
 
 # Displays the digestR splash screen
-splashScreen <- function(){
+ <- function(){
 
   par(mar=defaultSettings$mar, cex.axis=defaultSettings$cex.axis, 
       cex.main=defaultSettings$cex.main, bg='black')
@@ -1346,7 +1346,7 @@ splashScreen <- function(){
   
   # Loop to create and position letters
   for (i in 1:length(letters)) {
-    text(-0.75 + (i-1)*0.25, 0.2, letters[i], col=colors[i], cex=cex_values[i], pos=3, offset=offset_values[i])
+    text(-0.65 + (i-1)*0.25, 0.2, letters[i], col=colors[i], cex=cex_values[i], pos=3, offset=offset_values[i])
   }
   
   # # Add a decorative 'R' in a different color
