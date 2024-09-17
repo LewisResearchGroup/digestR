@@ -1374,7 +1374,17 @@ library(png)
   img <- readPNG(img_path)
   plot(0, 0, type = 'n', xlab = '', ylab = '', axes = FALSE, xlim = c(-1.5, 1.5), ylim = c(-1.5, 1.5))
   # Display the image properly (full window)
-  rasterImage(img, -1.5, -1.5, 1.5, 1.5)
+  # rasterImage(img, -1.5, -1.5, 1.5, 1.5)
+
+  xlim <- c(-1.5, 1.5)  # Adjust the x-axis limits as needed
+  ylim <- c(-1.5, 1.5)  # Adjust the y-axis limits as needed
+  
+  # Create plot with no margins and appropriate limits
+  par(mar=c(0,0,0,0), bg='#0d0d0d')
+  plot(0, 0, type='n', xlab='', ylab='', axes=FALSE, xlim=xlim, ylim=ylim)
+  
+  # Display the image, stretched to fit the plot region
+  rasterImage(img, xlim[1], ylim[1], xlim[2], ylim[2])
 
   # Letter positions and modern color scheme for "PANDAS"
   letters <- c('P', 'A', 'N', 'D', 'A', 'S')
