@@ -131,16 +131,17 @@ To create "digestion" maps, peptides identified by Mascot or MaxQuant need to be
 #### 2. Cleavage site specificity: csd()
 The csd() function allows users to plot amino acid distributions at C-terminus or N-terminus to track changes in cut site representation/specificity between groups. This function allows users to select a file to generate either a logo plots of the P4-P4' positions or bar plots at the P1 (Nterminus) or P1' (Cterminus) position. To identify cleavage sites of biological significance, it is possible to normalize the distribution with a specific amino acid sequence. Users can directly import a protein sequence in the appropriate box. The function then calculates the representation frequency for amino acid within the protein sequence to normalize the experimental amino acid cut-site distributions. 
 
-![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/csd().png)
+![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/LogoPlot_function.png)
 
 #### 3. Peptide length distribution: pd()
 Defect in proteolytic activity might have an impact on digested peptide length. Therefore, DigestR was developed to calculate and plot peptide length distributions in amino acids using the pd() command. Users can select a folder or subfolder and process all CSV files in that directory.  Files can be selected directly in the loaded files box. If no files are selected, all files will be used to generate the density plots. At least two files need to be imported in order to generate Venn diagrams Files will be grouped depending on the second string of the filename. Three types of density plots from grouped CSV files can be chosen by the user: Overlay, Ridges, and Colored Ridges.
 
-![](https://github.com/LewisResearchGroup/DigestR/blob/main/Images/Density%20Plot%20GUI.png)
+![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/peptide_distribution_function.png)
 
 #### 4. Venn Diagrams: vd()
 DigetR also allows for the creation of Venn diagrams in order to analyze peptide overlaps between groups. The vd function allows for users to import files contained in a specific folder and generate Venn diagram. Files can be selected directly in the loaded files box. If no files are selected, all files will be used to generate the Venn diagram . At least two files need to be imported in order to generate Venn diagrams
 
+![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/VennDiagram_function.png)
 
 ### Viewing and interacting with Digestion maps. 
 
@@ -171,6 +172,8 @@ The plot color function allows users to easily manipulate the plot colors. To op
 
 #### 5. Overlays: ol()
 DigestR allows multiple "digestion" maps to be displayed concurrently on a single plot through the command ol(). To add or remove loaded files, select the digestion maps to overlay and click the "add" or "remove" buttons. The order of overlaid maps in the main plot window is taken directly from the order of digestion maps appearing in the overlays list box. Individual files can be assigned their own colors. The plot legend will be automatically generated, but it can be suppressed by unchecking the "Display names of the overlay spectrum on the plot" option. Similarly, the path of "digestion" maps can be suppressed by checking the corresponding checkbox.
+
+![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Overlay_function.png)
 
 #### 6. Display protease cut sites: cs()
 Users can overlay known protease cut sites onto the "digestion" map(s) using the cs() command. It is important to note that this function requires a CSV file containing the names of the proteases and their respective cleavage sites. An example CSV file can be found here: https://github.com/LewisResearchGroup/digestR/blob/main/tests/Proteasecutsiteslist.csv
