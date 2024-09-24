@@ -19035,77 +19035,79 @@ ps <- function(dispPane='co'){
 #   tkfocus(geneDialog)
 # }
 # displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
- 
-#   onDisplayProteome <- function()
-#   {
-#     analyze_genes('')
-#   }
-  #displayGenomeButton <- ttkbutton(genePlotTypeFrame, text='Display Full Proteome', width=21, command=onDisplayProteome)
 
 onDisplayGene <- function() {
-  # Create the dialog window
+  # Generate a temporary dialog window
   geneDialog <- tktoplevel()
   tkwm.title(geneDialog, "Gene Name Entry")
   
-  # Label prompting user input
-  geneLabel <- ttklabel(geneDialog, text = "Enter the name of the gene you wish to view in detail:")
+  # Instruction label
+  geneLabel <- ttklabel(geneDialog, text = 'Enter the name of the gene you wish to view in detail:')
   tkgrid(geneLabel, padx = 10, pady = 5)
-
-  # Entry box for manual input of gene name
-  geneEntryVar <- tclVar("")
-  geneEntry <- tkentry(geneDialog, textvariable = geneEntryVar, width = 30)
+  
+  # Entry box for manual gene name input
+  geneEntry <- tkentry(geneDialog, width = 30)
   tkgrid(geneEntry, padx = 10, pady = 5)
   
-  # Dropdown menu (combobox) for selecting gene names from species$genes$name
-  geneNamesList <- species$genes$name  # Assuming this list exists
-  geneDropdownVar <- tclVar("")
-  geneDropdown <- ttkcombobox(geneDialog, textvariable = geneDropdownVar, values = geneNamesList, width = 27)
-  tkgrid(geneDropdown, padx = 10, pady = 5)
-
-  # OK button handler
+  # Listbox to display the available gene names from species$genes$name
+  geneNamesList <- species$genes$name  # Assuming this is a list of available gene names
+  geneListVar <- tclVar()  # Variable to store the listbox data
+  tclObj(geneListVar) <- geneNamesList
+  
+  # Create listbox for gene names
+  geneListbox <- tklistbox(geneDialog, listvariable = geneListVar, selectmode = "single", width = 30, height = 10)
+  tkgrid(geneListbox, padx = 10, pady = 5)
+  
+  # Scrollbar for the listbox
+  listScrollbar <- ttkscrollbar(geneDialog, orient = "vertical", command = function(...) tkyview(geneListbox, ...))
+  tkconfigure(geneListbox, yscrollcommand = function(...) tkset(listScrollbar, ...))
+  tkgrid(listScrollbar, column = 2, row = 3, sticky = "ns")
+  
+  # Function to handle the 'OK' button click
   onOK <- function() {
-    # Get value from entry box or dropdown, ensuring it's a string
-    geneName <- as.character(tclvalue(geneEntryVar))
+    # Get the gene name from the entry box if available
+    geneName <- tclvalue(geneEntry)
     
-    # Debugging statement to show what's inside geneName
-    print(paste("Gene Entry:", geneName))
-    
-    # If the gene name from the entry is empty, use the dropdown value
+    # If no entry, check the listbox selection
     if (nchar(geneName) == 0) {
-      geneName <- as.character(tclvalue(geneDropdownVar))
-      print(paste("Gene Dropdown:", geneName))  # Debugging to show dropdown value
+      selectedIdx <- as.integer(tkcurselection(geneListbox))
+      if (length(selectedIdx) > 0) {
+        geneName <- geneNamesList[selectedIdx + 1]  # Listbox is 0-indexed, hence the +1
+      }
     }
     
-    # Ensure we are working with valid strings (set to empty string if null or empty)
-    if (is.null(geneName) || nchar(geneName) == 0) {
-      analyze_genes('')  # Analyze full proteome if no gene is entered/selected
+    # Proceed with analysis
+    if (nchar(geneName) == 0) {
+      # No gene entered or selected, analyze full proteome
+      analyze_genes('')
     } else if (geneName %in% species$genes$name) {
-      analyze_genes(geneName)  # Valid gene name
+      # Valid gene name, analyze the selected gene
+      analyze_genes(geneName)
     } else {
-      log_message(paste0(geneName, " is not a valid gene of ", species$name))  # Invalid gene name
+      # Invalid gene name, display error message
+      log_message(paste0(geneName, ' is not a valid gene of ', species$name))
     }
     
-    tkdestroy(geneDialog)  # Close the dialog window
+    tkdestroy(geneDialog)  # Close the dialog box
   }
-
-  # Create OK button
-  okButton <- ttkbutton(geneDialog, text = "OK", command = onOK)
+  
+  # OK button
+  okButton <- ttkbutton(geneDialog, text = 'OK', command = onOK)
   tkgrid(okButton, padx = 10, pady = 10)
-
-  # Create Cancel button to close dialog without action
+  
+  # Cancel button
   onCancel <- function() {
-    tkdestroy(geneDialog)
+    tkdestroy(geneDialog)  # Close the dialog box without action
   }
-  cancelButton <- ttkbutton(geneDialog, text = "Cancel", command = onCancel)
+  cancelButton <- ttkbutton(geneDialog, text = 'Cancel', command = onCancel)
   tkgrid(cancelButton, padx = 10, pady = 10)
-
-  # Set focus on the dialog window
+  
+  # Keep focus on the dialog
   tkfocus(geneDialog)
 }
 
 # Create a button to display the dialog
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text = 'Display Single Gene', width = 21, command = onDisplayGene)
-
 
   onDisplayProteome <- function()
   {
