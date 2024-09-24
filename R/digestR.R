@@ -18980,87 +18980,100 @@ ps <- function(dispPane='co'){
 	# }	
 	# displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
-onDisplayGene <- function()
-{
-  # Existing modal dialog for gene name entry
-  geneName <- modalDialog(dlg, 'Gene Name Entry', 'Enter the name of the gene you wish to view in detail:', '')
-  
-  if(geneName == 'ID_CANCEL') {
-    return()
-  } else {
-    if(nchar(geneName) == 0) {
-      analyze_genes('')
-    }
-    else if(geneName %in% species$genes$name) {
-      analyze_genes(geneName)
-    } else {
-      log_message(paste0(geneName, ' is not a valid gene of ', species$name))
-    }
-  }
-  
-  # Add the Listbox for Genes Above Threshold
-  addGeneListboxAboveThreshold()
-}
-
-# Function to add listbox for genes above threshold
-addGeneListboxAboveThreshold <- function() {
-  # Create a new window for displaying the filtered gene list
+onDisplayGene <- function() {
+  # Generate a temporary dialog window
   geneDialog <- tktoplevel()
-  tkwm.title(geneDialog, "Filtered Genes Above Threshold")
+  tkwm.title(geneDialog, "Gene Name Entry")
   
-  # Fetch the threshold value from the current spectrum
+  # Instruction label
+  geneLabel <- ttklabel(geneDialog, text = 'Enter the name of the gene you wish to view in detail:')
+  tkgrid(geneLabel, padx = 10, pady = 5)
+  
+  # Entry box for manual gene name input
+  geneEntry <- tkentry(geneDialog, width = 30)
+  tkgrid(geneEntry, padx = 10, pady = 5)
+  
+  # Dropdown (combobox) populated with available gene names from species$genes$name
+  geneNamesList <- species$genes$name  # Assuming this is a list of available gene names
+  
+  ### Get Threshold from gene_labeling ###
   if (fileFolder[[currentSpectrum]]$file.par$noise_override != -1) {
     threshold <- fileFolder[[currentSpectrum]]$file.par$noise_override
   } else {
     threshold <- fileFolder[[currentSpectrum]]$file.par$noise_multiplier
   }
   
-  # Assuming there is a corresponding scores vector in species$genes$scores
-  geneScores <- species$genes$scores
-  geneNamesList <- species$genes$name
+  ### Filter genes based on the threshold ###
+  # Assuming there's a corresponding `species$genes$scores` vector with gene scores
+  geneScores <- species$genes$scores  # Make sure this vector exists
+  filteredGenes <- geneNamesList[geneScores > threshold]  # Filter genes above the threshold
   
-  # Filter genes based on the threshold
-  filteredGenes <- geneNamesList[geneScores > threshold]
-  
-  # Listbox to display the filtered genes
+  ### Add a Listbox to Display Filtered Gene Names ###
   geneListVar <- tclVar()
-  tclObj(geneListVar) <- filteredGenes
+  tclObj(geneListVar) <- filteredGenes  # Populate the listbox with filtered gene names
   
   geneListbox <- tklistbox(geneDialog, listvariable = geneListVar, selectmode = "single", width = 30, height = 10)
   tkgrid(geneListbox, padx = 10, pady = 5)
   
-  # Add scrollbar for listbox
+  # Scrollbar for the listbox
   listScrollbar <- ttkscrollbar(geneDialog, orient = "vertical", command = function(...) tkyview(geneListbox, ...))
   tkconfigure(geneListbox, yscrollcommand = function(...) tkset(listScrollbar, ...))
-  tkgrid(listScrollbar, column = 2, row = 1, sticky = "ns")
-  
-  # OK button to confirm gene selection from listbox
-  onGeneSelectOK <- function() {
-    selectedIdx <- as.integer(tkcurselection(geneListbox))
-    if (length(selectedIdx) > 0) {
-      selectedGene <- filteredGenes[selectedIdx + 1]  # Get selected gene name
-      analyze_genes(selectedGene)
+  tkgrid(listScrollbar, column = 2, row = 4, sticky = "ns")
+
+  # Function to handle the 'OK' button click
+  onOK <- function() {
+    # Get the gene name from either the entry box, dropdown, or listbox
+    geneName <- tclvalue(geneEntry)
+    
+    if (nchar(geneName) == 0) {
+      geneName <- tclvalue(geneDropdown)  # Fall back to dropdown selection
     }
-    tkdestroy(geneDialog)  # Close the listbox window
+    
+    # Get the selected item from the listbox if nothing else is selected
+    if (nchar(geneName) == 0) {
+      selectedIdx <- as.integer(tkcurselection(geneListbox))
+      if (length(selectedIdx) > 0) {
+        geneName <- filteredGenes[selectedIdx + 1]  # Listbox is 0-indexed
+      }
+    }
+    
+    # Proceed with analysis
+    if (nchar(geneName) == 0) {
+      # No gene entered or selected, analyze full proteome
+      analyze_genes('')
+    } else if (geneName %in% species$genes$name) {
+      # Valid gene name, analyze the selected gene
+      analyze_genes(geneName)
+    } else {
+      # Invalid gene name, display error message
+      log_message(paste0(geneName, ' is not a valid gene of ', species$name))
+    }
+    
+    tkdestroy(geneDialog)  # Close the dialog box
   }
   
-  # OK and Cancel buttons
-  okButton <- ttkbutton(geneDialog, text = 'OK', command = onGeneSelectOK)
+  # OK button
+  okButton <- ttkbutton(geneDialog, text = 'OK', command = onOK)
   tkgrid(okButton, padx = 10, pady = 10)
   
-  cancelButton <- ttkbutton(geneDialog, text = 'Cancel', command = function() tkdestroy(geneDialog))
+  # Cancel button
+  onCancel <- function() {
+    tkdestroy(geneDialog)  # Close the dialog box without action
+  }
+  cancelButton <- ttkbutton(geneDialog, text = 'Cancel', command = onCancel)
   tkgrid(cancelButton, padx = 10, pady = 10)
   
-  # Set focus on the listbox window
+  # Keep focus on the dialog
   tkfocus(geneDialog)
 }
+
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
-	
-	onDisplayProteome <- function()
-	{
-		analyze_genes('')
-	}
-	displayGenomeButton <- ttkbutton(genePlotTypeFrame, text='Display Full Proteome', width=21, command=onDisplayProteome)
+
+onDisplayProteome <- function()
+ {
+   analyze_genes('')
+ }
+displayGenomeButton <- ttkbutton(genePlotTypeFrame, text='Display Full Proteome', width=21, command=onDisplayProteome)
   
 
 # onDisplayGene <- function() {
