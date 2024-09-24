@@ -19066,8 +19066,15 @@ onDisplayGene <- function() {
   onOK <- function() {
     # Get value from entry box or dropdown
     geneName <- tclvalue(geneEntryVar)
-    if (nchar(geneName) == 0) {
+    
+    # If the gene name from the entry is empty, use the dropdown value
+    if (is.null(geneName) || nchar(geneName) == 0) {
       geneName <- tclvalue(geneDropdownVar)
+    }
+    
+    # Ensure we are working with valid strings (set to empty string if null)
+    if (is.null(geneName)) {
+      geneName <- ""
     }
     
     if (nchar(geneName) == 0) {
@@ -19098,6 +19105,7 @@ onDisplayGene <- function() {
 
 # Create a button to display the dialog
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text = 'Display Single Gene', width = 21, command = onDisplayGene)
+
 
 
   onDisplayProteome <- function()
