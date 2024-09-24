@@ -6936,7 +6936,7 @@ ff <- zf <- function (...) {
       fileFolder[[current]]$file.par$upfield_ppm[1])
   }else{
     
-    if(nchar()>0)
+    if(nchar(globalSettings$geneDisp)>0)
     {
       fileFolder[[current]]$graphics.par$usr <- c( 
         fileFolder[[current]]$file.par$downfield_ppm[1],
