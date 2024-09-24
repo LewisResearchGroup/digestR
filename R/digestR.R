@@ -19110,7 +19110,12 @@ onDisplayGene <- function() {
 }
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
-  
+  onDisplayProteome <- function()
+  {
+    analyze_genes('')
+  }
+  displayGenomeButton <- ttkbutton(genePlotTypeFrame, text='Display Full Proteome', width=21, command=onDisplayProteome)
+
   ##add widgets to fileFrame
   tkgrid(onedFileFrame, column=1, row=1, sticky='nswe', pady=c(6, 4),	padx=8)
   tkgrid(onedFileBox, column=1, row=1, sticky='nswe')
