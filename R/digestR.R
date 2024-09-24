@@ -18852,29 +18852,29 @@ ps <- function(dispPane='co'){
   rbBoth <- ttkradiobutton(onedTypeFrame, variable=onedPlotType, value='both',
                            text='Both', command=onedType)
   
-  ##create vertical position label
-  # vpFrame <- ttklabelframe(onedOptionFrame, text='Baseline')
-  # postn <- globalSettings$position.1D
-  # if(postn <= 1)
-  #   postn <- (postn) / 2 * 100
-  # else
-  #   postn <- 100 - (1 / postn) * 50 
-  # positionVal <- tclVar(postn)
-  # positionLab <- ttklabel(vpFrame, text='Position:')
-  # valLab <-	ttklabel(vpFrame, textvariable=positionVal, width=2)
+  #create vertical position label
+  vpFrame <- ttklabelframe(onedOptionFrame, text='Baseline')
+  postn <- globalSettings$position.1D
+  if(postn <= 1)
+    postn <- (postn) / 2 * 100
+  else
+    postn <- 100 - (1 / postn) * 50 
+  positionVal <- tclVar(postn)
+  positionLab <- ttklabel(vpFrame, text='Position:')
+  valLab <-	ttklabel(vpFrame, textvariable=positionVal, width=2)
   
-  # ##creates vertical position slider
-  # posSlider <- tkscale(vpFrame, from=99, to=0, variable=positionVal, 
-  #                      orient='vertical', showvalue=F,	tickinterval=99, length=110, width=13, 
-  #                      bg=as.character(tkcget(dlg, '-background')))
-  # onPosSlider <- function(){
-  #   invisible(vp(as.numeric(tclObj(positionVal))))
-  #   tkfocus(dlg)
-  #   tkwm.deiconify(dlg)
-  #   bringFocus()
-  # }
-  # tkbind(posSlider, '<ButtonRelease>', onPosSlider)	
-  # tkbind(posSlider, '<Return>', onPosSlider)	
+  ##creates vertical position slider
+  posSlider <- tkscale(vpFrame, from=99, to=0, variable=positionVal, 
+                       orient='vertical', showvalue=F,	tickinterval=99, length=110, width=13, 
+                       bg=as.character(tkcget(dlg, '-background')))
+  onPosSlider <- function(){
+    invisible(vp(as.numeric(tclObj(positionVal))))
+    tkfocus(dlg)
+    tkwm.deiconify(dlg)
+    bringFocus()
+  }
+  tkbind(posSlider, '<ButtonRelease>', onPosSlider)	
+  tkbind(posSlider, '<Return>', onPosSlider)	
   
   ##create default button
   onedDefault <- function()
@@ -19024,10 +19024,10 @@ ps <- function(dispPane='co'){
   
   tkgrid(defaultButton, column=1, row=3, padx=2, sticky='s')
   
-  tkgrid(vpFrame, column=2, row=2, rowspan=2, padx=c(10, 15), sticky='nsew')
-  tkgrid(positionLab, column=1, row=1, sticky='e', padx=c(1, 0))
-  tkgrid(valLab, column=2, row=1, sticky='w', padx=2)
-  tkgrid(posSlider, column=1, row=2, columnspan=2, padx=c(0, 5), sticky='ns')
+  # tkgrid(vpFrame, column=2, row=2, rowspan=2, padx=c(10, 15), sticky='nsew')
+  # tkgrid(positionLab, column=1, row=1, sticky='e', padx=c(1, 0))
+  # tkgrid(valLab, column=2, row=1, sticky='w', padx=2)
+  # tkgrid(posSlider, column=1, row=2, columnspan=2, padx=c(0, 5), sticky='ns')
   
   ##make optionFrame stretch when window is resized
   tkgrid.rowconfigure(onedOptionFrame, 0, weight=1)
