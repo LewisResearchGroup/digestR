@@ -19054,6 +19054,7 @@ addGeneListboxAboveThreshold <- function() {
   # Set focus on the listbox window
   tkfocus(geneDialog)
 }
+displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 	
 	onDisplayProteome <- function()
 	{
