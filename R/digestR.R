@@ -4065,7 +4065,8 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
       colErr <- FALSE
       for (i in roi.bcolor){
         colTest <- try(col2rgb(i), silent=TRUE)
-        if (class(colTest) == 'try-error')
+        #if (class(colTest) == 'try-error')
+        if (inherits(colTest, 'try-error'))
           colErr <- TRUE
       }
     }
@@ -4081,7 +4082,8 @@ setGraphics <- function (file.name = currentSpectrum, all.files = FALSE,
       colErr <- FALSE
       for (i in roi.tcolor){
         colTest <- try(col2rgb(i), silent=TRUE)
-        if (class(colTest) == 'try-error')
+        #if (class(colTest) == 'try-error')
+         if (inherits(colTest, 'try-error'))
           colErr <- TRUE
       }
     }
