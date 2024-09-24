@@ -13341,11 +13341,11 @@ zoom <- function(){
   ##add widgets to rightFrame
   tkgrid(rightFrame, column=2, row=1)
   tkgrid(ffButton, column=1, row=1, pady=c(4, 2), padx=2)
-  tkgrid(pzButton, column=2, row=1, pady=c(4, 2))
+  #tkgrid(pzButton, column=2, row=1, pady=c(4, 2))
   tkgrid(zcButton, column=1, row=2, pady=2, padx=2)
-  tkgrid(zpButton, column=2, row=2, pady=2)
+  #tkgrid(zpButton, column=2, row=2, pady=2)
   tkgrid(zzButton, column=1, row=3, pady=2, padx=2)
-  tkgrid(locButton, column=2, row=3, pady=2)
+  tkgrid(locButton, column=2, row=2, pady=2)
   tkbind(dlg, '<Return>', function(...) tryCatch(tkinvoke(tkfocus()), 
                                                  error=function(er){}))
   
