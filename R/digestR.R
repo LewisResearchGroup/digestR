@@ -19049,30 +19049,37 @@ onDisplayGene <- function() {
   geneEntry <- tkentry(geneDialog, width = 30)
   tkgrid(geneEntry, padx = 10, pady = 5)
   
-  # Listbox to display the available gene names from species$genes$name
+  # Dropdown (combobox) populated with available gene names from species$genes$name
   geneNamesList <- species$genes$name  # Assuming this is a list of available gene names
-  geneListVar <- tclVar()  # Variable to store the listbox data
-  tclObj(geneListVar) <- geneNamesList
+  geneDropdown <- ttkcombobox(geneDialog, values = geneNamesList, width = 27)
+  tkgrid(geneDropdown, padx = 10, pady = 5)
   
-  # Create listbox for gene names
+  ### Add a Listbox to Display Gene Names ###
+  geneListVar <- tclVar()
+  tclObj(geneListVar) <- geneNamesList  # Populate the listbox with gene names
+  
   geneListbox <- tklistbox(geneDialog, listvariable = geneListVar, selectmode = "single", width = 30, height = 10)
   tkgrid(geneListbox, padx = 10, pady = 5)
   
   # Scrollbar for the listbox
   listScrollbar <- ttkscrollbar(geneDialog, orient = "vertical", command = function(...) tkyview(geneListbox, ...))
   tkconfigure(geneListbox, yscrollcommand = function(...) tkset(listScrollbar, ...))
-  tkgrid(listScrollbar, column = 2, row = 3, sticky = "ns")
-  
+  tkgrid(listScrollbar, column = 2, row = 4, sticky = "ns")
+
   # Function to handle the 'OK' button click
   onOK <- function() {
-    # Get the gene name from the entry box if available
+    # Get the gene name from either the entry box, dropdown, or listbox
     geneName <- tclvalue(geneEntry)
     
-    # If no entry, check the listbox selection
+    if (nchar(geneName) == 0) {
+      geneName <- tclvalue(geneDropdown)  # Fall back to dropdown selection
+    }
+    
+    # Get the selected item from the listbox if nothing else is selected
     if (nchar(geneName) == 0) {
       selectedIdx <- as.integer(tkcurselection(geneListbox))
       if (length(selectedIdx) > 0) {
-        geneName <- geneNamesList[selectedIdx + 1]  # Listbox is 0-indexed, hence the +1
+        geneName <- geneNamesList[selectedIdx + 1]  # Listbox is 0-indexed
       }
     }
     
@@ -19106,8 +19113,7 @@ onDisplayGene <- function() {
   tkfocus(geneDialog)
 }
 
-# Create a button to display the dialog
-displayGeneButton <- ttkbutton(genePlotTypeFrame, text = 'Display Single Gene', width = 21, command = onDisplayGene)
+displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
   onDisplayProteome <- function()
   {
