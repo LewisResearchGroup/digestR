@@ -18955,30 +18955,37 @@ ps <- function(dispPane='co'){
     }
   }
   applyButton <- ttkbutton(genePlotTypeFrame, text='Apply', width=11, command=onApply)
+
+	onDisplayGene <- function()
+	{
+		geneName <- modalDialog(dlg, 'Gene Name Entry', 'Enter the name of the gene you wish to view in detail:', '')
+		if(geneName == 'ID_CANCEL')
+		{
+			return()
+		}else
+		{
+			if(nchar(geneName) == 0)
+			{
+				analyze_genes('')
+			}
+			else if(geneName %in% species$genes$name)
+			{
+				analyze_genes(geneName)
+			}else
+			{
+				print(paste0(geneName, ' is not a valid gene of ', species$name))
+			}
+		}
+		
+	}	
+	displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
+	
+	onDisplayProteome <- function()
+	{
+		analyze_genes('')
+	}
+	displayGenomeButton <- ttkbutton(genePlotTypeFrame, text='Display Full Proteome', width=21, command=onDisplayProteome)
   
-  onDisplayGene <- function()
-  {
-    geneName <- modalDialog(dlg, 'Gene Name Entry', 'Enter the name of the gene you wish to view in detail:', '')
-    if(geneName == 'ID_CANCEL')
-    {
-      return()
-    }else
-    {
-      if(nchar(geneName) == 0)
-      {
-        analyze_genes('')
-      }
-      else if(geneName %in% species$genes$name)
-      {
-        analyze_genes(geneName)
-      }else
-      {
-        log_message(paste0(geneName, ' is not a valid gene of ', species$name))
-      }
-    }
-    
-  }	
-  displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
 # onDisplayGene <- function() {
 #   # Generate a temporary dialog window
@@ -19035,12 +19042,6 @@ ps <- function(dispPane='co'){
 #   tkfocus(geneDialog)
 # }
 # displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
-
-  onDisplayProteome <- function()
-  {
-    analyze_genes('')
-  }
-  displayGenomeButton <- ttkbutton(genePlotTypeFrame, text='Display Full Proteome', width=21, command=onDisplayProteome)
 
   ##add widgets to fileFrame
   tkgrid(onedFileFrame, column=1, row=1, sticky='nswe', pady=c(6, 4),	padx=8)
