@@ -18956,29 +18956,29 @@ ps <- function(dispPane='co'){
   }
   applyButton <- ttkbutton(genePlotTypeFrame, text='Apply', width=11, command=onApply)
   
-  # onDisplayGene <- function()
-  # {
-  #   geneName <- modalDialog(dlg, 'Gene Name Entry', 'Enter the name of the gene you wish to view in detail:', '')
-  #   if(geneName == 'ID_CANCEL')
-  #   {
-  #     return()
-  #   }else
-  #   {
-  #     if(nchar(geneName) == 0)
-  #     {
-  #       analyze_genes('')
-  #     }
-  #     else if(geneName %in% species$genes$name)
-  #     {
-  #       analyze_genes(geneName)
-  #     }else
-  #     {
-  #       log_message(paste0(geneName, ' is not a valid gene of ', species$name))
-  #     }
-  #   }
+  onDisplayGene <- function()
+  {
+    geneName <- modalDialog(dlg, 'Gene Name Entry', 'Enter the name of the gene you wish to view in detail:', '')
+    if(geneName == 'ID_CANCEL')
+    {
+      return()
+    }else
+    {
+      if(nchar(geneName) == 0)
+      {
+        analyze_genes('')
+      }
+      else if(geneName %in% species$genes$name)
+      {
+        analyze_genes(geneName)
+      }else
+      {
+        log_message(paste0(geneName, ' is not a valid gene of ', species$name))
+      }
+    }
     
-  # }	
-  # displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
+  }	
+  displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
 # onDisplayGene <- function() {
 #   # Generate a temporary dialog window
@@ -19035,85 +19035,6 @@ ps <- function(dispPane='co'){
 #   tkfocus(geneDialog)
 # }
 # displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
-
-onDisplayGene <- function() {
-  # Generate a temporary dialog window
-  geneDialog <- tktoplevel()
-  tkwm.title(geneDialog, "Gene Name Entry")
-  
-  # Instruction label
-  geneLabel <- ttklabel(geneDialog, text = 'Enter the name of the gene you wish to view in detail:')
-  tkgrid(geneLabel, padx = 10, pady = 5)
-  
-  # Entry box for manual gene name input
-  geneEntry <- tkentry(geneDialog, width = 30)
-  tkgrid(geneEntry, padx = 10, pady = 5)
-  
-  # Dropdown (combobox) populated with available gene names from species$genes$name
-  geneNamesList <- species$genes$name  # Assuming this is a list of available gene names
-  geneDropdown <- ttkcombobox(geneDialog, values = geneNamesList, width = 27)
-  tkgrid(geneDropdown, padx = 10, pady = 5)
-  
-  ### Add a Listbox to Display Gene Names ###
-  geneListVar <- tclVar()
-  tclObj(geneListVar) <- geneNamesList  # Populate the listbox with gene names
-  
-  geneListbox <- tklistbox(geneDialog, listvariable = geneListVar, selectmode = "single", width = 30, height = 10)
-  tkgrid(geneListbox, padx = 10, pady = 5)
-  
-  # Scrollbar for the listbox
-  listScrollbar <- ttkscrollbar(geneDialog, orient = "vertical", command = function(...) tkyview(geneListbox, ...))
-  tkconfigure(geneListbox, yscrollcommand = function(...) tkset(listScrollbar, ...))
-  tkgrid(listScrollbar, column = 2, row = 4, sticky = "ns")
-
-  # Function to handle the 'OK' button click
-  onOK <- function() {
-    # Get the gene name from either the entry box, dropdown, or listbox
-    geneName <- tclvalue(geneEntry)
-    
-    if (nchar(geneName) == 0) {
-      geneName <- tclvalue(geneDropdown)  # Fall back to dropdown selection
-    }
-    
-    # Get the selected item from the listbox if nothing else is selected
-    if (nchar(geneName) == 0) {
-      selectedIdx <- as.integer(tkcurselection(geneListbox))
-      if (length(selectedIdx) > 0) {
-        geneName <- geneNamesList[selectedIdx + 1]  # Listbox is 0-indexed
-      }
-    }
-    
-    # Proceed with analysis
-    if (nchar(geneName) == 0) {
-      # No gene entered or selected, analyze full proteome
-      analyze_genes('')
-    } else if (geneName %in% species$genes$name) {
-      # Valid gene name, analyze the selected gene
-      analyze_genes(geneName)
-    } else {
-      # Invalid gene name, display error message
-      log_message(paste0(geneName, ' is not a valid gene of ', species$name))
-    }
-    
-    tkdestroy(geneDialog)  # Close the dialog box
-  }
-  
-  # OK button
-  okButton <- ttkbutton(geneDialog, text = 'OK', command = onOK)
-  tkgrid(okButton, padx = 10, pady = 10)
-  
-  # Cancel button
-  onCancel <- function() {
-    tkdestroy(geneDialog)  # Close the dialog box without action
-  }
-  cancelButton <- ttkbutton(geneDialog, text = 'Cancel', command = onCancel)
-  tkgrid(cancelButton, padx = 10, pady = 10)
-  
-  # Keep focus on the dialog
-  tkfocus(geneDialog)
-}
-
-displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
   onDisplayProteome <- function()
   {
