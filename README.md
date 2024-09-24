@@ -51,10 +51,6 @@ Install the the digestR package directly from GitHub
 
 This document provides details of several Graphical User Interface (GUI) functions implemented in the R programming language using the Tcl/Tk toolkit.
 
-### Supported file formats 
-
-DigestR supports Mascot (.csv) generated files. These files must be converted to .dcf files using DigestR file conversion functions pm(). 
-
 ### Converting files. 
 
 Required files: .csv
