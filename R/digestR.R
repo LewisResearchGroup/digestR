@@ -19043,74 +19043,61 @@ ps <- function(dispPane='co'){
   #displayGenomeButton <- ttkbutton(genePlotTypeFrame, text='Display Full Proteome', width=21, command=onDisplayProteome)
 
 onDisplayGene <- function() {
-  # Generate a temporary dialog window
+  # Create the dialog window
   geneDialog <- tktoplevel()
   tkwm.title(geneDialog, "Gene Name Entry")
   
-  # Instruction label
-  geneLabel <- ttklabel(geneDialog, text = 'Enter the name of the gene you wish to view in detail:')
+  # Label prompting user input
+  geneLabel <- ttklabel(geneDialog, text = "Enter the name of the gene you wish to view in detail:")
   tkgrid(geneLabel, padx = 10, pady = 5)
-  
-  # Create tclVars for both the entry and dropdown
+
+  # Entry box for manual input of gene name
   geneEntryVar <- tclVar("")
-  geneDropdownVar <- tclVar("")
-  
-  # Entry box for manual gene name input
-  geneEntry <- tkentry(geneDialog, textvariable=geneEntryVar, width = 30)
+  geneEntry <- tkentry(geneDialog, textvariable = geneEntryVar, width = 30)
   tkgrid(geneEntry, padx = 10, pady = 5)
   
-  # Dropdown (combobox) populated with available gene names from species$genes$name
-  geneNamesList <- species$genes$name  # Assuming this is a list of available gene names
-  
-  if (length(geneNamesList) == 0) {
-    tkmessageBox(message = "No gene names available.", icon = "error")
-    tkdestroy(geneDialog)
-    return()
-  }
-  
-  geneDropdown <- ttkcombobox(geneDialog, textvariable=geneDropdownVar, values = geneNamesList, width = 27)
+  # Dropdown menu (combobox) for selecting gene names from species$genes$name
+  geneNamesList <- species$genes$name  # Assuming this list exists
+  geneDropdownVar <- tclVar("")
+  geneDropdown <- ttkcombobox(geneDialog, textvariable = geneDropdownVar, values = geneNamesList, width = 27)
   tkgrid(geneDropdown, padx = 10, pady = 5)
-  
-  # Function to handle the 'OK' button click
+
+  # OK button handler
   onOK <- function() {
-    # Get the gene name from either the entry box or dropdown
+    # Get value from entry box or dropdown
     geneName <- tclvalue(geneEntryVar)
-    
-    # Fix: Ensure that nchar() has a valid string input by providing a default empty string
     if (nchar(geneName) == 0) {
-      geneName <- tclvalue(geneDropdownVar)  # Fall back to dropdown selection
+      geneName <- tclvalue(geneDropdownVar)
     }
     
     if (nchar(geneName) == 0) {
-      # No gene entered or selected, analyze full proteome
-      analyze_genes('')
+      analyze_genes('')  # Analyze full proteome if no gene is entered/selected
     } else if (geneName %in% species$genes$name) {
-      # Valid gene name, analyze the selected gene
-      analyze_genes(geneName)
+      analyze_genes(geneName)  # Valid gene name
     } else {
-      # Invalid gene name, display error message
-      log_message(paste0(geneName, ' is not a valid gene of ', species$name))
+      log_message(paste0(geneName, " is not a valid gene of ", species$name))  # Invalid gene name
     }
     
-    tkdestroy(geneDialog)  # Close the dialog box
+    tkdestroy(geneDialog)  # Close the dialog window
   }
-  
-  # OK button
-  okButton <- ttkbutton(geneDialog, text = 'OK', command = onOK)
+
+  # Create OK button
+  okButton <- ttkbutton(geneDialog, text = "OK", command = onOK)
   tkgrid(okButton, padx = 10, pady = 10)
-  
-  # Cancel button
+
+  # Create Cancel button to close dialog without action
   onCancel <- function() {
-    tkdestroy(geneDialog)  # Close the dialog box without action
+    tkdestroy(geneDialog)
   }
-  cancelButton <- ttkbutton(geneDialog, text = 'Cancel', command = onCancel)
+  cancelButton <- ttkbutton(geneDialog, text = "Cancel", command = onCancel)
   tkgrid(cancelButton, padx = 10, pady = 10)
-  
-  # Keep focus on the dialog
+
+  # Set focus on the dialog window
   tkfocus(geneDialog)
-  tcl("update")  # Ensure focus and window visibility is updated
 }
-displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
+
+# Create a button to display the dialog
+displayGeneButton <- ttkbutton(genePlotTypeFrame, text = 'Display Single Gene', width = 21, command = onDisplayGene)
 
 
   onDisplayProteome <- function()
