@@ -17,6 +17,8 @@ To generate coincidence maps, DigestR requires:
 ## How to install digestR package from GitHub
 DigestR was tested with `R v4.3.1`, and `R v4.4.1`.
 
+R can be dowloaded here: https://cran.r-project.org/bin/windows/base/
+
 In case of dependencies issues, use the renv package to reproduce the exact environment used.
 See section 'Reproducing R environment'below. 
 
