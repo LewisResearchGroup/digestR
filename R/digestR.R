@@ -19236,6 +19236,7 @@ displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', wi
   ## Now that the window is set up, deiconify it to show the window properly
   tkwm.deiconify(dlg)
   tcl("update")  # Ensure the window is fully drawn and updated
+  refresh(...)  
   
   invisible()
 }
