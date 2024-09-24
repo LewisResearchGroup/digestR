@@ -19064,20 +19064,20 @@ onDisplayGene <- function() {
 
   # OK button handler
   onOK <- function() {
-    # Get value from entry box or dropdown
-    geneName <- tclvalue(geneEntryVar)
+    # Get value from entry box or dropdown, ensuring it's a string
+    geneName <- as.character(tclvalue(geneEntryVar))
+    
+    # Debugging statement to show what's inside geneName
+    print(paste("Gene Entry:", geneName))
     
     # If the gene name from the entry is empty, use the dropdown value
-    if (is.null(geneName) || nchar(geneName) == 0) {
-      geneName <- tclvalue(geneDropdownVar)
-    }
-    
-    # Ensure we are working with valid strings (set to empty string if null)
-    if (is.null(geneName)) {
-      geneName <- ""
-    }
-    
     if (nchar(geneName) == 0) {
+      geneName <- as.character(tclvalue(geneDropdownVar))
+      print(paste("Gene Dropdown:", geneName))  # Debugging to show dropdown value
+    }
+    
+    # Ensure we are working with valid strings (set to empty string if null or empty)
+    if (is.null(geneName) || nchar(geneName) == 0) {
       analyze_genes('')  # Analyze full proteome if no gene is entered/selected
     } else if (geneName %in% species$genes$name) {
       analyze_genes(geneName)  # Valid gene name
@@ -19105,7 +19105,6 @@ onDisplayGene <- function() {
 
 # Create a button to display the dialog
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text = 'Display Single Gene', width = 21, command = onDisplayGene)
-
 
 
   onDisplayProteome <- function()
