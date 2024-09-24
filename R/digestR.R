@@ -18956,29 +18956,104 @@ ps <- function(dispPane='co'){
   }
   applyButton <- ttkbutton(genePlotTypeFrame, text='Apply', width=11, command=onApply)
 
-	onDisplayGene <- function()
-	{
-		geneName <- modalDialog(dlg, 'Gene Name Entry', 'Enter the name of the gene you wish to view in detail:', '')
-		if(geneName == 'ID_CANCEL')
-		{
-			return()
-		}else
-		{
-			if(nchar(geneName) == 0)
-			{
-				analyze_genes('')
-			}
-			else if(geneName %in% species$genes$name)
-			{
-				analyze_genes(geneName)
-			}else
-			{
-				print(paste0(geneName, ' is not a valid gene of ', species$name))
-			}
-		}
+	# onDisplayGene <- function()
+	# {
+	# 	geneName <- modalDialog(dlg, 'Gene Name Entry', 'Enter the name of the gene you wish to view in detail:', '')
+	# 	if(geneName == 'ID_CANCEL')
+	# 	{
+	# 		return()
+	# 	}else
+	# 	{
+	# 		if(nchar(geneName) == 0)
+	# 		{
+	# 			analyze_genes('')
+	# 		}
+	# 		else if(geneName %in% species$genes$name)
+	# 		{
+	# 			analyze_genes(geneName)
+	# 		}else
+	# 		{
+	# 			print(paste0(geneName, ' is not a valid gene of ', species$name))
+	# 		}
+	# 	}
 		
-	}	
-	displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
+	# }	
+	# displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
+
+onDisplayGene <- function()
+{
+  # Existing modal dialog for gene name entry
+  geneName <- modalDialog(dlg, 'Gene Name Entry', 'Enter the name of the gene you wish to view in detail:', '')
+  
+  if(geneName == 'ID_CANCEL') {
+    return()
+  } else {
+    if(nchar(geneName) == 0) {
+      analyze_genes('')
+    }
+    else if(geneName %in% species$genes$name) {
+      analyze_genes(geneName)
+    } else {
+      log_message(paste0(geneName, ' is not a valid gene of ', species$name))
+    }
+  }
+  
+  # Add the Listbox for Genes Above Threshold
+  addGeneListboxAboveThreshold()
+}
+
+# Function to add listbox for genes above threshold
+addGeneListboxAboveThreshold <- function() {
+  # Create a new window for displaying the filtered gene list
+  geneDialog <- tktoplevel()
+  tkwm.title(geneDialog, "Filtered Genes Above Threshold")
+  
+  # Fetch the threshold value from the current spectrum
+  if (fileFolder[[currentSpectrum]]$file.par$noise_override != -1) {
+    threshold <- fileFolder[[currentSpectrum]]$file.par$noise_override
+  } else {
+    threshold <- fileFolder[[currentSpectrum]]$file.par$noise_multiplier
+  }
+  
+  # Assuming there is a corresponding scores vector in species$genes$scores
+  geneScores <- species$genes$scores
+  geneNamesList <- species$genes$name
+  
+  # Filter genes based on the threshold
+  filteredGenes <- geneNamesList[geneScores > threshold]
+  
+  # Listbox to display the filtered genes
+  geneListVar <- tclVar()
+  tclObj(geneListVar) <- filteredGenes
+  
+  geneListbox <- tklistbox(geneDialog, listvariable = geneListVar, selectmode = "single", width = 30, height = 10)
+  tkgrid(geneListbox, padx = 10, pady = 5)
+  
+  # Add scrollbar for listbox
+  listScrollbar <- ttkscrollbar(geneDialog, orient = "vertical", command = function(...) tkyview(geneListbox, ...))
+  tkconfigure(geneListbox, yscrollcommand = function(...) tkset(listScrollbar, ...))
+  tkgrid(listScrollbar, column = 2, row = 1, sticky = "ns")
+  
+  # OK button to confirm gene selection from listbox
+  onGeneSelectOK <- function() {
+    selectedIdx <- as.integer(tkcurselection(geneListbox))
+    if (length(selectedIdx) > 0) {
+      selectedGene <- filteredGenes[selectedIdx + 1]  # Get selected gene name
+      analyze_genes(selectedGene)
+    }
+    tkdestroy(geneDialog)  # Close the listbox window
+  }
+  
+  # OK and Cancel buttons
+  okButton <- ttkbutton(geneDialog, text = 'OK', command = onGeneSelectOK)
+  tkgrid(okButton, padx = 10, pady = 10)
+  
+  cancelButton <- ttkbutton(geneDialog, text = 'Cancel', command = function() tkdestroy(geneDialog))
+  tkgrid(cancelButton, padx = 10, pady = 10)
+  
+  # Set focus on the listbox window
+  tkfocus(geneDialog)
+}
 	
 	onDisplayProteome <- function()
 	{
