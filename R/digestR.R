@@ -18853,28 +18853,28 @@ ps <- function(dispPane='co'){
                            text='Both', command=onedType)
   
   ##create vertical position label
-  vpFrame <- ttklabelframe(onedOptionFrame, text='Baseline')
-  postn <- globalSettings$position.1D
-  if(postn <= 1)
-    postn <- (postn) / 2 * 100
-  else
-    postn <- 100 - (1 / postn) * 50 
-  positionVal <- tclVar(postn)
-  positionLab <- ttklabel(vpFrame, text='Position:')
-  valLab <-	ttklabel(vpFrame, textvariable=positionVal, width=2)
+  # vpFrame <- ttklabelframe(onedOptionFrame, text='Baseline')
+  # postn <- globalSettings$position.1D
+  # if(postn <= 1)
+  #   postn <- (postn) / 2 * 100
+  # else
+  #   postn <- 100 - (1 / postn) * 50 
+  # positionVal <- tclVar(postn)
+  # positionLab <- ttklabel(vpFrame, text='Position:')
+  # valLab <-	ttklabel(vpFrame, textvariable=positionVal, width=2)
   
-  ##creates vertical position slider
-  posSlider <- tkscale(vpFrame, from=99, to=0, variable=positionVal, 
-                       orient='vertical', showvalue=F,	tickinterval=99, length=110, width=13, 
-                       bg=as.character(tkcget(dlg, '-background')))
-  onPosSlider <- function(){
-    invisible(vp(as.numeric(tclObj(positionVal))))
-    tkfocus(dlg)
-    tkwm.deiconify(dlg)
-    bringFocus()
-  }
-  tkbind(posSlider, '<ButtonRelease>', onPosSlider)	
-  tkbind(posSlider, '<Return>', onPosSlider)	
+  # ##creates vertical position slider
+  # posSlider <- tkscale(vpFrame, from=99, to=0, variable=positionVal, 
+  #                      orient='vertical', showvalue=F,	tickinterval=99, length=110, width=13, 
+  #                      bg=as.character(tkcget(dlg, '-background')))
+  # onPosSlider <- function(){
+  #   invisible(vp(as.numeric(tclObj(positionVal))))
+  #   tkfocus(dlg)
+  #   tkwm.deiconify(dlg)
+  #   bringFocus()
+  # }
+  # tkbind(posSlider, '<ButtonRelease>', onPosSlider)	
+  # tkbind(posSlider, '<Return>', onPosSlider)	
   
   ##create default button
   onedDefault <- function()
