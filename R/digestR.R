@@ -18989,55 +18989,34 @@ onDisplayGene <- function() {
   geneLabel <- ttklabel(geneDialog, text = 'Enter the name of the gene you wish to view in detail:')
   tkgrid(geneLabel, padx = 10, pady = 5)
   
+  # Create tclVars for both the entry and dropdown
+  geneEntryVar <- tclVar("")
+  geneDropdownVar <- tclVar("")
+  
   # Entry box for manual gene name input
-  geneEntry <- tkentry(geneDialog, width = 30)
+  geneEntry <- tkentry(geneDialog, textvariable=geneEntryVar, width = 30)
   tkgrid(geneEntry, padx = 10, pady = 5)
   
   # Dropdown (combobox) populated with available gene names from species$genes$name
   geneNamesList <- species$genes$name  # Assuming this is a list of available gene names
   
-  ### Get Threshold from gene_labeling ###
-  if (fileFolder[[currentSpectrum]]$file.par$noise_override != -1) {
-    threshold <- fileFolder[[currentSpectrum]]$file.par$noise_override
-  } else {
-    threshold <- fileFolder[[currentSpectrum]]$file.par$noise_multiplier
+  if (length(geneNamesList) == 0) {
+    tkmessageBox(message = "No gene names available.", icon = "error")
+    tkdestroy(geneDialog)
+    return()
   }
   
-  ### Filter genes based on the threshold ###
-  # Assuming there's a corresponding `species$genes$scores` vector with gene scores
-  geneScores <- species$genes$scores  # Make sure this vector exists
-  filteredGenes <- geneNamesList[geneScores > threshold]  # Filter genes above the threshold
+  geneDropdown <- ttkcombobox(geneDialog, textvariable=geneDropdownVar, values = geneNamesList, width = 27)
+  tkgrid(geneDropdown, padx = 10, pady = 5)
   
-  ### Add a Listbox to Display Filtered Gene Names ###
-  geneListVar <- tclVar()
-  tclObj(geneListVar) <- filteredGenes  # Populate the listbox with filtered gene names
-  
-  geneListbox <- tklistbox(geneDialog, listvariable = geneListVar, selectmode = "single", width = 30, height = 10)
-  tkgrid(geneListbox, padx = 10, pady = 5)
-  
-  # Scrollbar for the listbox
-  listScrollbar <- ttkscrollbar(geneDialog, orient = "vertical", command = function(...) tkyview(geneListbox, ...))
-  tkconfigure(geneListbox, yscrollcommand = function(...) tkset(listScrollbar, ...))
-  tkgrid(listScrollbar, column = 2, row = 4, sticky = "ns")
-
   # Function to handle the 'OK' button click
   onOK <- function() {
-    # Get the gene name from either the entry box, dropdown, or listbox
-    geneName <- tclvalue(geneEntry)
-    
+    # Get the gene name from either the entry box or dropdown
+    geneName <- tclvalue(geneEntryVar)
     if (nchar(geneName) == 0) {
-      geneName <- tclvalue(geneDropdown)  # Fall back to dropdown selection
+      geneName <- tclvalue(geneDropdownVar)  # Fall back to dropdown selection
     }
     
-    # Get the selected item from the listbox if nothing else is selected
-    if (nchar(geneName) == 0) {
-      selectedIdx <- as.integer(tkcurselection(geneListbox))
-      if (length(selectedIdx) > 0) {
-        geneName <- filteredGenes[selectedIdx + 1]  # Listbox is 0-indexed
-      }
-    }
-    
-    # Proceed with analysis
     if (nchar(geneName) == 0) {
       # No gene entered or selected, analyze full proteome
       analyze_genes('')
@@ -19065,8 +19044,8 @@ onDisplayGene <- function() {
   
   # Keep focus on the dialog
   tkfocus(geneDialog)
+  tcl("update")  # Ensure focus and window visibility is updated
 }
-
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
 onDisplayProteome <- function()
