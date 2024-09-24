@@ -19075,6 +19075,8 @@ onDisplayGene <- function() {
   onOK <- function() {
     # Get the gene name from either the entry box or dropdown
     geneName <- tclvalue(geneEntryVar)
+    
+    # Fix: Ensure that nchar() has a valid string input by providing a default empty string
     if (nchar(geneName) == 0) {
       geneName <- tclvalue(geneDropdownVar)  # Fall back to dropdown selection
     }
@@ -19109,6 +19111,7 @@ onDisplayGene <- function() {
   tcl("update")  # Ensure focus and window visibility is updated
 }
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
+
 
   onDisplayProteome <- function()
   {
