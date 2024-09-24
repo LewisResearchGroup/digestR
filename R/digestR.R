@@ -19054,7 +19054,6 @@ onDisplayProteome <- function()
  }
 displayGenomeButton <- ttkbutton(genePlotTypeFrame, text='Display Full Proteome', width=21, command=onDisplayProteome)
   
-
 onDisplayGene <- function() {
   # Generate a temporary dialog window
   geneDialog <- tktoplevel()
@@ -19064,21 +19063,25 @@ onDisplayGene <- function() {
   geneLabel <- ttklabel(geneDialog, text = 'Enter the name of the gene you wish to view in detail:')
   tkgrid(geneLabel, padx = 10, pady = 5)
   
+  # Create Tcl variables to hold the gene name values
+  geneEntryVar <- tclVar("")
+  geneDropdownVar <- tclVar("")
+  
   # Entry box for manual gene name input
-  geneEntry <- tkentry(geneDialog, width = 30)
+  geneEntry <- tkentry(geneDialog, width = 30, textvariable = geneEntryVar)
   tkgrid(geneEntry, padx = 10, pady = 5)
   
   # Dropdown (combobox) populated with available gene names from species$genes$name
   geneNamesList <- species$genes$name  # Assuming this is a list of available gene names
-  geneDropdown <- ttkcombobox(geneDialog, values = geneNamesList, width = 27)
+  geneDropdown <- ttkcombobox(geneDialog, values = geneNamesList, width = 27, textvariable = geneDropdownVar)
   tkgrid(geneDropdown, padx = 10, pady = 5)
   
   # Function to handle the 'OK' button click
   onOK <- function() {
     # Get the gene name from either the entry box or dropdown
-    geneName <- tclvalue(geneEntry)
+    geneName <- tclvalue(geneEntryVar)
     if (nchar(geneName) == 0) {
-      geneName <- tclvalue(geneDropdown)  # Fall back to dropdown selection
+      geneName <- tclvalue(geneDropdownVar)  # Fall back to dropdown selection
     }
     
     if (nchar(geneName) == 0) {
