@@ -19060,7 +19060,7 @@ onDisplayGene <- function() {
   geneDropdownVar <- tclVar("")
   
   # Entry box for manual gene name input
-  geneEntry <- tkentry(geneDialog, textvariable = geneEntryVar, width = 30)
+  geneEntry <- tkentry(geneDialog, textvariable=geneEntryVar, width = 30)
   tkgrid(geneEntry, padx = 10, pady = 5)
   
   # Add text between the entry box and the listbox
@@ -19076,23 +19076,8 @@ onDisplayGene <- function() {
     return()
   }
   
-  geneDropdown <- ttkcombobox(geneDialog, textvariable = geneDropdownVar, values = geneNamesList, width = 27)
+  geneDropdown <- ttkcombobox(geneDialog, textvariable=geneDropdownVar, values = geneNamesList, width = 27)
   tkgrid(geneDropdown, padx = 10, pady = 5)
-  
-  # Function to update the dropdown based on user input
-  updateDropdown <- function(...) {
-    userInput <- tclvalue(geneEntryVar)
-    filteredNames <- geneNamesList[grepl(paste0("^", userInput), geneNamesList, ignore.case = TRUE)]
-    
-    if (length(filteredNames) == 0) {
-      filteredNames <- ""  # If no match, show empty dropdown
-    }
-    
-    tkconfigure(geneDropdown, values = filteredNames)
-  }
-  
-  # Trace the entry variable for changes and update dropdown accordingly
-  trace(geneEntryVar, mode = "w", updateDropdown)
   
   # Function to handle the 'OK' button click
   onOK <- function() {
@@ -19118,20 +19103,19 @@ onDisplayGene <- function() {
   
   # OK button
   okButton <- ttkbutton(geneDialog, text = 'OK', command = onOK)
-  tkgrid(okButton, padx = 10, pady = 5, row = 5, column = 0)
+  tkgrid(okButton, padx = 10, pady = 10)
   
   # Cancel button
   onCancel <- function() {
     tkdestroy(geneDialog)  # Close the dialog box without action
   }
   cancelButton <- ttkbutton(geneDialog, text = 'Cancel', command = onCancel)
-  tkgrid(cancelButton, padx = 10, pady = 5, row = 5, column = 1)
+  tkgrid(cancelButton, padx = 10, pady = 10)
   
   # Keep focus on the dialog
   tkfocus(geneDialog)
   tcl("update")  # Ensure focus and window visibility is updated
 }
-
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
 onDisplayProteome <- function()
