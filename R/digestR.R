@@ -18984,10 +18984,10 @@ ps <- function(dispPane='co'){
 onDisplayGene <- function() {
   # Generate a temporary dialog window
   geneDialog <- tktoplevel()
-  tkwm.title(geneDialog, "Gene Name Entry")
+  tkwm.title(geneDialog, "Protein selection")
   
   # Instruction label
-  geneLabel <- ttklabel(geneDialog, text = 'Enter the name of the gene you wish to view in detail:')
+  geneLabel <- ttklabel(geneDialog, text = 'Enter the name of the protein you wish to view:')
   tkgrid(geneLabel, padx = 10, pady = 5)
   
   # Create tclVars for both the entry and dropdown
@@ -19056,7 +19056,7 @@ onDisplayGene <- function() {
   tkfocus(geneDialog)
   tcl("update")  # Ensure focus and window visibility is updated
 }
-displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
+displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Protein', width=21, command=onDisplayGene)
 
 onDisplayProteome <- function()
  {
