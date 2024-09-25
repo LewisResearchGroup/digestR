@@ -19076,6 +19076,9 @@ onDisplayGene <- function() {
     return()
   }
   
+  # Sort the gene names alphabetically
+  geneNamesList <- sort(geneNamesList)
+	
   geneDropdown <- ttkcombobox(geneDialog, textvariable=geneDropdownVar, values = geneNamesList, width = 27)
   tkgrid(geneDropdown, padx = 10, pady = 5)
   
