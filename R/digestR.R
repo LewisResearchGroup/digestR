@@ -18978,13 +18978,14 @@ ps <- function(dispPane='co'){
 	# 	}
 		
 	# }	
-	# displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
+	# displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command= onDisplayGene)
+
 
 # onDisplayGene <- function() {
 #   # Generate a temporary dialog window
 #   geneDialog <- tktoplevel()
 #   tkwm.title(geneDialog, "Gene Name Entry")
-#   library
+  
 #   # Instruction label
 #   geneLabel <- ttklabel(geneDialog, text = 'Enter the name of the gene you wish to view in detail:')
 #   tkgrid(geneLabel, padx = 10, pady = 5)
@@ -18997,6 +18998,10 @@ ps <- function(dispPane='co'){
 #   geneEntry <- tkentry(geneDialog, textvariable=geneEntryVar, width = 30)
 #   tkgrid(geneEntry, padx = 10, pady = 5)
   
+#   # Add text between the entry box and the listbox
+#   separatorLabel <- ttklabel(geneDialog, text = 'or select a protein')
+#   tkgrid(separatorLabel, padx = 10, pady = 5)
+  
 #   # Dropdown (combobox) populated with available gene names from species$genes$name
 #   geneNamesList <- species$genes$name  # Assuming this is a list of available gene names
   
@@ -19006,6 +19011,9 @@ ps <- function(dispPane='co'){
 #     return()
 #   }
   
+#   # Sort the gene names alphabetically
+#   geneNamesList <- sort(geneNamesList)
+	
 #   geneDropdown <- ttkcombobox(geneDialog, textvariable=geneDropdownVar, values = geneNamesList, width = 27)
 #   tkgrid(geneDropdown, padx = 10, pady = 5)
   
@@ -19028,7 +19036,7 @@ ps <- function(dispPane='co'){
 #       log_message(paste0(geneName, ' is not a valid gene of ', species$name))
 #     }
     
-#     tkdestroy(geneDialog)  # Close the dialog box
+#     flush.console()  # Refresh the console
 #   }
   
 #   # OK button
@@ -19046,6 +19054,7 @@ ps <- function(dispPane='co'){
 #   tkfocus(geneDialog)
 #   tcl("update")  # Ensure focus and window visibility is updated
 # }
+# displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 onDisplayGene <- function() {
   # Generate a temporary dialog window
   geneDialog <- tktoplevel()
@@ -19060,7 +19069,7 @@ onDisplayGene <- function() {
   geneDropdownVar <- tclVar("")
   
   # Entry box for manual gene name input
-  geneEntry <- tkentry(geneDialog, textvariable=geneEntryVar, width = 30)
+  geneEntry <- tkentry(geneDialog, textvariable = geneEntryVar, width = 30)
   tkgrid(geneEntry, padx = 10, pady = 5)
   
   # Add text between the entry box and the listbox
@@ -19076,11 +19085,29 @@ onDisplayGene <- function() {
     return()
   }
   
-  # Sort the gene names alphabetically
+  # Filter out gene names that start with a number
+  geneNamesList <- geneNamesList[grepl("^[^0-9]", geneNamesList)]
+  
+  # Sort the remaining gene names alphabetically
   geneNamesList <- sort(geneNamesList)
-	
-  geneDropdown <- ttkcombobox(geneDialog, textvariable=geneDropdownVar, values = geneNamesList, width = 27)
+  
+  geneDropdown <- ttkcombobox(geneDialog, textvariable = geneDropdownVar, values = geneNamesList, width = 27)
   tkgrid(geneDropdown, padx = 10, pady = 5)
+  
+  # Function to update the combobox state based on entry box input
+  updateComboboxState <- function() {
+    geneEntryValue <- tclvalue(geneEntryVar)
+    if (nchar(geneEntryValue) > 0) {
+      # Disable the combobox if the entry box has input
+      tkconfigure(geneDropdown, state = "disabled")
+    } else {
+      # Enable the combobox if the entry box is empty
+      tkconfigure(geneDropdown, state = "normal")
+    }
+  }
+  
+  # Trace the entry variable for changes and update combobox state accordingly
+  trace(geneEntryVar, mode = "w", updateComboboxState)
   
   # Function to handle the 'OK' button click
   onOK <- function() {
