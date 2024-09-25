@@ -19057,6 +19057,7 @@ ps <- function(dispPane='co'){
 #   tcl("update")  # Ensure focus and window visibility is updated
 # }
 # displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
+
 onDisplayGene <- function() {
   # Generate a temporary dialog window
   geneDialog <- tktoplevel()
@@ -19148,6 +19149,7 @@ onDisplayGene <- function() {
   tkfocus(geneDialog)
   tcl("update")  # Ensure focus and window visibility is updated
 }
+
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
 onDisplayProteome <- function()
