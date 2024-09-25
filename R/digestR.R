@@ -19080,7 +19080,7 @@ onDisplayGene <- function() {
   tkgrid(geneDropdown, padx = 10, pady = 5)
   
   # Function to update the dropdown based on user input
-  updateDropdown <- function() {
+  updateDropdown <- function(...) {
     userInput <- tclvalue(geneEntryVar)
     filteredNames <- geneNamesList[grepl(paste0("^", userInput), geneNamesList, ignore.case = TRUE)]
     
@@ -19092,7 +19092,7 @@ onDisplayGene <- function() {
   }
   
   # Trace the entry variable for changes and update dropdown accordingly
-  tclVar_trace(geneEntryVar, "w", updateDropdown)
+  trace(geneEntryVar, mode = "w", updateDropdown)
   
   # Function to handle the 'OK' button click
   onOK <- function() {
@@ -19118,19 +19118,20 @@ onDisplayGene <- function() {
   
   # OK button
   okButton <- ttkbutton(geneDialog, text = 'OK', command = onOK)
-  tkgrid(okButton, padx = 10, pady = 10)
+  tkgrid(okButton, padx = 10, pady = 5, row = 5, column = 0)
   
   # Cancel button
   onCancel <- function() {
     tkdestroy(geneDialog)  # Close the dialog box without action
   }
   cancelButton <- ttkbutton(geneDialog, text = 'Cancel', command = onCancel)
-  tkgrid(cancelButton, padx = 10, pady = 10)
+  tkgrid(cancelButton, padx = 10, pady = 5, row = 5, column = 1)
   
   # Keep focus on the dialog
   tkfocus(geneDialog)
   tcl("update")  # Ensure focus and window visibility is updated
 }
+
 displayGeneButton <- ttkbutton(genePlotTypeFrame, text='Display Single Gene', width=21, command=onDisplayGene)
 
 onDisplayProteome <- function()
