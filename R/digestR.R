@@ -19010,7 +19010,9 @@ ps <- function(dispPane='co'){
 #     tkdestroy(geneDialog)
 #     return()
 #   }
-  
+#  # Filter out gene names that start with a number
+#  geneNamesList <- geneNamesList[grepl("^[^0-9]", geneNamesList)]
+
 #   # Sort the gene names alphabetically
 #   geneNamesList <- sort(geneNamesList)
 	
@@ -19107,7 +19109,7 @@ onDisplayGene <- function() {
   }
   
   # Trace the entry variable for changes and update combobox state accordingly
-  trace(geneEntryVar, mode = "w", updateComboboxState)
+  trace("geneEntryVar", "w", updateComboboxState)
   
   # Function to handle the 'OK' button click
   onOK <- function() {
