@@ -17506,7 +17506,7 @@ plotGenes <- function(
     {
       if(bPlotGeneLevel)
       {
-        xlab <- paste0(paste0(toupper(substr(species$name, 1, 1)), paste0(substr(species$name, 2, nchar(species$name))))," Gene(s)")
+        xlab <- paste0(paste0(toupper(substr(species$name, 1, 1)), paste0(substr(species$name, 2, nchar(species$name))))," Protein")
         
       }else
         xlab <- paste0(paste0(toupper(substr(species$name, 1, 1)), paste0(substr(species$name, 2, nchar(species$name))))," Chromosome")
