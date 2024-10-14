@@ -30,7 +30,7 @@ Before installing DigestR, ensure that `BiocManager` is installed to manage Bioc
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-BiocManager::install("biomaRt")
+BiocManager::install(c("AnnotationDbi", "biomaRt"))
 ```
    
 ### Step 1: Install and load the devtools package
