@@ -1,4 +1,4 @@
-name: Install package
+name: Install R package (Windows)
 
 on:
   push:
@@ -29,6 +29,7 @@ jobs:
           if (!requireNamespace("BiocManager", quietly = TRUE))
             install.packages("BiocManager")
           BiocManager::install("biomaRt")
+          BiocManager::install("AnnotationDbi")
         shell: Rscript {0}
           
       - name: Install dependencies
