@@ -35,10 +35,8 @@ Imports:
     grid,
     tkrplot,
     png
-    
 Suggests:
     testthat,
     knitr,
     rcmdcheck
 RoxygenNote: 7.2.3
-
