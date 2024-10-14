@@ -1,4 +1,4 @@
-name: Install via GitHub
+name: Install on Windows via GitHub
 
 on:
   push:
@@ -41,7 +41,7 @@ jobs:
           if (!requireNamespace("BiocManager", quietly = TRUE)) {
               install.packages("BiocManager", repos = "https://cloud.r-project.org")
           }
-          BiocManager::install(c("biomaRt"))
+          BiocManager::install(c("biomaRt", "AnnotationDbi"))
           remotes::install_deps(dependencies = TRUE, repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
