@@ -26,6 +26,7 @@ Imports:
     readr,
     grid,
     tkrplot,
+    tcltk2,
     png
 Suggests:
     testthat,
