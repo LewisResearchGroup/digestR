@@ -17,17 +17,9 @@ Imports:
     ggplot2,
     ggridges,
     Rcpp,
-    tcltk,
-    tcltk2,
     magrittr,
-    future,
-    biomaRt,
     futile.logger,
-    shiny,
     ggrepel,
-    BiocManager,
-    remotes,
-    AnnotationDbi,
     ggseqlogo,
     viridis,
     VennDiagram,
@@ -38,5 +30,9 @@ Imports:
 Suggests:
     testthat,
     knitr,
-    rcmdcheck
+    rcmdcheck,
+    shiny,
+    future,
+    tcltk,
+    tcltk2
 RoxygenNote: 7.2.3
