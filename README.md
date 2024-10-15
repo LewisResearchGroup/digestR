@@ -15,7 +15,7 @@ To generate coincidence maps, DigestR requires:
 - A .csv file exported from Mascot (see the converting file section)
 
 ## How to install digestR package from GitHub
-DigestR was tested with `R v4.3.1`, and `R v4.4.1`.
+DigestR was tested with `R v4.4.1`.
 
 The latest R version can be dowloaded here: https://cran.r-project.org/bin/windows/base/
 
