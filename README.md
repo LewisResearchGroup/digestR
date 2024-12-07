@@ -2,7 +2,7 @@
 [![Install via GitHub (Windows)](https://github.com/LewisResearchGroup/digestR/actions/workflows/R%20package%20on%20Windows%20-%20from%20GitHub.yml/badge.svg?branch=main)](https://github.com/LewisResearchGroup/digestR/actions/workflows/R%20package%20on%20Windows%20-%20from%20GitHub.yml)
 
 # DigestR
- 
+  
 **Author**: Dimitri Desmonts de Lamache
 
 ## Overview
