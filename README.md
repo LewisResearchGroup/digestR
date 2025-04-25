@@ -48,7 +48,8 @@ Install the the digestR package directly from GitHub
 ### Step 3: Load the package
 
     library(digestR)
-
+### Alternative for windows users. 
+An installer of digestR can be found in the windows installers folder. To install the package please download the [DigestR_V1.0.0_installer.R file](https://github.com/LewisResearchGroup/digestR/blob/main/windows_installers/DigestR_V1.0.0_installer.bat) and the [ddlp.R script](https://github.com/LewisResearchGroup/digestR/blob/main/windows_installers/ddlp.R) to the same folder and run the digestR installer by double cliking. Please keep the default location during the installation process. The installer will check for the R installation and if it doesnt find it, it will download, install R4.4.3, and delete the R installer. Then it will run the scritp to install the required libraries, if the libraries are already installed, it will just continue. Finally it will open the Rgui console where you can open de digestR package by running the library(digestR) command.
 ## GUI Functions Documentation
 
 This document provides details of several Graphical User Interface (GUI) functions implemented in the R programming language using the Tcl/Tk toolkit.
