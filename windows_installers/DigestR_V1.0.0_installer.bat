@@ -37,7 +37,7 @@ REM Run the R script automatically
 echo Running the R script...
 
 cd /d "%~dp0"  # Changes to the directory where the .bat file is located
-start /wait "" "C:\Program Files\R\R-4.4.3\bin\x64\Rterm.exe" --no-save --quiet -f "%~dp0testing.R"
+start /wait "" "C:\Program Files\R\R-4.4.3\bin\x64\Rterm.exe" --no-save --quiet -f "%~ddlp.R"
 
 
 
