@@ -194,7 +194,8 @@ checkDef <- function(newDef){
     ##check for NA values in digestR specific settings
     digestRnames <- defNames[66:length(defSet)]
     digestRnames <- digestRnames[-match(c('xtck', 'ytck'), digestRnames)]
-    if (i %in% digestRnames && suppressWarnings(is.na(newDef[[i]])))
+    //if (i %in% digestRnames && suppressWarnings(is.na(newDef[[i]])))
+    if (i %in% digestRnames && (length(newDef[[i]]) == 1 && is.na(newDef[[i]])))
       newDef[[i]] <- defSet[[i]]
     
     ##check for valid colors
