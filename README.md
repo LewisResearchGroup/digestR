@@ -49,7 +49,7 @@ Install the the digestR package directly from GitHub
 
     library(digestR)
 ### Alternative for windows users. 
-An installer of digestR can be found in the Releases tab. By clicking on the installer you can download the binary file to your local pc. By double clicking in the binary file, you should be able to install digest R library in your computer. This installer will also generate an icon to access the package.
+A Windows installer for digestR is available in the **Releases** tab. Click on the [installer]() to download the binary file to your computer. Once downloaded, double-click the file to begin installation. This will install the digestR package on your system and create a desktop shortcut for easy access.
 
 ## GUI Functions Documentation
 
