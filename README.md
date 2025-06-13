@@ -49,7 +49,7 @@ Install the the digestR package directly from GitHub
 
     library(digestR)
 ### Alternative for windows users. 
-A Windows installer for digestR is available in the **Releases** tab. Click on the [installer](https://github.com/LewisResearchGroup/digestR/releases/tag/v1.0.0/setup_digestR.exe) to download the binary file to your computer. Once downloaded, double-click the file to begin installation. This will install the digestR package on your system and create a desktop shortcut for easy access.
+A Windows installer for digestR is available in the [**Releases**](https://github.com/LewisResearchGroup/digestR/releases/tag/v1.0.0) tab. Click on setup_digestR.exe to download the binary file to your computer. Once downloaded, double-click the file to begin installation. This will install the digestR package on your system and create a desktop shortcut for easy access.
 
 ## GUI Functions Documentation
 
