@@ -84,24 +84,34 @@ https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Human_pr
 https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Pfal_3D7_proteome.csv
 https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Btaurus_proteome.csv
 
-### Creating and Manipulating digestion maps
+### Creating digestion maps
 
-Required file: .dcf
+Required file: .csv
 
-#### 1. Process mascot files: pm() 
+#### Process mascot files: pm() 
 To create "digestion" maps, peptides identified by Mascot or MaxQuant need to be mapped to their proteomic location. First, the user needs to select a proteome to align peptides against (see Generate Proteome). DigestR will automatically detect and utilize all proteomes located within the "data/proteomes" subfolder. Users can also import their own proteomes into this subfolder. After proteome selection, users can align Mascot identified peptides along the selected proteome from a single or multiple files. These alignments generate "coincidence" or "digestion" maps that users can interact with.
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Process_Mascot_function.png)
 
-#### 2. Opening digestion maps: fo() / fs()
-To open a "digestion" map in DigestR, either select "Open/Close Files" from the File menu or use the commands fo() or fs() in the R console. If multiple files have been opened, only the most recently opened spectrum will appear in the main plot window. To switch to another spectrum, double-click on a file name within the GUI. To close one or more files, select the desired files from the table and then press the "Close file" button.
+An example .csv file can be found here:
+https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Data_Example.csv
 
-#### 3. Manipulate dcf files: mf()
+### Manipulating digestion maps
+
+Required file: .dcf
+
+#### 1. Opening digestion maps: fo() / fs()
+To open a "digestion" map (.dcf file) in DigestR, either select "Open/Close Files" from the File menu or use the commands fo() or fs() in the R console. If multiple files have been opened, only the most recently opened spectrum will appear in the main plot window. To switch to another spectrum, double-click on a file name within the plot settings GUI. To close one or more files, select the desired files from the table and then press the "Close file" button.
+
+An example .dcf file can be found here:
+https://github.com/LewisResearchGroup/digestR/blob/main/Example%20Files/Data_Example.dcf
+
+#### 2. Manipulate dcf files: mf()
 The mf() function in DigestR allow users to perform various mathematical operations with dcf files, facilitating comprehensive data manipulation and analysis. With mf(), users can add, substract, multiply, merge and divide, the data contained in multiple dcf files. This functionality allows users to perform mathematical operations tailored to their specific research needs, streamlining data processing and enhancing the overall analytical capabilities of DigestR.
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Manipulate_files_function.png)
 
-#### 4. Plot settings: ct()
+#### 3. Plot settings: ct()
 The ct() function allows users to interact with the "digestion" map directly through the graphical interface. Users can display the "digestion" map either at a proteome or protein level. By default, the full proteome view is displayed. 
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Proteome_view_function.png)
@@ -111,17 +121,17 @@ To display the digestion map of a specific protein, click on "Display Single Gen
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Protein_view_function.png)
 
-#### 5. Plot colors: co()
+#### 4. Plot colors: co()
 The plot color function allows users to easily manipulate the plot colors. To open the plot color GUI, enter the command co(). Color preferences can be applied to multiple spectra simultaneously by selecting names from the files list. Plot color options for the selected files may be configured individually using the buttons provided on the right side of the GUI. The "Axes" button changes the color of the x and y axes, "BG" changes the background color, and "Peak labels" changes the label color of identified peaks.
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Overlay_Function.png)
 
-#### 6. Overlays: ol()
+#### 5. Overlays: ol()
 DigestR allows multiple "digestion" maps to be displayed concurrently on a single plot through the command ol(). To add or remove loaded files, select the digestion maps to overlay and click the "add" or "remove" buttons. The order of overlaid maps in the main plot window is taken directly from the order of digestion maps appearing in the overlays list box. Individual files can be assigned their own colors. The plot legend will be automatically generated, but it can be suppressed by unchecking the "Display names of the overlay spectrum on the plot" option. Similarly, the path of "digestion" maps can be suppressed by checking the corresponding checkbox.
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Overlay_function.png)
 
-#### 7. Display protease cut sites: cs()
+#### 6. Display protease cut sites: cs()
 Users can overlay known protease cut sites onto the "digestion" map(s) using the cs() command. It is important to note that this function requires a CSV file containing the names of the proteases and their respective cleavage sites. An example CSV file can be found here: https://github.com/LewisResearchGroup/digestR/blob/main/tests/Proteasecutsiteslist.csv
 
 | protease | abv | cutsites | X | X.1 | X.2 | X.3 | X.4 |
@@ -140,12 +150,12 @@ Once the CSV file is loaded, users have to option to select a specific protease 
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Display_CutSites_function.png)
 
-#### 8. Zoom: zm()
+#### 7. Zoom: zm()
 DigestR includes various zooming and scrolling commands, accessible through the zoom GUI by selecting "Zoom" from the View menu or using the command zm(). Digestion maps can be navigated using the arrow pad provided in the zoom GUI or by using the five distinct zoom functions called by the buttons provided on the right side of the zoom GUI. Many of these functions are iterative and must be exited by right-clicking in the main plot window.
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/Zm_function.png)
 
-#### 9. Gene labelling: gl()
+#### 8. Gene labelling: gl()
 The gl() function allows users to override the threshold at which proteins are labeled when viewing data on the proteome-wide level. By lowering the default value, more peptides will be labeled.
 
 ![](https://github.com/LewisResearchGroup/digestR/blob/main/Images/geneLabelling_function.png)
