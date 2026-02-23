@@ -16768,8 +16768,8 @@ batchConvert <- function()
         for (j in 1:length(lFilesCSV))
         {
           result <- processFile(lFilesCSV[j], lSpecies)
-          saveFileName <- strsplit(lFilesCSV[j], '.', fixed = TRUE)
-          saveFileName <- paste(unlist(saveFileName[[1]][1:length(saveFileName[[1]])-1]), collapse='')
+          saveFileName <- tools::file_path_sans_ext(lFilesCSV[j])
+		  saveFileName <- paste(saveFileName, 'dcf', sep='.')
           saveFileName <- paste(saveFileName, 'dcf', sep='.')
           
           if(is.numeric(result))
@@ -25763,5 +25763,6 @@ generate_proteome <- function() {
     print("Other action taken.")
   }
 }
+
 
 
