@@ -16722,73 +16722,113 @@ loadSpecies <- function(fileName)
   return(lSpecies)
 }
 
-batchConvert <- function()
-{
+# batchConvert <- function()
+# {
 
+#   ## load a species object based on the user choice made in processGUI
+#   lSpecies <- loadSpecies(globalSettings$speciesFiles[globalSettings$processSpeciesID])
+  
+#   log_message('Loaded species file')
+
+#   if(is.null(lSpecies))
+#   {
+#     return(0)
+#   }else
+#   {
+#     myAssign(in.name = "species", in.object = lSpecies)
+#   }
+  
+#   ## get user input on the file(s) for processing
+#   dir <- choose.dir()
+  
+#   if (dir.exists(dir))
+#   {
+#     if (!globalSettings$processSingleFile)
+#     {
+#       subDirs <- list.dirs(path = file.path(dir), full.names = TRUE, recursive = FALSE)
+#       if (length(subDirs) == 0)
+#         subDirs <- dir
+#     }else
+#     {
+#       subDirs <- ''
+#     }
+    
+#     for (i in 1:length(subDirs))
+#     {
+#       if(!globalSettings$processSingleFile)
+#       {
+#         lFilesCSV <- list.files(path = subDirs[i], pattern = '*.csv', all.files=TRUE, full.names = TRUE, recursive = FALSE, ignore.case = TRUE)
+#       }else
+#       {
+#         lFilesCSV <- myOpen(initialdir = dir, multiple = TRUE)
+#       }
+#       #			startTime <- Sys.time()
+#       if (length(lFilesCSV) > 0) ## only process if there are files selected
+#       {
+#         for (j in 1:length(lFilesCSV))
+#         {
+#           result <- processFile(lFilesCSV[j], lSpecies)
+#           saveFileName <- tools::file_path_sans_ext(lFilesCSV[j])
+# 		  saveFileName <- paste(saveFileName, 'dcf', sep='.')
+#           saveFileName <- paste(saveFileName, 'dcf', sep='.')
+          
+#           if(is.numeric(result))
+#           {
+#             if(result == -1)
+#               log_message(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
+#             else
+#               log_message(paste0('No matches found, ', saveFileName, " could not be generated."))	
+#           }else
+#           {
+#             sName <- writeDIANA(saveFileName, lSpecies, result) 
+#             log_message(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
+batchConvert <- function() {
   ## load a species object based on the user choice made in processGUI
   lSpecies <- loadSpecies(globalSettings$speciesFiles[globalSettings$processSpeciesID])
-  
   log_message('Loaded species file')
-
-  if(is.null(lSpecies))
-  {
+  
+  if(is.null(lSpecies)) {
     return(0)
-  }else
-  {
+  } else {
     myAssign(in.name = "species", in.object = lSpecies)
   }
+
+  ## --- MODIFIED SECTION START ---
+  ## Directly ask user to select CSV files instead of a folder
+  lFilesCSV <- myOpen(title = "Select Mascot CSV File(s)", multiple = TRUE)
   
-  ## get user input on the file(s) for processing
-  dir <- choose.dir()
+  ## If no files were selected, exit
+  if (length(lFilesCSV) == 0 || lFilesCSV[1] == "") {
+    return(invisible())
+  }
   
-  if (dir.exists(dir))
-  {
-    if (!globalSettings$processSingleFile)
-    {
-      subDirs <- list.dirs(path = file.path(dir), full.names = TRUE, recursive = FALSE)
-      if (length(subDirs) == 0)
-        subDirs <- dir
-    }else
-    {
-      subDirs <- ''
-    }
+  ## Process the selected files
+  for (j in 1:length(lFilesCSV)) {
+    result <- processFile(lFilesCSV[j], lSpecies)
     
-    for (i in 1:length(subDirs))
-    {
-      if(!globalSettings$processSingleFile)
-      {
-        lFilesCSV <- list.files(path = subDirs[i], pattern = '*.csv', all.files=TRUE, full.names = TRUE, recursive = FALSE, ignore.case = TRUE)
-      }else
-      {
-        lFilesCSV <- myOpen(initialdir = dir, multiple = TRUE)
+    # Using the robust naming fix from the previous step
+    saveFileName <- tools::file_path_sans_ext(lFilesCSV[j])
+    saveFileName <- paste(saveFileName, 'dcf', sep='.')
+    
+    if(is.numeric(result)) {
+      if(result == -1) {
+        log_message(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
+      } else {
+        log_message(paste0('No matches found, ', saveFileName, " could not be generated."))
       }
-      #			startTime <- Sys.time()
-      if (length(lFilesCSV) > 0) ## only process if there are files selected
-      {
-        for (j in 1:length(lFilesCSV))
-        {
-          result <- processFile(lFilesCSV[j], lSpecies)
-          saveFileName <- tools::file_path_sans_ext(lFilesCSV[j])
-		  saveFileName <- paste(saveFileName, 'dcf', sep='.')
-          saveFileName <- paste(saveFileName, 'dcf', sep='.')
-          
-          if(is.numeric(result))
-          {
-            if(result == -1)
-              log_message(paste0('Mascot file could not be read or found, ', saveFileName, " could not be generated."))
-            else
-              log_message(paste0('No matches found, ', saveFileName, " could not be generated."))	
-          }else
-          {
-            sName <- writeDIANA(saveFileName, lSpecies, result) 
-            log_message(paste0(sName, ' saved at ', format(Sys.time(), "%H:%M"), '.'))
-          }
-        }
-      }
+    } else {
+      sName <- writeDIANA(saveFileName, lSpecies, result)
+      log_message(paste0('Generated: ', sName))
     }
   }
+  ## --- MODIFIED SECTION END ---
 }
-
 renameFiles <- function()
 {
   dir <- tkchooseDirectory()
@@ -25763,6 +25803,7 @@ generate_proteome <- function() {
     print("Other action taken.")
   }
 }
+
 
 
 
