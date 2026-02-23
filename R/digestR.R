@@ -1111,8 +1111,7 @@ gui <- function(top=NULL){
     winMenuAddItem("Manipulate .csv files", 'Plot cut site distribution		        csd()', "csd()")
     winMenuAddItem("Manipulate .csv files", 'Plot peptide distribution			pd()', "pd()")
     winMenuAddItem("Manipulate .csv files", 'Venn Diagram			        vd()', "vd()")
-	winMenuAddItem("Manipulate .csv files", 'Open and close			        fo()', "fo()")
-    #winMenuAddItem("Manipulate csv", 'Import Maven Files			im()', "im()")
+    winMenuAddItem("Manipulate .csv files", 'Open and close files           fo()', "fo()")
     
     winMenuAdd("Manipulate .dcf files")
     #winMenuAddItem("Manipulate dcf", 'Open/Close files		fs()', "fs()")
@@ -25763,4 +25762,5 @@ generate_proteome <- function() {
     print("Other action taken.")
   }
 }
+
 
