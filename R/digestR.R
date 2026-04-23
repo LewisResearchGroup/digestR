@@ -1119,6 +1119,8 @@ gui <- function(top=NULL){
     winMenuAddItem('Manipulate .dcf files', 'Manipulate Files		mf()', "mf()")
     winMenuAddItem('Manipulate .dcf files', 'Plot settings	        ct()', "ct()")
     winMenuAddItem('Manipulate .dcf files', 'Overlays			ol()', "ol()")
+	winMenuAddItem("Manipulate .dcf files", 'display protease cut sites			cs()', "cs()") 
+	winMenuAddItem("Manipulate .dcf files", 'gene labelling			glab()', "glab()")
     winMenuAddItem("Manipulate .dcf files", 'Save as			sa()', "sa()")   
     
     winMenuAdd("Edit")
